@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query, 
-                     onError, 
+from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
+                     onError,
                      drygUri, drygPath)
 
 import getopt, sys, json, calendar
@@ -65,18 +65,20 @@ if connected:
             print "\n*** Getting calendar data for: %s-%s" % (lookupYear, lookupMonth)
             print "    %s" % calendarPath
             
-        calendarData = urlopen(calendarPath).read() # read calendar data
+        calendarData = urlopen(calendarPath).read()  # read calendar data
         
-        parsedCalendar = json.loads(calendarData) # load json
+        parsedCalendar = json.loads(calendarData)  # load json
         
         if verbose:
             print
             print json.dumps(parsedCalendar, indent=4, sort_keys=True)
+            
+        cacheTime = parsedCalendar["cachetid"]
         
         day = 0
         
         while True:
-            try: # does this month have this day
+            try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
             except:
                 break
@@ -84,12 +86,12 @@ if connected:
             dayNumber = int(parsedCalendar["dagar"][day]["dag i vecka"]) - 1
             workFreeDay = parsedCalendar["dagar"][day]["arbetsfri dag"]
             
-            try: # is this day an eve
+            try:  # is this day an eve
                 eve = parsedCalendar["dagar"][day]["helgdagsafton"]
             except:
                 eve = ""
             
-            try: # is this day an eve
+            try:  # is this day an eve
                 holiday = parsedCalendar["dagar"][day]["helgdag"]
             except:
                 holiday = ""
@@ -103,15 +105,10 @@ if connected:
                 if holiday:
                     print "    Holiday: %s" % holiday
                 
-            day += 1 # add one day and test it
+            day += 1  # add one day and test it
         
+        if verbose:
+            print "\n+++ Cache time: %s" % cacheTime
         
         sys.exit()
-        
-
-
-
-
-
-
 
