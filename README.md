@@ -69,26 +69,26 @@ $ sudo pip install rpi.gpio
 $ cd /home/pi  
 $ git clone https://github.com/jonsag/piSchoolBell.git  
 
+$ mkdir -p /home/pi/bin/piSchoolBell  
+
 $ cd /home/pi/piSchoolBell  
+$ cp gpio.service gpio-script /home/pi/bin/piSchoolBell/
 
 Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD.git  
-$ cd /home/pi/pi-heating/Adafruit_Python_CharLCD  
+$ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
 $ sudo python setup.py install  
 
 Install gpio-watch by larsks from https://github.com/larsks/gpio-watch  
-$ cd /home/pi/pi-heating/gpio-watch  
+$ cd /home/pi/piSchoolBell/gpio-watch  
 $ make  
 $ sudo make install  
 
-touch /home/pi/pi-heating-LCD/gpio-watch.log  
+$ touch /home/pi/bin/piSchoolBell/gpio-watch.log  
   
-  chown -R pi:pi "/home/pi/pi-heating-LCD"  
-  chmod -R 750 "/home/pi/pi-heating-LCD"  
-  
-  ln -s /home/pi/pi-heating-LCD/gpio.service /lib/systemd/system/gpio.service  
-  chmod 644 /lib/systemd/system/gpio.service  
-  systemctl daemon-reload  
-  systemctl enable gpio.service  
+$ sudo  ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.service  
+$ sudo chmod 644 /lib/systemd/system/gpio.service  
+$ sudo systemctl daemon-reload  
+$ sudo systemctl enable gpio.service  
 
 
 
