@@ -53,26 +53,35 @@ $ sudo raspi-config
 7 A3	Set memory split to 16  
 Reboot to set new options  
 
-Install requisites
+Installation
+=============================
+Later i will probably make an insttallation script, but for now this is how it goes...  
+
+Install prerequisites
 -----------------------------
-$ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip  
+$ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip mysql-server python-mysqldb  
+
+$ sudo easy_install -U distribute  
+$ sudo pip install rpi.gpio python-dateutil  
+
+Initialize mysql  
+$ sudo mysql -u root -p  
+Use the same password as pi login  
+Quit with exit  
 
 Install other useful stuff
 -----------------------------
 $ sudo apt-get install emacs screen  
 
-Installation
-=============================
-$ sudo easy_install -U distribute  
-$ sudo pip install rpi.gpio  
-
+Moving on
+-----------------------------
 $ cd /home/pi  
 $ git clone https://github.com/jonsag/piSchoolBell.git  
 
 $ mkdir -p /home/pi/bin/piSchoolBell  
 
 $ cd /home/pi/piSchoolBell  
-$ cp gpio.service gpio-script /home/pi/bin/piSchoolBell/
+$ cp config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
 
 Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD.git  
 $ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
@@ -89,6 +98,14 @@ $ sudo  ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.se
 $ sudo chmod 644 /lib/systemd/system/gpio.service  
 $ sudo systemctl daemon-reload  
 $ sudo systemctl enable gpio.service  
+
+
+
+
+
+
+$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/piSchoolBell/
+
 
 
 
