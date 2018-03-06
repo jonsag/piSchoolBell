@@ -55,7 +55,7 @@ Reboot to set new options
 
 Installation
 =============================
-Later i will probably make an insttallation script, but for now this is how it goes...  
+Later i will probably make an installation script, but for now this is how it goes...  
 
 Install prerequisites
 -----------------------------
@@ -64,7 +64,8 @@ $ sudo apt-get install git python-dev python-setuptools build-essential python-s
 $ sudo easy_install -U distribute  
 $ sudo pip install rpi.gpio python-dateutil  
 
-Initialize mysql  
+Initialize mysql
+-----------------------------
 $ sudo mysql -u root -p  
 Use the same password as pi login  
 Quit with exit  
@@ -73,25 +74,36 @@ Install other useful stuff
 -----------------------------
 $ sudo apt-get install emacs screen  
 
-Moving on
+Clone repository
 -----------------------------
 $ cd /home/pi  
 $ git clone https://github.com/jonsag/piSchoolBell.git  
 
-$ mkdir -p /home/pi/bin/piSchoolBell  
-
 $ cd /home/pi/piSchoolBell  
+
+Create database and insert initial data
+-----------------------------
+$ sudo ./mysql-setup.sh  
+$ sudo mysql -u root -p piSchoolBell < mysql-insert-data.sql  
+
+Create directory and copy files
+-----------------------------
+$ mkdir -p /home/pi/bin/piSchoolBell  
 $ cp config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
 
 Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD.git  
+-----------------------------
 $ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
 $ sudo python setup.py install  
 
 Install gpio-watch by larsks from https://github.com/larsks/gpio-watch  
+-----------------------------
 $ cd /home/pi/piSchoolBell/gpio-watch  
 $ make  
 $ sudo make install  
 
+Setup gpio-watch
+-----------------------------
 $ touch /home/pi/bin/piSchoolBell/gpio-watch.log  
   
 $ sudo  ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.service  
@@ -104,7 +116,7 @@ $ sudo systemctl enable gpio.service
 
 
 
-$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/piSchoolBell/
+$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
 
 
 

@@ -6,90 +6,60 @@ read -s ROOT_PASSWORD
 DB_USERNAME='pi'
 DB_PASSWORD=$(date | md5sum | head -c12)
 DB_SERVER='localhost'
-DB_NAME='pi_heating_db'
+DB_NAME='piSchoolBell'
 
 echo
 echo $DB_PASSWORD
 echo
 
-mysql -uroot -p$ROOT_PASSWORD<< DATABASE
+mysql -uroot -p$ROOT_PASSWORD << DATABASE
 
-CREATE DATABASE $DB_NAME CHARACTER SET = utf8;
+CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET = utf8;
 
-CREATE USER '$DB_USERNAME'@'$DB_SERVER';
+CREATE USER IF NOT EXISTS '$DB_USERNAME'@'$DB_SERVER';
 SET PASSWORD FOR '$DB_USERNAME'@'$DB_SERVER' = PASSWORD('$DB_PASSWORD');
 
 GRANT ALL ON $DB_NAME.* TO '$DB_USERNAME'@'$DB_SERVER';
 
 USE $DB_NAME;
 
-CREATE TABLE IF NOT EXISTS devices   (      d_id          int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            name          varchar(256)  NOT NULL,
-                                            pin           int(11)       DEFAULT NULL,
-                                            active_level  tinyint(4)    DEFAULT NULL,
-                                            value         tinyint(1)    DEFAULT 0 );
+CREATE TABLE IF NOT EXISTS ringTimes 
+( 
+ringTimeId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+name VARCHAR(100) NOT NULL, 
+weekDays INT(7) DEFAULT '1111100', 
+ringTime TIME NOT NULL, 
+ringPat INT(11) NOT NULL, 
+CONSTRAINT weekDays_ringTime UNIQUE (weekDays,ringTime) 
+);
 
-CREATE TABLE IF NOT EXISTS sensors   (      id            bigint(11)    NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            ref           varchar(20)   DEFAULT NULL,
-                                            name          varchar(256)  DEFAULT NULL,
-                                            ip            varchar(16)   DEFAULT NULL,
-                                            value         float         DEFAULT NULL,
-                                            unit          varchar(11)   NOT NULL );
+CREATE TABLE IF NOT EXISTS ringPatterns 
+( 
+ringPatternId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ringPatternName VARCHAR(100) NOT NULL, 
+ringPattern VARCHAR(100) NOT NULL, 
+UNIQUE (ringPatternName) 
+);
 
-CREATE TABLE IF NOT EXISTS timers    (      id            int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            name          varchar(256)  DEFAULT NULL,
-                                            duration      int(11)       DEFAULT NULL,
-                                            value         int(11)       DEFAULT NULL ); 
+CREATE TABLE IF NOT EXISTS workDays 
+( 
+workDayId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+workDayDate DATE NOT NULL, 
+dayName	VARCHAR(10) NOT NULL, 
+dayNumber INT(1) NOT NULL, 
+UNIQUE (workDayDate) 
+);
+											
+CREATE TABLE IF NOT EXISTS breaks 
+( 
+breakId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+breakName VARCHAR(100) NOT NULL, 
+startDate DATE NOT NULL, 
+endDate DATE NOT NULL, 
+UNIQUE (breakName) 
+);
+											
 
-CREATE TABLE IF NOT EXISTS modes     (      id            int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            name          varchar(256)  DEFAULT NULL,
-                                            value         tinyint(1)    DEFAULT NULL );
-                                            
-CREATE TABLE IF NOT EXISTS network   (      id            int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            mac           varchar(17)   DEFAULT NULL,
-                                            name          varchar(256)  DEFAULT NULL,
-                                            value         tinyint(1)    DEFAULT NULL );
-                            
-CREATE TABLE IF NOT EXISTS schedules (      id            int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-                                            name          varchar(256)  DEFAULT NULL,
-                                            start         time DEFAULT  NULL,
-                                            end           time DEFAULT  NULL,  
-                                            dow1          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow2          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow3          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow4          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow5          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow6          tinyint(1)    NOT NULL DEFAULT '0',
-                                            dow7          tinyint(1)    NOT NULL DEFAULT '0',
-                                            enabled       tinyint(1)    NOT NULL DEFAULT '1',
-                                            active        tinyint(1)    DEFAULT NULL );
-
-CREATE TABLE IF NOT EXISTS sched_device (   sd_id         int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            sched_id      int(11)       DEFAULT NULL,
-                                            device_id     int(11)       DEFAULT NULL );
-
-CREATE TABLE IF NOT EXISTS sched_sensor (   ss_id         int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            sched_id      int(11)       DEFAULT NULL,
-                                            sensor_id     int(11)       DEFAULT NULL,
-                                            opp           char(1)       DEFAULT NULL,
-                                            value         float         DEFAULT NULL );
-
-CREATE TABLE IF NOT EXISTS sched_timer (    st_id         int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            sched_id      int(11)       DEFAULT NULL,
-                                            timer_id      int(11)       DEFAULT NULL,
-                                            opp           char(1)       DEFAULT NULL,
-                                            value         tinyint(1)    DEFAULT NULL );
-
-CREATE TABLE IF NOT EXISTS sched_mode (     sm_id         int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            sched_id      int(11)       DEFAULT NULL,
-                                            mode_id       int(11)       DEFAULT NULL,
-                                            test_opp      char(1)       DEFAULT NULL,
-                                            test_value    tinyint(1)    DEFAULT NULL );
-                                            
-CREATE TABLE IF NOT EXISTS sched_network (  sn_id         int(11)       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                            sched_id      int(11)       DEFAULT NULL,
-                                            network_id    int(11)       DEFAULT NULL,
-                                            test          tinyint(1)    DEFAULT NULL );
 
 DATABASE
 

@@ -6,7 +6,7 @@ from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnec
                      onError,
                      drygUri, drygPath)
 
-import getopt, sys, json, calendar
+import getopt, sys, json, calendar, MySQLdb
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -54,6 +54,8 @@ if verbose:
 connected = True
 
 if connected:
+    cnx = db_connect(verbose) # connect to database
+    
     for i in range(0, 12, 1):
         lookupDate = timeNow + relativedelta(months=i)
         lookupYear = lookupDate.strftime("%Y")
@@ -80,9 +82,10 @@ if connected:
         while True:
             try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
-            except:
+            except: # month finished
                 break
             
+            dayName = parsedCalendar["dagar"][day]["veckodag"]
             dayNumber = int(parsedCalendar["dagar"][day]["dag i vecka"]) - 1
             workFreeDay = parsedCalendar["dagar"][day]["arbetsfri dag"]
             
@@ -104,11 +107,50 @@ if connected:
                     print "    Eve: %s" % eve
                 if holiday:
                     print "    Holiday: %s" % holiday
+                    
+            if workFreeDay == "Nej": # is this a schoolday
+            
+                cursor = db_create_cursor(cnx) # create cursor
+            
+                query = ("INSERT INTO workDays " 
+                         "(workDayDate, dayName, dayNumber) " 
+                         "VALUES " 
+                         "(STR_TO_DATE('" + date + "', '%Y-%m-%d'), "
+                         "'" + dayName + "', "
+                         "'" + str(dayNumber) + "')")
+                if verbose:
+                    print "*** Running query: \n    %s" % query
+                try: # insert date in db
+                    result = db_query(cursor, query, verbose) # run query
+
+                except (MySQLdb.IntegrityError) as e: # date already in database
+                    if verbose:
+                        print "*** Date already inserted"
+                    query = ("UPDATE workDays SET "
+                             "dayName='" + dayName + "', " 
+                             "dayNumber='" + str(dayNumber) + "' " 
+                             "WHERE "
+                             "workDayDate=STR_TO_DATE('" + date + "', '%Y-%m-%d')"
+                             )
+                    if verbose:
+                        print "*** Running query: \n    %s" % query
+                    try: # update item instead
+                        result = db_query(cursor, query, verbose) # run query
+                    except: # some other error
+                        if verbose:
+                            print "*** Some error"
+                        sys.exit()
+            else: # this day is not a schoolday
+                if verbose:
+                    print "+++ Deleting this date from school days..."
+                    
+                            
+                db_close_cursor(cnx, cursor) # close cursor and commit changes
                 
             day += 1  # add one day and test it
         
         if verbose:
             print "\n+++ Cache time: %s" % cacheTime
         
-        sys.exit()
+    db_disconnect(cnx, verbose) # disconnect from database
 
