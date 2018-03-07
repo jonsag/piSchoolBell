@@ -79,14 +79,18 @@ if connected:
         
         day = 0
         
-        while True:
+        while True: # will keep on running as long as there is days in a month
+            
+            cursor = db_create_cursor(cnx) # create cursor
+            
             try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
             except: # month finished
                 break
             
-            dayName = parsedCalendar["dagar"][day]["veckodag"]
             dayNumber = int(parsedCalendar["dagar"][day]["dag i vecka"]) - 1
+            svDayName = parsedCalendar["dagar"][day]["veckodag"]
+            dayName = calendar.day_name[dayNumber]
             workFreeDay = parsedCalendar["dagar"][day]["arbetsfri dag"]
             
             try:  # is this day an eve
@@ -100,7 +104,7 @@ if connected:
                 holiday = ""
 
             if verbose:
-                print "\n+++ Date: %s, %s" % (date, calendar.day_name[dayNumber])
+                print "\n+++ Date: %s, %s" % (date, dayName)
                 if workFreeDay == "Nej":
                     print "    School day"
                 if eve:
@@ -108,9 +112,7 @@ if connected:
                 if holiday:
                     print "    Holiday: %s" % holiday
                     
-            if workFreeDay == "Nej": # is this a schoolday
-            
-                cursor = db_create_cursor(cnx) # create cursor
+            if workFreeDay == "Nej": # true if this is a school day
             
                 query = ("INSERT INTO workDays " 
                          "(workDayDate, dayName, dayNumber) " 
@@ -122,10 +124,9 @@ if connected:
                     print "*** Running query: \n    %s" % query
                 try: # insert date in db
                     result = db_query(cursor, query, verbose) # run query
-
                 except (MySQLdb.IntegrityError) as e: # date already in database
                     if verbose:
-                        print "*** Date already inserted"
+                        print "*** Date already in table"
                     query = ("UPDATE workDays SET "
                              "dayName='" + dayName + "', " 
                              "dayNumber='" + str(dayNumber) + "' " 
@@ -142,10 +143,13 @@ if connected:
                         sys.exit()
             else: # this day is not a schoolday
                 if verbose:
-                    print "+++ Deleting this date from school days..."
-                    
+                    print "+++ Deleting this date from school days if it exists..."
+                query = ("DELETE FROM workDays WHERE "
+                         "workDayDate=STR_TO_DATE('" + date + "', '%Y-%m-%d')"
+                         )
+                result = db_query(cursor, query, verbose) # run query
                             
-                db_close_cursor(cnx, cursor) # close cursor and commit changes
+            db_close_cursor(cnx, cursor) # close cursor and commit changes
                 
             day += 1  # add one day and test it
         

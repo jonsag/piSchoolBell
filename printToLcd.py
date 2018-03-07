@@ -4,12 +4,11 @@
 
 import getopt, sys, time
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
                      initialize_lcd, print_to_LCD,
-                     remove_leading_zero, random_chars,
-                     active_schedules, active_devices, process_schedules,
+                     remove_leading_zero, 
                      onError, usage)
 
 try:
@@ -81,6 +80,9 @@ if gpio:
             print "+++ Button 4 pressed, pin %s" % gpio
     else:
         onError(3, "No action for gpio %s" % gpio)
+        
+# get current time
+timeNow = datetime.now()
             
 # what to write to lcd
 t = u"\u00b0"  # degree sign
@@ -91,14 +93,14 @@ if not line_1:
     month = remove_leading_zero(timeNow.strftime('%m'))
     hour = timeNow.strftime('%H')
     minute = timeNow.strftime('%M')
-    line_1 = "%s/%s %s:%s %s%s" % (day, month, hour, minute, temp_value, t)
-if not line_2:    
-    if mode_value:
-        line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
-    elif timer_value != 0:
-        line_2 = "%s%s @%s" % (int(activeNow[0]['setPoint']), t, timerEnd)
-    else:
-        line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
+    line_1 = "%s/%s %s:%s" % (day, month, hour, minute)
+#if not line_2:    
+    #if mode_value:
+    #    line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
+    #elif timer_value != 0:
+    #    line_2 = "%s%s @%s" % (int(activeNow[0]['setPoint']), t, timerEnd)
+    #else:
+    #    line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
     #    #line_2 = random_chars()
     #    line_2 = str(temp_value)
 
@@ -125,12 +127,6 @@ if light:
     lcd.set_backlight(0)
     if verbose:
         print "\n--- Backlight OFF"
-        
-if verbose:
-    print "\n+++ Active schedules:"
-    active_schedules(cursor, cnx, verbose)
-    print "\n+++ Active devices:"
-    active_devices(cursor, cnx, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

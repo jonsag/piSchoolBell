@@ -83,7 +83,7 @@ def db_query(cursor, query, verbose):
     cursor.execute(query)
     results = cursor.fetchall()
     
-    return results
+    return results, cursor.rowcount
 
 
 def db_update(cursor, query, verbose):

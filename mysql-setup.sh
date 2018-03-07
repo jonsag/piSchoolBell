@@ -26,10 +26,10 @@ USE $DB_NAME;
 CREATE TABLE IF NOT EXISTS ringTimes 
 ( 
 ringTimeId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-name VARCHAR(100) NOT NULL, 
+ringTimeName VARCHAR(100) NOT NULL, 
 weekDays INT(7) DEFAULT '1111100', 
 ringTime TIME NOT NULL, 
-ringPat INT(11) NOT NULL, 
+ringPatternId INT(11) NOT NULL, 
 CONSTRAINT weekDays_ringTime UNIQUE (weekDays,ringTime) 
 );
 
