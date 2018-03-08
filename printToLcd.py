@@ -22,24 +22,24 @@ try:
 except getopt.GetoptError as e:
     onError(1, str(e))
     
-if len(sys.argv) == 1:  # no options passed
-    onError(2, 2)
+#if len(sys.argv) == 1:  # no options passed
+#    onError(2, 2)
     
-light = False
+light = True # this is true as we do not set backlight on and off
 line_1 = ""
 line_2 = ""
 gpio = False
 verbose = False
     
 for option, argument in myopts:     
-    if option in ('-l', '--light'):  # turn backlight on
-        light = True
-    elif option in ('-1', '--line1'):  # first line of LCD
+    if option in ('-1', '--line1'):  # first line of LCD
         light = True
         line_1 = argument
     elif option in ('-2', '--line2'):  # second line of LCD
         light = True
         line_2 = argument
+    #elif option in ('-l', '--light'):  # turn backlight on
+    #    light = True
     elif option in ('-g', '--gpio'):  # button 11 - light LCD
         light = True
         gpio = argument
@@ -89,11 +89,12 @@ t = u"\u00b0"  # degree sign
 inf = u"\u221e"  # infinity symbol
 
 if not line_1:
-    day = remove_leading_zero(timeNow.strftime('%d'))
-    month = remove_leading_zero(timeNow.strftime('%m'))
     hour = timeNow.strftime('%H')
     minute = timeNow.strftime('%M')
-    line_1 = "%s/%s %s:%s" % (day, month, hour, minute)
+    day = remove_leading_zero(timeNow.strftime('%d'))
+    month = remove_leading_zero(timeNow.strftime('%m'))
+    year = timeNow.strftime('%Y')
+    line_1 = "%s:%s %s/%s %s" % (hour, minute, day, month, year)
 #if not line_2:    
     #if mode_value:
     #    line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
@@ -110,23 +111,23 @@ if light:
     
     # clear screen and turn backlight on
     lcd.clear()
-    lcd.set_backlight(1)
-    if verbose:
-        print "\n--- Backlight ON"
+    #lcd.set_backlight(1)
+    #if verbose:
+    #    print "\n--- Backlight ON"
     
     # print to LCD
     print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
     print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
 
-    if verbose:
-        print "\n--- Wait %ss..." % lcd_wake_time
-    time.sleep(lcd_wake_time)
+    #if verbose:
+    #    print "\n--- Wait %ss..." % lcd_wake_time
+    #time.sleep(lcd_wake_time)
         
     # clear screen and turn backlight off.
-    lcd.clear()
-    lcd.set_backlight(0)
-    if verbose:
-        print "\n--- Backlight OFF"
+    #lcd.clear()
+    #lcd.set_backlight(0)
+    #if verbose:
+    #    print "\n--- Backlight OFF"
 
 # close db
 db_disconnect(cnx, verbose)

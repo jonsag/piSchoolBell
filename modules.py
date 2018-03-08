@@ -12,6 +12,8 @@ from urlparse import urljoin
 config = ConfigParser()  # define config file
 config.read("%s/config.ini" % os.path.dirname(os.path.realpath(__file__)))  # read config file
 
+bellRelayGpio = int(config.get('gpioAssignment', 'bellRelayGpio').strip(" "))
+
 unicode_degree_sign = config.get('misc', 'unicode_degree_sign').strip(" ")
 
 drygUri = config.get('dryg', 'drygUri').strip(" ")

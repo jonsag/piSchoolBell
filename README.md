@@ -59,16 +59,44 @@ Later i will probably make an installation script, but for now this is how it go
 
 Install prerequisites
 -----------------------------
-$ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip mysql-server python-mysqldb  
+$ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip mysql-server python-mysqldb apache2  
 
 $ sudo easy_install -U distribute  
-$ sudo pip install rpi.gpio python-dateutil  
+$ sudo pip install RPi.GPIO python-dateutil  
 
 Initialize mysql
 -----------------------------
 $ sudo mysql -u root -p  
 Use the same password as pi login  
 Quit with exit  
+
+Set up apache to run python
+-----------------------------
+$ sudo a2dismod mpm_event  
+$ sudo a2enmod mpm_prefork cgi  
+
+$ sudo echo "Listen 8080" >> /etc/apache2/ports.conf  
+
+Edit /etc/apache2/sites-avalable/piSchoolBell.conf  
+	<VirtualHost *:8080>  
+    	ServerAdmin webmaster@localhost  
+    	DocumentRoot /var/www/piSchoolBell/  
+    	<Directory /var/www/piSchoolBell/>  
+        	Options -Indexes  
+        	AllowOverride all  
+        	Order allow,deny  
+        	allow from all  
+    	</Directory>  
+    	<Directory /var/www/piSchoolBell/cgi-bin/>  
+        	Options +ExecCGI  
+        	AddHandler cgi-script .py  
+    	</Directory>  
+    	ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+	</VirtualHost>  
+	
+$ sudo a2ensite piSchoolBell.conf  
+$ sudo systemctl restart apache2  
 
 Install other useful stuff
 -----------------------------
@@ -86,10 +114,14 @@ Create database and insert initial data
 $ sudo ./mysql-setup.sh  
 $ sudo mysql -u root -p piSchoolBell < mysql-insert-data.sql  
 
-Create directory and copy files
+Create directories and copy files
 -----------------------------
 $ mkdir -p /home/pi/bin/piSchoolBell  
 $ cp config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
+$ sudo mkdir /var/www/piSchoolBell  
+$ cp www /var/www/piSchoolBell
+$ sudo chown -R pi:www-data /var/www/piSchoolBell 
+$ sudo chmod 755 -R /var/www/piSchoolBell  
 
 Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD.git  
 -----------------------------
@@ -111,13 +143,20 @@ $ sudo chmod 644 /lib/systemd/system/gpio.service
 $ sudo systemctl daemon-reload  
 $ sudo systemctl enable gpio.service  
 
+Setup cron jobs
+-----------------------------
+$ crontab -e  
+	*/1 * * * * /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1  
+	
 
 
 
 
+rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
 
-$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
-
+rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/www/* pi@192.168.10.44:/var/www/piSchoolBell/
+ssh pi@192.168.10.44 'sudo chmod 755 -R /var/www/piSchoolBell'
+ssh pi@192.168.10.44 'sudo chown -R pi:www-data /var/www/piSchoolBell'
 
 
 
