@@ -88,6 +88,7 @@ if connected:
             except: # month finished
                 break
             
+            weekNumber = int(parsedCalendar["dagar"][day]["vecka"])
             dayNumber = int(parsedCalendar["dagar"][day]["dag i vecka"]) - 1
             svDayName = parsedCalendar["dagar"][day]["veckodag"]
             dayName = calendar.day_name[dayNumber]
@@ -113,41 +114,41 @@ if connected:
                     print "    Holiday: %s" % holiday
                     
             if workFreeDay == "Nej": # true if this is a school day
+                isWorkDay = "1"
+            else:
+                isWorkDay = "0"
             
-                query = ("INSERT INTO workDays " 
-                         "(workDayDate, dayName, dayNumber) " 
-                         "VALUES " 
-                         "(STR_TO_DATE('" + date + "', '%Y-%m-%d'), "
-                         "'" + dayName + "', "
-                         "'" + str(dayNumber) + "')")
+            query = ("INSERT INTO days " 
+                     "(date, dayName, weekNumber, dayNumber, isWorkDay) " 
+                     "VALUES " 
+                     "(STR_TO_DATE('" + date + "', '%Y-%m-%d'), "
+                     "'" + dayName + "', "
+                     "'" + str(weekNumber) + "', "
+                     "'" + str(dayNumber) + "', "
+                     "'" + isWorkDay + "')")
+            if verbose:
+                print "*** Running query: \n    %s" % query
+            try: # insert date in db
+                result = db_query(cursor, query, verbose) # run query
+            except (MySQLdb.IntegrityError) as e: # date already in database
+                if verbose:
+                    print "*** Date already in table"
+                query = ("UPDATE days SET "
+                         "dayName = '" + dayName + "', "
+                         "weekNumber = '" + str(weekNumber) + "', " 
+                         "dayNumber = '" + str(dayNumber) + "', "
+                         "isWorkDay = '" + isWorkDay + "' " 
+                         "WHERE "
+                         "date = STR_TO_DATE('" + date + "', '%Y-%m-%d')"
+                         )
                 if verbose:
                     print "*** Running query: \n    %s" % query
-                try: # insert date in db
+                try: # update item instead
                     result = db_query(cursor, query, verbose) # run query
-                except (MySQLdb.IntegrityError) as e: # date already in database
+                except MySQLdb.Error as e: # some other error
                     if verbose:
-                        print "*** Date already in table"
-                    query = ("UPDATE workDays SET "
-                             "dayName='" + dayName + "', " 
-                             "dayNumber='" + str(dayNumber) + "' " 
-                             "WHERE "
-                             "workDayDate=STR_TO_DATE('" + date + "', '%Y-%m-%d')"
-                             )
-                    if verbose:
-                        print "*** Running query: \n    %s" % query
-                    try: # update item instead
-                        result = db_query(cursor, query, verbose) # run query
-                    except: # some other error
-                        if verbose:
-                            print "*** Some error"
-                        sys.exit()
-            else: # this day is not a schoolday
-                if verbose:
-                    print "+++ Deleting this date from school days if it exists..."
-                query = ("DELETE FROM workDays WHERE "
-                         "workDayDate=STR_TO_DATE('" + date + "', '%Y-%m-%d')"
-                         )
-                result = db_query(cursor, query, verbose) # run query
+                        print "--- Error: \n    %s" % e
+                    sys.exit()
                             
             db_close_cursor(cnx, cursor) # close cursor and commit changes
                 

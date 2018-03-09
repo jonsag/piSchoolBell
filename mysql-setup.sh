@@ -41,13 +41,15 @@ ringPattern VARCHAR(100) NOT NULL,
 UNIQUE (ringPatternName) 
 );
 
-CREATE TABLE IF NOT EXISTS workDays 
+CREATE TABLE IF NOT EXISTS days 
 ( 
-workDayId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-workDayDate DATE NOT NULL, 
+dayId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+date DATE NOT NULL, 
 dayName	VARCHAR(10) NOT NULL, 
+weekNumber INT(2) NOT NULL, 
 dayNumber INT(1) NOT NULL, 
-UNIQUE (workDayDate) 
+isWorkDay BOOLEAN NOT NULL, 
+UNIQUE (date) 
 );
 											
 CREATE TABLE IF NOT EXISTS breaks 
@@ -59,7 +61,13 @@ endDate DATE NOT NULL,
 UNIQUE (breakName) 
 );
 											
-
+CREATE TABLE IF NOT EXISTS extraDays 
+( 
+extraDaysId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+extraDayName VARCHAR(100) NOT NULL, 
+extraDayDate DATE NOT NULL, 
+UNIQUE (extraDayName) 
+);
 
 DATABASE
 
