@@ -112,7 +112,9 @@ $ cd /home/pi/piSchoolBell
 Create database and insert initial data
 -----------------------------
 $ sudo ./mysql-setup.sh  
-$ sudo mysql -u root -p piSchoolBell < mysql-insert-data.sql  
+
+Add test data, if wanted  
+$ sudo mysql -u root -p piSchoolBell < mysql-test-data.sql  
 
 Create directories and copy files
 -----------------------------
