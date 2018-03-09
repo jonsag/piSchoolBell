@@ -77,7 +77,7 @@ $ sudo a2enmod mpm_prefork cgi
 
 $ sudo echo "Listen 8080" >> /etc/apache2/ports.conf  
 
-Edit /etc/apache2/sites-avalable/piSchoolBell.conf  
+Edit /etc/apache2/sites-available/piSchoolBell.conf  
 	<VirtualHost *:8080>  
     	ServerAdmin webmaster@localhost  
     	DocumentRoot /var/www/piSchoolBell/  
@@ -86,13 +86,11 @@ Edit /etc/apache2/sites-avalable/piSchoolBell.conf
         	AllowOverride all  
         	Order allow,deny  
         	allow from all  
-    	</Directory>  
-    	<Directory /var/www/piSchoolBell/cgi-bin/>  
-        	Options +ExecCGI  
+        	Options +ExecCGI    
         	AddHandler cgi-script .py  
     	</Directory>  
-    	ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+    	ErrorLog ${APACHE_LOG_DIR}/error.log  
+        CustomLog ${APACHE_LOG_DIR}/access.log combined  
 	</VirtualHost>  
 	
 $ sudo a2ensite piSchoolBell.conf  

@@ -129,7 +129,7 @@ if connected:
             if verbose:
                 print "*** Running query: \n    %s" % query
             try: # insert date in db
-                result = db_query(cursor, query, verbose) # run query
+                result, rowCount = db_query(cursor, query, verbose) # run query
             except (MySQLdb.IntegrityError) as e: # date already in database
                 if verbose:
                     print "*** Date already in table"
@@ -144,7 +144,7 @@ if connected:
                 if verbose:
                     print "*** Running query: \n    %s" % query
                 try: # update item instead
-                    result = db_query(cursor, query, verbose) # run query
+                    result, rowCount = db_query(cursor, query, verbose) # run query
                 except MySQLdb.Error as e: # some other error
                     if verbose:
                         print "--- Error: \n    %s" % e
