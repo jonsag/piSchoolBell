@@ -7,7 +7,12 @@ import os, sys, MySQLdb, time, datetime
 import Adafruit_CharLCD as LCD
 
 from ConfigParser import ConfigParser
+from datetime import datetime, timedelta
 from urlparse import urljoin
+from calendar import day_name
+
+import codecs
+from htmlentitydefs import codepoint2name
 
 config = ConfigParser()  # define config file
 config.read("%s/config.ini" % os.path.dirname(os.path.realpath(__file__)))  # read config file
@@ -93,6 +98,121 @@ def db_update(cursor, query, verbose):
     results = cursor.fetchall()
     
     return results
+
+
+def htmlFormEscape(text):
+    # unicode
+    html_escape_table = {"%E5": u'\00E5', # å
+                         "%E4": u'\00E4', # ä
+                         "%F6": u'\00F6', # ö
+                         "%C5": u'\00C5', # Å
+                         "%C4": u'\00C4', # Å
+                         "%D6": u'\00D6' # Ö
+                         }
+    
+    # normal
+    #html_escape_table = {"%E5": "å",
+    #                     "%E4": "ä",
+    #                     "%F6": "ö",
+    #                     "%C5": "Å",
+    #                     "%C4": "Ä",
+    #                     "%D6": "Ö",
+    #                     }
+    
+    # ascii
+    #html_escape_table = {"%E5": "134",
+    #                     "%E4": "132",
+    #                     "%F6": "148",
+    #                     "%C5": "143",
+    #                     "%C4": "142",
+    #                     "%D6": "153",
+    #                     }
+
+    return "".join(html_escape_table.get(c,c) for c in text)
+
+def nextRing(cursor, dateNow, timeNow, verbose):
+    foundRingTime = False
+    
+    while True:
+        # find first work day
+        query = ("SELECT date, dayNumber FROM days WHERE "
+                 "date >= '" + dateNow + "' "
+                 "AND "
+                 "isWorkDay = '1' "
+                 "LIMIT 1")
+        if verbose:
+            print "*** Running query: \n    %s" % query
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+        if rowCount:
+            if verbose:
+                print "*** This is a school day"
+            for row in result:
+                nextRingDate = row[0] # this is the day we are going to look for
+                dayNumber = row[1]
+                
+        # check if this is on a break
+        isNotOnBreak = False
+        query = ("SELECT * FROM breaks WHERE " 
+                 "startDate <= '" + str(nextRingDate) + "' AND "
+                 "endDate >= '" + str(nextRingDate) + "'"
+                 )
+        if verbose:
+            print "*** Running query: \n    %s" % query
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+        if not rowCount: # nothing found, not on a break
+            isNotOnBreak = True
+            if verbose:
+                print "*** This is not on a break"
+                
+        if isNotOnBreak:
+            if verbose:
+                print "\n+++ Checking if it is time to ring the bell..."
+            query = ("SELECT ringTimeName, weekDays, ringTime, ringPatternId "
+                     "FROM ringTimes WHERE " 
+                     "ringTime >= '" + timeNow + "' "
+                     "LIMIT 1"
+                     )
+            if verbose:
+                print "*** Running query: \n    %s" % query
+            result, rowCount = db_query(cursor, query, verbose)  # run query
+            if rowCount:
+                if verbose:
+                    print "*** It is time to ring bell"
+                for row in result:
+                    ringTimeName = row[0]
+                    weekDays = row[1]
+                    nextRingTime = row[2]
+                    ringPatternId = row[3]
+                if str(weekDays)[dayNumber] == "1":
+                    foundRingTime = True
+                    if verbose:
+                        print "*** This ring time is valid today"
+                
+        if foundRingTime:
+            break
+        else:
+            dateNow = datetime.strptime(dateNow, "%Y-%m-%d") # convert to time object
+            dateNow = dateNow + timedelta(days=1) # add one day
+            dateNow = datetime.strftime(dateNow, "%Y-%m-%d") # convert to string
+            
+            timeNow = "00:00" # set time to midnight on the parsed date
+            
+    # find ring pattern
+    query = ("SELECT ringPatternName, ringPattern FROM ringPatterns WHERE " 
+             "ringPatternId = '" + str(ringPatternId) + "'"
+             )
+    if verbose:
+        print "*** Running query: \n    %s" % query
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    if rowCount:
+        for row in result:
+            ringPatternName = row[0].decode('utf-8')
+            ringPattern = row[1]
+            
+    nextRingDay = day_name[int(dayNumber)]
+    
+    return nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern 
+    
 
 
 def initialize_lcd(verbose):

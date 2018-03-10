@@ -64,6 +64,10 @@ $ sudo apt-get install git python-dev python-setuptools build-essential python-s
 $ sudo easy_install -U distribute  
 $ sudo pip install RPi.GPIO python-dateutil  
 
+Install other useful stuff (not necessary for this project)
+-----------------------------
+$ sudo apt-get install emacs screen  
+
 Initialize mysql
 -----------------------------
 $ sudo mysql -u root -p  
@@ -96,10 +100,6 @@ Edit /etc/apache2/sites-available/piSchoolBell.conf
 $ sudo a2ensite piSchoolBell.conf  
 $ sudo systemctl restart apache2  
 
-Install other useful stuff
------------------------------
-$ sudo apt-get install emacs screen  
-
 Clone repository
 -----------------------------
 $ cd /home/pi  
@@ -123,7 +123,7 @@ $ cp www /var/www/piSchoolBell
 $ sudo chown -R pi:www-data /var/www/piSchoolBell 
 $ sudo chmod 755 -R /var/www/piSchoolBell  
 
-Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD.git  
+Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD  
 -----------------------------
 $ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
 $ sudo python setup.py install  
@@ -150,7 +150,8 @@ $ crontab -e
 	
 
 
-
+Below is only for my own convieniance during programming of this project
+-----------------------------
 
 rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
 
