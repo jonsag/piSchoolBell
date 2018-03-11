@@ -210,7 +210,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         for row in result:
-            ringPatternName = row[0].decode('utf-8')
+            ringPatternName = row[0]
             ringPattern = row[1]
             
     nextRingDay = day_name[int(dayNumber)]
