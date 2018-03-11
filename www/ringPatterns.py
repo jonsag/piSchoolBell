@@ -8,7 +8,7 @@ import cgitb; cgitb.enable()  # for troubleshooting
 from modules import (htmlFormEscape, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
-addRingPattern = False # will display for to add ring pattern
+addRingPattern = False # will display form to add ring pattern
 
 editRingPatternId = "" # this ring pattern will be edited
 
@@ -78,6 +78,7 @@ if deleteRingPatternId: # delete ring pattern
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
         print "<br>\nError: Could not delete pattern <br>\n%s" % e
+        print "<br>\nSQL: %s" % query
     else:
         if rowCount:
             print "\n<br>Deleted ring pattern with id = %s" % fs[key].value
@@ -115,6 +116,7 @@ elif newRingPatternName: # add ring pattern
                    )
         except MySQLdb.Error as e:
             print "<br>\nError: Could not add pattern <br>\n%s" % e
+            print "<br>\nSQL: %s" % query
         else:
             print "<br>\nAdded new ring pattern"
             
@@ -150,6 +152,7 @@ elif updateRingPatternId: # update ring pattern
                    )
         except MySQLdb.Error as e:
             print "<br>\nError: Could not update pattern <br>\n%s" % e
+            print "<br>\nSQL: %s" % query
         else:
             if rowCount:
                 print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId

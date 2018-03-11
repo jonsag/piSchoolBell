@@ -2,24 +2,28 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import cgi, MySQLdb, re
+import cgi, MySQLdb, re, sys
 import cgitb; cgitb.enable()  # for troubleshooting
+
+from calendar import day_name
 
 from modules import (htmlFormEscape, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
-addRingPattern = False # will display for to add ring pattern
+addRingTime = False # will display form to add ring time
 
-editRingPatternId = "" # this ring pattern will be edited
+editRingTimeId = "" # this ring time will be edited
 
-newRingPatternName = "" # new pattern will be inserted
-newRingPattern = ""
+newRingTimeName = "" # new time will be inserted
+newRingTime = ""
 
-updateRingPatternId = "" # this ring pattern will be updated
-updateRingPatternName = ""
-updateRingPattern = ""
+updateRingTimeId = "" # this ring time will be updated
+updateRingTimeName = ""
+updateRingTime = ""
 
-deleteRingPatternId = "" # this ring pattern will be deleted
+deleteRingTimeId = "" # this ring time will be deleted
+
+weekDays = list("0000000") # weekDays string
 
 verbose = False
 
@@ -31,7 +35,7 @@ print
 print """
 <html>
 
-<head><title>piSchoolBell - ring patterns</title></head>
+<head><title>piSchoolBell - ring times</title></head>
 
 <style>
 table, th, td {
@@ -41,7 +45,7 @@ table, th, td {
  
 <body>
  
-<h3> piSchoolBell - ring patterns</h3>
+<h3> piSchoolBell - ring times</h3>
 """
 
 # connect to database
@@ -51,194 +55,261 @@ cnx = db_connect(verbose)
 cursor = db_create_cursor(cnx)
 
 for key in fs.keys():
-    if key == "deleteRingPatternId": # delete ring pattern
-        deleteRingPatternId = fs[key].value
+    if key == "deleteRingTimeId": # delete ring time
+        deleteRingTimeId = fs[key].value
         
-    elif key == "editRingPatternId": # display form to edit ring pattern
-        editRingPatternId = fs[key].value
+    elif key == "editRingTimeId": # display form to edit ring time
+        editRingTimeId = fs[key].value
         
-    elif key == "addRingPattern" and fs[key].value == "1": # display form to add new ring pattern
-        addRingPattern = True
+    elif key == "addRingTime" and fs[key].value == "1": # display form to add new ring time
+        addRingTime = True
         
-    elif key == "newRingPatternName": # add ring pattern 
-        newRingPatternName = fs[key].value
-    elif key == "newRingPattern":
-        newRingPattern = fs[key].value
+    elif key == "newRingTimeName": # add ring time 
+        newRingTimeName = fs[key].value
+    elif key == "newRingTime":
+        newRingTime = fs[key].value
+    elif key == "newWeekDays":
+        newWeekDays = fs[key].value
+    elif key == "newRingPatternId":
+        newRingPatternId = fs[key].value
         
-    elif key == "updateRingPatternId": # update ring pattern 
-        updateRingPatternId = fs[key].value    
-    elif key == "updateRingPatternName": 
-        updateRingPatternName = fs[key].value
-    elif key == "updateRingPattern":
-        updateRingPattern = fs[key].value
-        
-if deleteRingPatternId: # delete ring pattern
-    query = ("DELETE FROM ringPatterns WHERE ringPatternId = '%s'" % deleteRingPatternId)
+    elif key == "updateRingTimeId": # update ring time 
+        updateRingTimeId = fs[key].value    
+    elif key == "updateRingTimeName": 
+        updateRingTimeName = fs[key].value
+    elif key == "updateRingTime":
+        updateRingTime = fs[key].value
+       
+    elif key == "Monday": # weekdays 
+        weekDays[0] = fs[key].value
+    elif key == "Tuesday": 
+        day1 = fs[key].value
+    elif key == "Wednesday": 
+        day2 = fs[key].value
+    elif key == "Thursday": 
+        day3 = fs[key].value
+    elif key == "Friday": 
+        day4 = fs[key].value
+    elif key == "Saturday": 
+        day5 = fs[key].value
+    elif key == "Sunday": 
+        day6 = fs[key].value
+
+weekDays = ''.join(weekDays)
+
+if deleteRingTimeId: # delete ring time
+    query = ("DELETE FROM ringTimes WHERE ringTimeId = '%s'" % deleteRingTimeId)
     try:
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
-        print "<br>\nError: Could not delete pattern <br>\n%s" % e
+        print "<br>\nError: Could not delete time <br>\n%s" % e
+        print "<br>\nSQL: %s" % query
     else:
         if rowCount:
-            print "\n<br>Deleted ring pattern with id = %s" % fs[key].value
+            print "\n<br>Deleted ring time with id = %s" % fs[key].value
 
-elif newRingPatternName: # add ring pattern
-    if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingPatternName):
-        print ("<br>\nError: <br>\nIllegal characters in name!: '" + newRingPatternName + "' "
+elif newRingTimeName: # add ring time
+    if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingTimeName):
+        print ("<br>\nError: <br>\nIllegal characters in name!: '" + newRingTimeName + "' "
                "<br>\nNo special characters (including Swedish etc.) allowed "
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters"
                )
-    elif not re.match("^[0-9, ]{1,100}$", newRingPattern):
-        print ("<br>\nError: <br>\nIllegal characters in pattern!: '" + newRingPattern + "' " 
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters"
-               )
-    elif len(newRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times!: '" + newRingPattern + "' " 
-               "<br>\nMust be an odd set of times "
-               "<br>\nEg. '20' or '10, 5, 10' and so on"
+    elif not re.match("^[0-9:]{1,100}$", newRingTime):
+        print ("<br>\nError: <br>\nIllegal characters in time!: '" + newRingTime + "' " 
+               "<br>\nOnly digits and : allowed "
                )
     else:
-        query = ("INSERT INTO ringPatterns " 
-                 "(ringPatternName, ringPattern) " 
+        query = ("INSERT INTO ringTimes " 
+                 "(ringTimeName, weekDays, ringTime, ringPatternId) " 
                  "VALUES " 
-                 "('" + newRingPatternName + "', "
-                 "'" + newRingPattern + "')"
+                 "('" + newRingTimeName + "', "
+                 "'" + weekDays + "', "
+                 "'" + newRingTime + "', "
+                 "'" + newRingPatternId + "')"
                  )
-        try: # insert ring pattern in to db
+        try: # insert ring time in to db
             result, rowCount = db_query(cursor, query, verbose) # run query
-        except (MySQLdb.IntegrityError) as e: # pattern name already in database
-            print ("Error: <br>\nThere was already a pattern with that name. "
-                   "<br>\n    Pattern not added "
+        except (MySQLdb.IntegrityError) as e: # time name already in database
+            print ("Error: <br>\nThere was already a time with that name. "
+                   "<br>\n    Time not added "
                    "<br>\n%s" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not add pattern <br>\n%s" % e
+            print "<br>\nError: Could not add time <br>\n%s" % e
+            print "<br>\nSQL: %s" % query
         else:
-            print "<br>\nAdded new ring pattern"
+            print "<br>\nAdded new ring time"
             
-elif updateRingPatternId: # update ring pattern
-    if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingPatternName):
-        print ("Error: <br>\nIllegal characters in name!: '" + updateRingPatternName + "' "
+elif updateRingTimeId: # update ring time
+    if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingTimeName):
+        print ("Error: <br>\nIllegal characters in name!: '" + updateRingTimeName + "' "
                "<br>\nNo special characters (including Swedish etc.) allowed "
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters!"
                )
-    elif not re.match("^[0-9, ]{1,100}$", updateRingPattern):
-        print ("Error: <br>\nIllegal characters in pattern!: '" + updateRingPattern + "' "
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters!"
+    elif not re.match("^[0-9:]{1,100}$", updateRingTime):
+        print ("Error: <br>\nIllegal characters in time!: '" + updateRingTime + "' "
+               "<br>\nOnly digits and : allowed "
                )
-    elif len(updateRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times!: '" + updateRingPattern + "' " 
+    elif len(updateRingTime.replace(' ', '').split(",")) % 2 == 0:
+        print ("<br>\nError: <br>\nTime has an even set of times!: '" + updateRingTime + "' " 
                "<br>\nMust be an odd set of times "
                "<br>\nEg. '20' or '10, 5, 10' and so on"
                )
     else:
-        query = ("UPDATE ringPatterns SET "
-                 "ringPatternName = '" + updateRingPatternName + "', "
-                 "ringPattern = '" + updateRingPattern + "' "
+        query = ("UPDATE ringTimes SET "
+                 "ringTimeName = '" + updateRingTimeName + "', "
+                 "ringTime = '" + updateRingTime + "' "
                  "WHERE "
-                 "ringPatternId = '%s'" % updateRingPatternId)
-        try: # update ring pattern
+                 "ringTimeId = '%s'" % updateRingTimeId)
+        try: # update ring time
             result, rowCount = db_query(cursor, query, verbose) # run query
-        except (MySQLdb.IntegrityError) as e: # pattern name already in database
-            print ("Error: <br>\nThere was already a pattern with that name. "
-                   "<br>\nPattern not updated "
+        except (MySQLdb.IntegrityError) as e: # time name already in database
+            print ("Error: <br>\nThere was already a time with that name. "
+                   "<br>\nTime not updated "
                    "<br>\n%s>" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not update pattern <br>\n%s" % e
+            print "<br>\nError: Could not update time <br>\n%s" % e
+            print "<br>\nSQL: %s" % query
         else:
             if rowCount:
-                print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId
+                print "\n<br>Updated ring time with id = %s" % updateRingTimeId
 
 def pageBody():
 
-    # get ring patterns
-    query = ("SELECT ringPatternId, ringPatternName, ringPattern FROM ringPatterns")
-    
+    # get ring times
+    query = ("SELECT ringTimeId, ringTimeName, weekDays, ringTime, ringPatternId "
+             "FROM ringTimes"
+             )
     result, rowCount = db_query(cursor, query, verbose)  # run query
-    if rowCount: # display ring patterns in a table
+    if rowCount: # display ring times in a table
         print '<br>\n<br>\n'
-        print '<table style="width:400px">'
+        print '<table style="width:100%">'
         print '<tr>'
         print '<th>Id</th>' 
-        print '<th>Pattern name</th>'
-        print '<th>Pattern</th>'
+        print '<th>Time name</th>'
+        print '<th>Ring time</th>'
+        print '<th>Ring pattern id</th>'
+        print '<th>Ring pattern name</th>'
+        print '<th>Ring pattern</th>'
+        for dayNumber in range(0, 7):
+            print '<th>%s</th>' % day_name[int(dayNumber)]
+        
         print '<th></th>'
         print '<th></th>'
         print '</tr>'
 
         for row in result:
-            ringPatternId = row[0]
-            ringPatternName = row[1]
-            ringPattern = row[2]
+            ringTimeId = row[0]
+            ringTimeName = row[1]
+            weekDays = row[2]
+            ringTime = row[3]
+            ringPatternId = row[4]
             
-            if editRingPatternId: # this is the ringPattern we are about to edit
-                newRingPatternName = ringPatternName
-                newRingPattern = ringPattern
+            if editRingTimeId: # this is the ringTime we are about to edit
+                newRingTimeName = ringTimeName
+                newRingTime = ringTime
             
             print '<tr>'
+            print '<th>%s</th>' % ringTimeId
+            print '<th>%s</th>' % ringTimeName.encode('Latin1')
+            print '<th>%s</th>' % ringTime
             print '<th>%s</th>' % ringPatternId
-            print '<th>%s</th>' % ringPatternName.encode('Latin1')
+            # get ring patterns
+            query = ("SELECT ringPatternName, ringPattern FROM ringPatterns "
+                     "WHERE ringPatternID = '" + str(ringPatternId) + "'"
+                     )
+            result, rowCount = db_query(cursor, query, verbose)  # run query
+            if rowCount:
+                for row in result:
+                    ringPatternName = row[0]
+                    ringPattern = row[1]
+            print '<th>%s</th>' % ringPatternName
             print '<th>%s</th>' % ringPattern
-            print '<th><a href="ringPatterns.py?deleteRingPatternId=%s">Delete</a></th>' % ringPatternId
-            print '<th><a href="ringPatterns.py?editRingPatternId=%s">Edit</a></th>' % ringPatternId
+            for dayNumber in range(0, 7): # print day name
+                if str(weekDays)[dayNumber] == "1":
+                    print '<th>On</th>'
+                else:
+                    print '<th>Off</th>'
+            print '<th><a href="ringTimes.py?deleteRingTimeId=%s">Delete</a></th>' % ringTimeId
+            print '<th><a href="ringTimes.py?editRingTimeId=%s">Edit</a></th>' % ringTimeId
             print '</tr>'
             
         print '</table'
         
-    if editRingPatternId:
+    if editRingTimeId:
         print '\n<br><br>'
-        print '<h3>Edit ring pattern</h3>'
-        print '<form action="/ringPatterns.py">'
-        print 'Pattern id:<br>'
-        print '<input type="text" name="updateRingPatternId" value="%s">' % editRingPatternId
+        print '<h3>Edit ring time</h3>'
+        
+        print '<form action="/ringTimes.py">'
+        
+        print 'Time id:<br>'
+        print '<input type="text" name="updateRingTimeId" value="%s">' % editRingTimeId
+        
         print '<br><br><br>'
-        print 'Ring pattern name:<br>'
-        print '<input type="text" name="updateRingPatternName" value="%s">' % newRingPatternName
-        print ('State a name for your ring pattern. <br><br>'
+        print 'Ring time name:<br>'
+        print '<input type="text" name="updateRingTimeName" value="%s">' % newRingTimeName
+        print ('State a name for your ring time. <br><br>'
                '\nMax 100 characters. <br>'
                )
+        
         print '<br><br>'
-        print 'Ring pattern:<br>'
-        print '<input type="text" name="updateRingPattern" value="%s">' % newRingPattern
-        print ('State pattern in 1/10 of a second. <br><br>'
-               '\nSeparate values by commas. <br>'
-               '\nFirst number is ring time, second is pause, third is ring time and so on. <br>'
-               '\nIt must be an odd number of values. <br>'
-               '\nOnly digits, commas and spaces are allowed. <br>'
+        print 'Ring time:<br>'
+        print '<input type="text" name="updateRingTime" value="%s">' % newRingTime
+        print ('State time in the form "hh:mm". <br>'
                )
+        
         print '<br><br>'
         print '<input type="submit" value="Submit">'
         print '</form>'
             
-    if addRingPattern: # display form to add ring pattern
+    if addRingTime: # display form to add ring time
         print '\n<br><br>'
-        print '<h3>Add ring pattern</h3>'
-        print '<form action="/ringPatterns.py">'
-        print 'Ring pattern name:<br>'
-        print '<input type="text" name="newRingPatternName" value="Pattern name">'
-        print ('State a name for your ring pattern. <br><br>'
+        print '<h3>Add ring time</h3>'
+        
+        print '<form action="/ringTimes.py">'
+        
+        print 'Ring time name:<br>'
+        print '<input type="text" name="newRingTimeName" value="Time name">'
+        print ('State a name for your ring time. <br><br>'
                '\nMax 100 characters. <br>'
                )
+        
         print '<br><br>'
-        print 'Ring pattern:<br>'
-        print '<input type="text" name="newRingPattern" value="Ring pattern">'
-        print ('State pattern in 1/10 of a second. <br><br>'
-               '\nSeparate values by commas. <br>'
-               '\nFirst number is ring time, second is pause, third is ring time and so on. <br>'
-               '\nIt must be an odd number of values. <br>'
-               '\nOnly digits, commas and spaces are allowed. <br>'
+        print 'Ring time:<br>'
+        print '<input type="text" name="newRingTime" value="Ring time">'
+        print ('State time in the form "hh:mm". <br>'
                )
+        
+        print '<br><br>'
+        print 'Choose ring pattern:<br>'
+        print '<select name="newRingPatternId">'
+        # get ring patterns
+        query = ("SELECT ringPatternId, ringPatternName, ringPattern FROM ringPatterns")
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+        if rowCount:
+            for row in result:
+                ringPatternId = row[0]
+                ringPatternName = row[1]
+                ringPattern = row[2]
+                print ('<option value="%s">%s: %s, %s</option>'
+                        % (ringPatternId, ringPatternId, ringPatternName, ringPattern)
+                        )
+        print '</select>'
+        
+        print '<br><br>'
+        for dayNumber in range(0, 7):
+            print ('<input type="checkbox" name="%s" value="1"> %s<br>' 
+                    % (day_name[int(dayNumber)], day_name[int(dayNumber)])
+                    )        
         print '<br><br>'
         print '<input type="submit" value="Submit">'
         print '</form>'
     else:
         print '\n<br>'
-        print '<br>\n<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
+        print '<br>\n<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
     
     print '\n<br>'
     print '<br>\n<a href="index.py">Home</a>'
