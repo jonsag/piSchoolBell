@@ -44,12 +44,14 @@ table, th, td {
 <h3> piSchoolBell - ring patterns</h3>
 """
 
+
 # connect to database
 cnx = db_connect(verbose)
 
 # create cursor
 cursor = db_create_cursor(cnx)
 
+# handle inputs
 for key in fs.keys():
     if key == "deleteRingPatternId": # delete ring pattern
         deleteRingPatternId = fs[key].value
@@ -98,22 +100,22 @@ if deleteRingPatternId: # delete ring pattern
                 print "<br>\nSQL: %s" % query
             else:
                 if rowCount:
-                    print "\n<br>Deleted ring pattern with id = %s" % fs[key].value
+                    print "\n<br>Deleted ring pattern with id = %s" % deleteRingPatternId
 
 elif newRingPatternName: # add ring pattern
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingPatternName):
-        print ("<br>\nError: <br>\nIllegal characters in name!: '" + newRingPatternName + "' "
+        print ("<br>\nError: <br>\nIllegal characters in name - " + newRingPatternName + " "
                "<br>\nNo special characters (including Swedish etc.) allowed "
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters"
                )
     elif not re.match("^[0-9, ]{1,100}$", newRingPattern):
-        print ("<br>\nError: <br>\nIllegal characters in pattern!: '" + newRingPattern + "' " 
+        print ("<br>\nError: <br>\nIllegal characters in pattern - " + newRingPattern + " " 
                "<br>\nOnly digits, spaces and , allowed "
                "<br>\nMax 100 characters"
                )
     elif len(newRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times!: '" + newRingPattern + "' " 
+        print ("<br>\nError: <br>\nPattern has an even set of times - " + newRingPattern + " " 
                "<br>\nMust be an odd set of times "
                "<br>\nEg. '20' or '10, 5, 10' and so on"
                )
@@ -139,18 +141,18 @@ elif newRingPatternName: # add ring pattern
             
 elif updateRingPatternId: # update ring pattern
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingPatternName):
-        print ("Error: <br>\nIllegal characters in name!: '" + updateRingPatternName + "' "
+        print ("Error: <br>\nIllegal characters in name - " + updateRingPatternName + " "
                "<br>\nNo special characters (including Swedish etc.) allowed "
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters!"
                )
     elif not re.match("^[0-9, ]{1,100}$", updateRingPattern):
-        print ("Error: <br>\nIllegal characters in pattern!: '" + updateRingPattern + "' "
+        print ("Error: <br>\nIllegal characters in pattern - " + updateRingPattern + " "
                "<br>\nOnly digits, spaces and , allowed "
                "<br>\nMax 100 characters!"
                )
     elif len(updateRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times!: '" + updateRingPattern + "' " 
+        print ("<br>\nError: <br>\nPattern has an even set of times - " + updateRingPattern + " " 
                "<br>\nMust be an odd set of times "
                "<br>\nEg. '20' or '10, 5, 10' and so on"
                )
@@ -174,6 +176,15 @@ elif updateRingPatternId: # update ring pattern
             if rowCount:
                 print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId
 
+def pageLinks():
+    print '<br>\n'
+    print '<br>\n<a href="ringPatterns.py">Reset page</a>'
+    
+    print '<br>\n'
+    print '<br>\n<a href="index.py">Home</a>'
+    
+    print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
+
 def pageBody():
 
     # get ring patterns
@@ -196,9 +207,9 @@ def pageBody():
             ringPatternName = row[1]
             ringPattern = row[2]
             
-            if editRingPatternId: # this is the ringPattern we are about to edit
-                newRingPatternName = ringPatternName
-                newRingPattern = ringPattern
+            if editRingPatternId == str(ringPatternId): # this is the ringPattern we are about to edit
+                editRingPatternName = ringPatternName
+                editRingPattern = ringPattern
             
             print '<tr>'
             print '<th>%s</th>' % ringPatternId
@@ -218,13 +229,13 @@ def pageBody():
         print '<input type="text" name="updateRingPatternId" value="%s">' % editRingPatternId
         print '<br><br><br>'
         print 'Ring pattern name:<br>'
-        print '<input type="text" name="updateRingPatternName" value="%s">' % newRingPatternName
+        print '<input type="text" name="updateRingPatternName" value="%s">' % editRingPatternName
         print ('State a name for your ring pattern. <br><br>'
                '\nMax 100 characters. <br>'
                )
         print '<br><br>'
         print 'Ring pattern:<br>'
-        print '<input type="text" name="updateRingPattern" value="%s">' % newRingPattern
+        print '<input type="text" name="updateRingPattern" value="%s">' % editRingPattern
         print ('State pattern in 1/10 of a second. <br><br>'
                '\nSeparate values by commas. <br>'
                '\nFirst number is ring time, second is pause, third is ring time and so on. <br>'
@@ -256,15 +267,11 @@ def pageBody():
         print '<br><br>'
         print '<input type="submit" value="Submit">'
         print '</form>'
-    else:
-        print '\n<br>'
-        print '<br>\n<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
-    
-    print '\n<br>'
-    print '<br>\n<a href="index.py">Home</a>'
                 
 if __name__ == '__main__':
+    pageLinks()
     pageBody()
+    pageLinks()
     
 # close cursor
 db_close_cursor(cnx, cursor)

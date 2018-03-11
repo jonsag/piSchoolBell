@@ -63,10 +63,10 @@ def pageBody():
     print '<br>\n<a href="ringTimes.py">Ring times</a>'
     
     print '<br>\n'
-    print '<br>\n<a href="breaks.py">Breaks</a>'
+    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    #print '<br>\n'
+    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
     
     print '<br>\n'
     print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'

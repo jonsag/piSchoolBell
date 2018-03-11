@@ -131,6 +131,8 @@ def htmlFormEscape(text):
     return "".join(html_escape_table.get(c,c) for c in text)
 
 def nextRing(cursor, dateNow, timeNow, verbose):
+    isWorkDay = False
+    isNotOnBreak = False
     foundRingTime = False
     
     while True:
@@ -144,6 +146,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
             print "*** Running query: \n    %s" % query
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:
+            isWorkDay = True
             if verbose:
                 print "*** This is a school day"
             for row in result:
@@ -151,19 +154,20 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                 dayNumber = row[1]
                 
         # check if this is on a break
-        isNotOnBreak = False
-        query = ("SELECT * FROM breaks WHERE " 
-                 "startDate <= '" + str(nextRingDate) + "' AND "
-                 "endDate >= '" + str(nextRingDate) + "'"
-                 )
-        if verbose:
-            print "*** Running query: \n    %s" % query
-        result, rowCount = db_query(cursor, query, verbose)  # run query
-        if not rowCount: # nothing found, not on a break
-            isNotOnBreak = True
+        if isWorkDay:
+            query = ("SELECT * FROM breaks WHERE " 
+                     "startDate <= '" + str(nextRingDate) + "' AND "
+                     "endDate >= '" + str(nextRingDate) + "'"
+                     )
             if verbose:
-                print "*** This is not on a break"
-                
+                print "*** Running query: \n    %s" % query
+            result, rowCount = db_query(cursor, query, verbose)  # run query
+            if not rowCount: # nothing found, not on a break
+                isNotOnBreak = True
+                if verbose:
+                    print "*** This is not on a break"
+        
+        # find ring time       
         if isNotOnBreak:
             if verbose:
                 print "\n+++ Checking if it is time to ring the bell..."
@@ -214,6 +218,29 @@ def nextRing(cursor, dateNow, timeNow, verbose):
     return nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern 
     
 
+def validateDate(date, verbose):
+    dateValid = True
+    
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        dateValid = False
+        if verbose:
+            print "*** Incorrect data format, should be YYYY-MM-DD"
+    
+    return dateValid
+
+def validateTime(time, verbose):
+    timeValid = True
+    
+    try:
+        datetime.strptime(time, '%H:%M')
+    except ValueError:
+        timeValid = False
+        if verbose:
+            print "*** Incorrect time format, should be hh:mm"
+    
+    return timeValid
 
 def initialize_lcd(verbose):
     if verbose:

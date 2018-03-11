@@ -6,8 +6,9 @@ import cgi, MySQLdb, re, sys
 import cgitb; cgitb.enable()  # for troubleshooting
 
 from calendar import day_name
+from datetime import datetime
 
-from modules import (htmlFormEscape, 
+from modules import (htmlFormEscape, validateTime, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 addRingTime = False # will display form to add ring time
@@ -47,6 +48,7 @@ table, th, td {
  
 <h3> piSchoolBell - ring times</h3>
 """
+
 
 # connect to database
 cnx = db_connect(verbose)
@@ -97,6 +99,8 @@ for key in fs.keys():
 
 weekDays = ''.join(weekDays)
 
+
+# handle inputs
 if deleteRingTimeId: # delete ring time
     query = ("DELETE FROM ringTimes WHERE ringTimeId = '%s'" % deleteRingTimeId)
     try:
@@ -106,7 +110,7 @@ if deleteRingTimeId: # delete ring time
         print "<br>\nSQL: %s" % query
     else:
         if rowCount:
-            print "\n<br>Deleted ring time with id = %s" % fs[key].value
+            print "\n<br>Deleted ring time with id = %s" % deleteRingTimeId
 
 elif newRingTimeName: # add ring time
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingTimeName):
@@ -115,8 +119,9 @@ elif newRingTimeName: # add ring time
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters"
                )
-    elif not re.match("^[0-9:]{1,100}$", newRingTime):
-        print ("<br>\nError: <br>\nIllegal characters in time!: '" + newRingTime + "' " 
+    elif not re.match("^[0-9:]{1,5}$", newRingTime) or not validateTime(newRingTime, verbose):
+        print ("<br>\nError: <br>\nIllegal time, characters or length in: '" + newRingTime + "'! " 
+               "<br>\nMust be in the form HH:MM "
                "<br>\nOnly digits and : allowed "
                )
     else:
@@ -148,14 +153,10 @@ elif updateRingTimeId: # update ring time
                "<br>\nOnly characters, digits, spaces and ,. allowed "
                "<br>\nMax 100 characters!"
                )
-    elif not re.match("^[0-9:]{1,100}$", updateRingTime):
-        print ("Error: <br>\nIllegal characters in time!: '" + updateRingTime + "' "
+    elif not re.match("^[0-9:]{1,5}$", updateRingTime) or not validateTime(updateRingTime, verbose):
+        print ("Error: <br>\nIllegal time, characters or length in: '" + updateRingTime + "'! "
+               "<br>\nMust be in the form HH:MM "
                "<br>\nOnly digits and : allowed "
-               )
-    elif len(updateRingTime.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nTime has an even set of times!: '" + updateRingTime + "' " 
-               "<br>\nMust be an odd set of times "
-               "<br>\nEg. '20' or '10, 5, 10' and so on"
                )
     else:
         query = ("UPDATE ringTimes SET "
@@ -177,10 +178,21 @@ elif updateRingTimeId: # update ring time
             if rowCount:
                 print "\n<br>Updated ring time with id = %s" % updateRingTimeId
 
+
+def pageLinks():
+    print '<br>\n'
+    print '<br>\n<a href="ringTimes.py">Reset page</a>'
+
+    print '<br>\n'
+    print '<br>\n<a href="index.py">Home</a>'
+    
+    print '&emsp;<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
+    
+
 def pageBody():
 
     # get ring times
-    query = ("SELECT ringTimeId, ringTimeName, weekDays, ringTime, ringPatternId "
+    query = ("SELECT ringTimeId, ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId "
              "FROM ringTimes"
              )
     result, rowCount = db_query(cursor, query, verbose)  # run query
@@ -208,13 +220,15 @@ def pageBody():
             ringTime = row[3]
             ringPatternId = row[4]
             
-            if editRingTimeId: # this is the ringTime we are about to edit
-                newRingTimeName = ringTimeName
-                newRingTime = ringTime
+            if editRingTimeId == str(ringTimeId): # this is the ringTime we are about to edit
+                editRingTimeName = ringTimeName
+                editWeekDays = weekDays
+                editRingTime = ringTime
+                editRingPatternId = ringPatternId
             
             print '<tr>'
             print '<th>%s</th>' % ringTimeId
-            print '<th>%s</th>' % ringTimeName.encode('Latin1')
+            print '<th>%s</th>' % ringTimeName
             print '<th>%s</th>' % ringTime
             print '<th>%s</th>' % ringPatternId
             # get ring patterns
@@ -250,17 +264,49 @@ def pageBody():
         
         print '<br><br><br>'
         print 'Ring time name:<br>'
-        print '<input type="text" name="updateRingTimeName" value="%s">' % newRingTimeName
+        print '<input type="text" name="updateRingTimeName" value="%s">' % editRingTimeName
         print ('State a name for your ring time. <br><br>'
                '\nMax 100 characters. <br>'
                )
         
         print '<br><br>'
         print 'Ring time:<br>'
-        print '<input type="text" name="updateRingTime" value="%s">' % newRingTime
+        print '<input type="text" name="updateRingTime" value="%s">' % editRingTime
         print ('State time in the form "hh:mm". <br>'
                )
         
+        print '<br><br>'
+        print 'Choose ring pattern:<br>'
+        print '<select name="newRingPatternId">'
+        # get ring patterns
+        query = ("SELECT ringPatternId, ringPatternName, ringPattern FROM ringPatterns")
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+        if rowCount:
+            for row in result:
+                ringPatternId = row[0]
+                ringPatternName = row[1]
+                ringPattern = row[2]
+                
+                isSelected = ''
+                if ringPatternId == editRingPatternId:
+                    isSelected = 'selected="selected"'
+                    
+                print ('<option value="%s" %s>%s: %s, %s</option>'
+                        % (ringPatternId, isSelected, ringPatternId, ringPatternName, ringPattern)
+                        )
+        print '</select>'
+        
+        print '<br><br>'
+        for dayNumber in range(0, 7):
+            
+            isChecked = ''
+            if str(editWeekDays)[dayNumber] == "1":
+                isChecked = 'checked="checked"'
+                
+            print ('<input type="checkbox" name="%s" value="1" %s> %s<br>' 
+                    % (day_name[int(dayNumber)], isChecked, day_name[int(dayNumber)])
+                    )
+            
         print '<br><br>'
         print '<input type="submit" value="Submit">'
         print '</form>'
@@ -277,9 +323,11 @@ def pageBody():
                '\nMax 100 characters. <br>'
                )
         
+        dateTimeNow = datetime.now()
+        timeNow = dateTimeNow.strftime('%H:%M')
         print '<br><br>'
         print 'Ring time:<br>'
-        print '<input type="text" name="newRingTime" value="Ring time">'
+        print '<input type="text" name="newRingTime" value="%s">' % timeNow
         print ('State time in the form "hh:mm". <br>'
                )
         
@@ -301,21 +349,26 @@ def pageBody():
         
         print '<br><br>'
         for dayNumber in range(0, 7):
-            print ('<input type="checkbox" name="%s" value="1"> %s<br>' 
-                    % (day_name[int(dayNumber)], day_name[int(dayNumber)])
+            
+            isChecked = ''
+            if dayNumber >= 0 and dayNumber <= 4:
+                isChecked = 'checked="checked"'
+            
+            print ('<input type="checkbox" name="%s" value="1" %s> %s<br>' 
+                    % (day_name[int(dayNumber)], isChecked, day_name[int(dayNumber)])
                     )        
+        
         print '<br><br>'
         print '<input type="submit" value="Submit">'
         print '</form>'
-    else:
-        print '\n<br>'
-        print '<br>\n<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
-    
-    print '\n<br>'
-    print '<br>\n<a href="index.py">Home</a>'
+
+
                 
 if __name__ == '__main__':
+    pageLinks()
     pageBody()
+    pageLinks()
+    
     
 # close cursor
 db_close_cursor(cnx, cursor)
