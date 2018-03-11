@@ -83,17 +83,17 @@ for key in fs.keys():
     elif key == "Monday": # weekdays 
         weekDays[0] = fs[key].value
     elif key == "Tuesday": 
-        day1 = fs[key].value
+        weekDays[1] = fs[key].value
     elif key == "Wednesday": 
-        day2 = fs[key].value
+        weekDays[2] = fs[key].value
     elif key == "Thursday": 
-        day3 = fs[key].value
+        weekDays[3] = fs[key].value
     elif key == "Friday": 
-        day4 = fs[key].value
+        weekDays[4] = fs[key].value
     elif key == "Saturday": 
-        day5 = fs[key].value
+        weekDays[5] = fs[key].value
     elif key == "Sunday": 
-        day6 = fs[key].value
+        weekDays[6] = fs[key].value
 
 weekDays = ''.join(weekDays)
 
