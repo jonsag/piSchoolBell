@@ -49,6 +49,21 @@ def pageLinks():
     print '<br>\n'
     print '<br>\n<a href="index.py">Home</a>'
     
+    #print '<br>\n'
+    #print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    
+    print '<br>\n'
+    print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    
+    #print '<br>\n'
+    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    
+    #print '<br>\n'
+    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    
+    #print '<br>\n'
+    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    
     #print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
     
 def isRingDay(date, weekNumber, verbose):
