@@ -73,15 +73,32 @@ for key in fs.keys():
         updateRingPattern = fs[key].value
         
 if deleteRingPatternId: # delete ring pattern
-    query = ("DELETE FROM ringPatterns WHERE ringPatternId = '%s'" % deleteRingPatternId)
+    query = ("SELECT ringTimeId, ringTimeName, ringTime FROM ringTimes WHERE ringPatternId = '%s'" % deleteRingPatternId)
     try:
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
-        print "<br>\nError: Could not delete pattern <br>\n%s" % e
+        print "<br>\nError: Could not run query <br>\n%s" % e
         print "<br>\nSQL: %s" % query
     else:
         if rowCount:
-            print "\n<br>Deleted ring pattern with id = %s" % fs[key].value
+            print ("<br>\nError: Could not delete ring pattern "
+                   "<br>\nIt is being used at the following ring times: "
+                   )
+            for row in result:
+                ringTimeId = row[0]
+                ringTimeName = row[1]
+                ringTime = row[2]
+                print "<br><br>\nId: %s <br>\n%s, %s" % (ringTimeId, ringTimeName, ringTime) 
+        else:
+            query = ("DELETE FROM ringPatterns WHERE ringPatternId = '%s'" % deleteRingPatternId)
+            try:
+                result, rowCount = db_query(cursor, query, verbose)  # run query
+            except MySQLdb.Error as e:
+                print "<br>\nError: Could not delete pattern <br>\n%s" % e
+                print "<br>\nSQL: %s" % query
+            else:
+                if rowCount:
+                    print "\n<br>Deleted ring pattern with id = %s" % fs[key].value
 
 elif newRingPatternName: # add ring pattern
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingPatternName):
