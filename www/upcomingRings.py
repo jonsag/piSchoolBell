@@ -114,7 +114,7 @@ def findRingTimes(date, dayNumber, verbose):
     # find ring times
     if verbose:
         print "<br>\n*** Checking if it is time to ring the bell..."
-    query = ("SELECT ringTimeName, weekDays, ringTime, ringPatternId FROM ringTimes "
+    query = ("SELECT ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId FROM ringTimes "
              "ORDER BY ringTime ASC" 
              )
     if verbose:

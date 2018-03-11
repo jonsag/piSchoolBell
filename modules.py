@@ -171,7 +171,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
         if isNotOnBreak:
             if verbose:
                 print "\n+++ Checking if it is time to ring the bell..."
-            query = ("SELECT ringTimeName, weekDays, ringTime, ringPatternId "
+            query = ("SELECT ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId "
                      "FROM ringTimes WHERE " 
                      "ringTime >= '" + timeNow + "' "
                      "LIMIT 1"
