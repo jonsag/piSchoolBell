@@ -62,7 +62,7 @@ Install prerequisites
 $ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip mysql-server python-mysqldb apache2  
 
 $ sudo easy_install -U distribute  
-$ sudo pip install RPi.GPIO python-dateutil  
+$ sudo pip install RPi.GPIO python-dateutil netifaces  
 
 Install other useful stuff (not necessary for this project)
 -----------------------------
@@ -142,13 +142,18 @@ $ sudo  ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.se
 $ sudo chmod 644 /lib/systemd/system/gpio.service  
 $ sudo systemctl daemon-reload  
 $ sudo systemctl enable gpio.service  
+$ sudo systemctl start gpio  
 
 Setup cron jobs
 -----------------------------
 $ crontab -e  
 	*/1 * * * * /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1  
 	
-
+Set script to run at boot
+-----------------------------
+Edit /etc/rc.local
+add before 'exit 0'
+	python /home/pi/bin/piSchoolBell/printToLcd.py -1 Booting... -g 2  
 
 Below is only for my own convieniance during programming of this project
 -----------------------------

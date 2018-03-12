@@ -2,30 +2,30 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import getopt, sys, time
+import getopt, sys, time, os
+
+import netifaces as ni
 
 from datetime import datetime
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     initialize_lcd, print_to_LCD,
-                     remove_leading_zero, 
+                     initialize_lcd, print_to_LCD, nextRing, internet_on, testAddress,
+                     remove_leading_zero, getUptime, minUptime, ipWaitTime,
                      onError, usage)
 
 try:
     myopts, args = getopt.getopt(sys.argv[1:],
-                                 'l'
                                  '1:2:'
                                  'g:'
                                  'vh',
-                                 ['line1=', 'line2=', 'gpio=', 'light', 'verbose', 'help'])
+                                 ['line1=', 'line2=', 'gpio=', 'verbose', 'help'])
 
 except getopt.GetoptError as e:
     onError(1, str(e))
     
-#if len(sys.argv) == 1:  # no options passed
+# if len(sys.argv) == 1:  # no options passed
 #    onError(2, 2)
     
-light = True # this is true as we do not set backlight on and off
 line_1 = ""
 line_2 = ""
 gpio = False
@@ -33,15 +33,10 @@ verbose = False
     
 for option, argument in myopts:     
     if option in ('-1', '--line1'):  # first line of LCD
-        light = True
         line_1 = argument
     elif option in ('-2', '--line2'):  # second line of LCD
-        light = True
         line_2 = argument
-    #elif option in ('-l', '--light'):  # turn backlight on
-    #    light = True
     elif option in ('-g', '--gpio'):  # button 11 - light LCD
-        light = True
         gpio = argument
     elif option in ('-v', '--verbose'):  # verbose output
         verbose = True
@@ -59,75 +54,80 @@ if verbose:
 # connect to database
 cnx = db_connect(verbose)
 
+# create cursor
+cursor = db_create_cursor(cnx)
+
 # buttons
 if gpio:
     if verbose:
         print
-    if gpio == "11":
+    if gpio == "2":
         if verbose:
             print "+++ Button 1 pressed, pin %s" % gpio
-    elif gpio == "25":
-        toggleMode = True
+    elif gpio == "3":
         if verbose:
             print "+++ Button 2 pressed, pin %s" % gpio
-    elif gpio == "7":
-        toggleTimer = True
-        if verbose:
-            print "+++ Button 3 pressed, pin %s" % gpio
-    elif gpio == "8":
-        stopModeTimer = True
-        if verbose:
-            print "+++ Button 4 pressed, pin %s" % gpio
     else:
         onError(3, "No action for gpio %s" % gpio)
+
+# wake up LCD
+lcd, lcd_wake_time, lcd_columns = initialize_lcd(verbose)  # load lcd
+lcd.clear()  # clear screen
+
+# displaying ip on lcd
+if gpio == "2":
+    # find this devices ip address
+    interfaceIPs = []
+    if verbose:
+        print "\n*** Finding interfaces..."
+    interfaces = ni.interfaces()
+    if verbose:
+        print "    Found %s interfaces" % len(interfaces)
+        print "\n*** Looking up ip addresses..."
+        
+        i = 0    
+        for interface in interfaces:
+            ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+            interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
+            i += 1
+            
+        i = 0
+        for interfaceIP in interfaceIPs:
+            if verbose:
+                print "    Interface: %s" % interfaceIP['interface%s' % i]
+                print "    IP: %s" % interfaceIP['ip%s' % i]
+            if not interfaceIP['ip%s' % i].startswith('127') and not interfaceIP['ip%s' % i].startswith('169'):
+                line_2 = interfaceIP['ip%s' % i]
+                if verbose:
+                    print "*** This is the one we will display"
+            if verbose:
+                print
+            i += 1
         
 # get current time
-timeNow = datetime.now()
-            
-# what to write to lcd
-t = u"\u00b0"  # degree sign
-inf = u"\u221e"  # infinity symbol
+dateTimeNow = datetime.now()
+timeNow = dateTimeNow.strftime('%H:%M')
+dateNow = str(dateTimeNow.strftime('%Y-%m-%d'))
 
 if not line_1:
-    hour = timeNow.strftime('%H')
-    minute = timeNow.strftime('%M')
-    day = remove_leading_zero(timeNow.strftime('%d'))
-    month = remove_leading_zero(timeNow.strftime('%m'))
-    year = timeNow.strftime('%Y')
-    line_1 = "%s:%s %s/%s %s" % (hour, minute, day, month, year)
-#if not line_2:    
-    #if mode_value:
-    #    line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
-    #elif timer_value != 0:
-    #    line_2 = "%s%s @%s" % (int(activeNow[0]['setPoint']), t, timerEnd)
-    #else:
-    #    line_2 = "%s%s %s" % (int(activeNow[0]['setPoint']), t, inf)
-    #    #line_2 = random_chars()
-    #    line_2 = str(temp_value)
-
-# print to lcd
-if light:
-    lcd, lcd_wake_time, lcd_columns = initialize_lcd(verbose)  # load lcd
+    time = dateTimeNow.strftime('%H:%M')
+    day = remove_leading_zero(dateTimeNow.strftime('%d'))
+    month = remove_leading_zero(dateTimeNow.strftime('%m'))
+    year = dateTimeNow.strftime('%Y')
+    line_1 = "%s %s/%s %s" % (time, day, month, year)
+if not line_2:    
+    nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern = nextRing(cursor, dateNow, timeNow, verbose)
+    day = remove_leading_zero(nextRingDate.strftime('%d'))
+    month = remove_leading_zero(nextRingDate.strftime('%m'))
+    year = nextRingDate.strftime('%Y')
+    line_2 = "%s %s/%s %s" % (nextRingTime, day, month, year)
     
-    # clear screen and turn backlight on
-    lcd.clear()
-    #lcd.set_backlight(1)
-    #if verbose:
-    #    print "\n--- Backlight ON"
-    
-    # print to LCD
-    print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
-    print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
+# print to LCD
+print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
+print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
 
-    #if verbose:
-    #    print "\n--- Wait %ss..." % lcd_wake_time
-    #time.sleep(lcd_wake_time)
-        
-    # clear screen and turn backlight off.
-    #lcd.clear()
-    #lcd.set_backlight(0)
-    #if verbose:
-    #    print "\n--- Backlight OFF"
+# close cursor
+db_close_cursor(cnx, cursor)
 
 # close db
 db_disconnect(cnx, verbose)

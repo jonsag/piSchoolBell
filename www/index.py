@@ -52,9 +52,17 @@ def pageBody():
     print '<br>\nDate: %s <br>\nTime: %s <br>\nWeek number: %s <br>\nDay number: %s' % (dateNow, timeNow, weekNumberNow, dayNumberNow)
     
     print '<br>\n'
-    print '<br>\nNext ring: %s <br>\n%s %s, %s' % (ringTimeName.encode('Latin1'), nextRingDay, nextRingDate, nextRingTime)
-    print '<br>\n'
-    print '<br>\nRing pattern: %s <br>\n %s' % (ringPatternName.encode('Latin1'), ringPattern)
+    
+    print '<br>\nNext ring:'
+    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+           % (nextRingDate, nextRingDay)
+           )
+    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+           % (nextRingTime, ringTimeName)
+           )
+    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+           % (ringPatternName, ringPattern)
+           )
     
     print '<br>\n'
     print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'

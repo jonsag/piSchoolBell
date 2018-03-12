@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import os, sys, MySQLdb, time, datetime
+import os, sys, MySQLdb, time, datetime, urllib2
 
 import Adafruit_CharLCD as LCD
 
@@ -18,6 +18,12 @@ config = ConfigParser()  # define config file
 config.read("%s/config.ini" % os.path.dirname(os.path.realpath(__file__)))  # read config file
 
 bellRelayGpio = int(config.get('gpioAssignment', 'bellRelayGpio').strip(" "))
+
+minUptime = int(config.get('misc', 'minUptime').strip(" "))
+
+ipWaitTime = int(config.get('misc', 'ipWaitTime').strip(" ")) 
+
+testAddress = config.get('misc', 'testAddress').strip(" ")
 
 unicode_degree_sign = config.get('misc', 'unicode_degree_sign').strip(" ")
 
@@ -242,9 +248,34 @@ def validateTime(time, verbose):
     
     return timeValid
 
+
+def getUptime():  
+    with open('/proc/uptime', 'r') as f:
+        uptime_seconds = float(f.readline().split()[0])
+        return uptime_seconds
+    
+    
+def internet_on(testAddress, verbose):
+    connected = False
+    
+    if verbose:
+        print "*** Looking up %s" % testAddress
+    
+    try:
+        urllib2.urlopen('http://%s' % testAddress, timeout=1)
+        connected = True
+    except urllib2.URLError as err: 
+        if verbose:
+            print "*** Error: \n    %s" % err
+    if verbose and connected:
+        print "*** We are connected to internet"        
+    
+    return connected
+    
+    
 def initialize_lcd(verbose):
     if verbose:
-        print "+++ Initializing LCD..."
+        print "\n+++ Initializing LCD..."
 
     # read config for LCD
     lcd_rs = int(config.get('lcd', 'lcd_rs').strip(" "))
