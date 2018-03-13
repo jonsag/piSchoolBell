@@ -119,8 +119,12 @@ cat /home/pi/bin/piSchoolBell/gpio-scripts/gpio-script
 
 list /var/www/piSchoolBell
 
+cat etc/cron.d/piSchoolBell
+
 ps ax | grep gpio
 
+Run some tests
+-----------------------------
 /home/pi/bin/piSchoolBell/printToLcd.py -v
 
 
