@@ -150,8 +150,13 @@ if [ ! -f "/etc/cron.d/piSchoolBell" ]
     cat > /etc/cron.d/piSchoolBell <<CRON
 # Print time and next ring to LCD every minute
 */1 * * * * pi /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1
-# Get new days at midnight at the first of every month
-0 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py >> /dev/null 2>&1
+
+# Get new days at the first of every month
+10 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py >> /dev/null 2>&1
+
+# Delete passed dates every night
+15 0 * * * pi /home/pi/bin/piSchoolBell/purgeDatabase.py >> /dev/null 2>&1
+
 CRON
     service cron restart
   fi

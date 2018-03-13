@@ -228,7 +228,7 @@ def pageLinks():
 def pageBody():
 
     # get breaks
-    query = ("SELECT breakId, breakName, startDate, endDate FROM breaks")
+    query = ("SELECT breakId, breakName, startDate, endDate FROM breaks ORDER BY startDate ASC")
     
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount: # display breaks in a table

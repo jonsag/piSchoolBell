@@ -107,6 +107,8 @@ ssh pi@192.168.10.44 'sudo chmod 755 -R /var/www/piSchoolBell'
 ssh pi@192.168.10.44 'sudo chown -R pi:www-data /var/www/piSchoolBell'
 
 
+rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/purgeDatabase.py pi@192.168.10.44:/home/pi/bin/piSchoolBell/
+
 
 Things to check after install
 -----------------------------

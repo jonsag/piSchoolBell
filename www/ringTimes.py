@@ -207,7 +207,7 @@ def pageBody():
 
     # get ring times
     query = ("SELECT ringTimeId, ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId "
-             "FROM ringTimes"
+             "FROM ringTimes ORDER BY ringTime ASC"
              )
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount: # display ring times in a table
