@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythone
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
@@ -274,25 +274,30 @@ def internet_on(testAddress, verbose):
 
 
 def dayName(dayNumber, verbose):
+    dayName = "Wrong day number"
+    
     if verbose:
         print "*** Getting day name from daynumber %s" % dayNumber
     
+    if isinstance(dayNumber, basestring):
+        dayName = int(dayNumber)
+    
     if dayNumber == 0:
-        return "Monday"
+        dayName = "Monday"
     elif dayNumber == 1:
-        return "Tuesday"
+        dayName = "Tuesday"
     elif dayNumber == 2:
-        return "Wednesday"
+        dayName = "Wednesday"
     elif dayNumber == 3:
-        return "Thursday"
+        dayName = "Thursday"
     elif dayNumber == 4:
-        return "Friday"
+        dayName = "Friday"
     elif dayNumber == 5:
-        return "Saturday"
+        dayName = "Saturday"
     elif dayNumber == 6:
-        return "Sunday"
-    else:
-        return "Wrong day number"
+        dayName = "Sunday"
+        
+    return dayName
     
 def initialize_lcd(verbose):
     if verbose:

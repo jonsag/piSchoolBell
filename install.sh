@@ -6,11 +6,13 @@
 clear
 
 
+
 if [[ `whoami` != "root" ]]
 then
   printf "\n\n Script must be run as root. \n\n"
   exit 1
 fi
+
 
 
 OS_VERSION=$(cat /etc/os-release | grep VERSION=)
@@ -19,6 +21,7 @@ then
   printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
   exit 1
 fi
+
 
 
 APACHE_INSTALLED=$(which apache2)
@@ -40,6 +43,7 @@ then
 else
   printf "\n\n Apache is already installed. \n"
 fi
+
 
 
 MYSQL_INSTALLED=$(which mysql)
@@ -78,22 +82,37 @@ else
   printf "\n\n MYSQL Python Module is already installed. \n"
 fi
 
+
+
 printf "\n\n Installing the rest ...\n"
-apt-get install python-dev python-setuptools build-essential python-smbus python-pip
+apt-get install python-dev python-setuptools build-essential python-smbus python-pip -y
+
+
 
 printf "\n\n easy_install ...\n"
 easy_install -U distribute
 
+
+
 printf "\n\n pip ...\n"
 pip install RPi.GPIO python-dateutil netifaces
 
+
+
 printf "\n\n Installing other stuff ...\n"
-apt-get install emacs screen
+apt-get install emacs screen locate -y
+
+
 
 printf "\n\n Installing piSchoolBell app ...\n"
 mkdir -p /home/pi/bin/piSchoolBell
-cp -R config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
+cp /home/pi/piSchoolBell/config.ini /home/pi/bin/piSchoolBell/
+cp /home/pi/piSchoolBell/gpio.service /home/pi/bin/piSchoolBell/
+cp /home/pi/piSchoolBell/*.py /home/pi/bin/piSchoolBell/
+cp -r /home/pi/piSchoolBell/gpio-scripts /home/pi/bin/piSchoolBell/
 chown pi:pi -R /home/pi/bin/piSchoolBell
+
+
 
 printf "\n\n Installing piSchoolBell www ...\n"
 mkdir /var/www/piSchoolBell
@@ -103,12 +122,17 @@ ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
 chmod 755 -R /var/www/piSchoolBell/*.py
 
+
+
 printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
-python /home/pi/piSchoolBell/setup.py install
+python /home/pi/piSchoolBell/Adafruit_Python_CharLCD/setup.py install
+
 
 printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
 make --directory /home/pi/piSchoolBell/gpio-watch
 make --directory /home/pi/piSchoolBell/gpio-watch install
+
+
 
 printf "\n\n Installing gpio-watch ...\n"
 touch /home/pi/bin/piSchoolBell/gpio-watch.log
@@ -117,6 +141,8 @@ chmod 644 /lib/systemd/system/gpio.service
 systemctl daemon-reload  
 systemctl enable gpio.service  
 systemctl start gpio.service
+
+
 
 printf "\n\n Installing cron job ...\n"
 if [ ! -f "/etc/cron.d/piSchoolBell" ]
@@ -128,13 +154,12 @@ CRON
   fi
 
 
+
 printf "\n\n Set up apache to run cgi ...\n"
 a2dismod mpm_event
 a2enmod mpm_prefork cgi
 
-# configure app
 
-# configure apache virtual host on port 8080
 
 printf "\n\n Configuring Apache ...\n"
 
@@ -161,6 +186,19 @@ VHOST
 
 a2ensite piSchoolBell.conf
 service apache2 restart
+
+
+
+printf "\n\n Some after adjustments ...\n"
+cp /root/.bashrc /root/.bashrc.old
+
+cat >> /home/pi/.bashrc <<ALIAS
+alias list='ls -alFh'
+ALIAS
+
+cp /home/pi/.bashrc /root/.bashrc
+
+
 
 printf "\n\n Installation Complete. Some changes might require a reboot. \n\n"
 exit 1

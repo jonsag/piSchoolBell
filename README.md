@@ -15,6 +15,7 @@ For example /dev/mmcblk0 or /dev/sdb
 
 Unmount if mounted  
 $ umount /dev/mmcblk0p1  
+$ umount /dev/mmcblk0p2  
 
 Write image to SD-card  
 $ sudo dd bs=4M if=2017-11-29-raspbian-stretch-lite.img of=/dev/mmcblk0 conv=fsync status=progress 
@@ -35,12 +36,10 @@ Remove SD-card and insert it a Rpi connected to your local network and boot it u
 Rpi configuration
 -----------------------------
 Connect to Rpi via ssh  
-Login with user: pi and password:raspberry 
+Login with user: pi and password:raspberry   
 
-Update  
-$ sudo apt-get update && sudo apt-get upgrade  
-
-Configure  
+Configure
+-----------------------------
 $ sudo raspi-config   
 1		Change password  
 2 N1	Change hostname 
@@ -53,9 +52,13 @@ $ sudo raspi-config
 7 A3	Set memory split to 16  
 Reboot to set new options  
 
+Update
+-----------------------------
+Connect again  
+$ sudo apt-get update && sudo apt-get upgrade
+
 Installation
-=============================
-Later i will probably make an installation script, but for now this is how it goes...  
+============================= 
 
 Install git
 -----------------------------
@@ -69,7 +72,7 @@ $ git clone https://github.com/jonsag/piSchoolBell.git
 Run install script
 -----------------------------
 $ cd /home/pi/piSchoolBell  
-$ sudo ./install  
+$ sudo ./install.sh  
 
 Initialize mysql
 -----------------------------
@@ -79,22 +82,55 @@ Quit with exit
 
 Create database and insert initial data
 -----------------------------
-$ sudo ./mysql-setup.sh  
+$ sudo /home/pi/piSchoolBell/mysql-setup.sh  
+
+Download dates
+-----------------------------
+/home/pi/bin/piSchoolBell/getCalendar.py -v  
 
 Add test data, if wanted  
 $ sudo mysql -u root -p piSchoolBell < mysql-test-data.sql  
 
-
+Issues
+=============================
+If you get problems with Adafruit_CharLCD
+$ cd /home/pi/piSchoolBell/Adafruit_CharLCD
+$ sudo python setup.py install
  
 
 Below is only for my own convieniance during programming of this project
 -----------------------------
-
 rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
 
 rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/www/* pi@192.168.10.44:/var/www/piSchoolBell/
 ssh pi@192.168.10.44 'sudo chmod 755 -R /var/www/piSchoolBell'
 ssh pi@192.168.10.44 'sudo chown -R pi:www-data /var/www/piSchoolBell'
+
+
+
+Things to check after install
+-----------------------------
+list /home/pi/bin/piSchoolBell/
+cat /home/pi/bin/piSchoolBell/gpio.service
+cat /lib/systemd/system/gpio.service
+
+list /home/pi/bin/piSchoolBell/gpio-scripts
+cat /home/pi/bin/piSchoolBell/gpio-scripts/gpio-script
+
+list /var/www/piSchoolBell
+
+ps ax | grep gpio
+
+/home/pi/bin/piSchoolBell/printToLcd.py -v
+
+
+
+
+
+
+
+
+
 
 
 
