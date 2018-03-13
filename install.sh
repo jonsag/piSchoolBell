@@ -103,18 +103,17 @@ ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
 chmod 755 -R /var/www/piSchoolBell/*.py
 
-printf "\n\n Installing Adafruit_Python_CharLCD ...\n
+printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
 python /home/pi/piSchoolBell/setup.py install
 
-printf "\n\n Installing Adafruit_Python_CharLCD ...\n
-cd /home/pi/piSchoolBell/gpio-watch  
-make 
-sudo make install
+printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
+make --directory /home/pi/piSchoolBell/gpio-watch
+make --directory /home/pi/piSchoolBell/gpio-watch install
 
-printf "\n\n Installing gpio-watch ...\n
+printf "\n\n Installing gpio-watch ...\n"
 touch /home/pi/bin/piSchoolBell/gpio-watch.log
 ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.service
-sudo chmod 644 /lib/systemd/system/gpio.service  
+chmod 644 /lib/systemd/system/gpio.service  
 systemctl daemon-reload  
 systemctl enable gpio.service  
 systemctl start gpio.service
