@@ -219,7 +219,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
             ringPatternName = row[0]
             ringPattern = row[1]
             
-    nextRingDay = dayName(dayNumber, verbose)
+    nextRingDay = getDayName(dayNumber, verbose)
     
     return nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern 
     
@@ -273,11 +273,11 @@ def internet_on(testAddress, verbose):
     return connected
 
 
-def dayName(dayNumber, verbose):
+def getDayName(dayNumber, verbose):
     dayName = "Wrong day number"
     
     if verbose:
-        print "*** Getting day name from daynumber %s" % dayNumber
+        print "*** Getting day name from day number %s" % dayNumber
     
     if isinstance(dayNumber, basestring):
         dayName = int(dayNumber)
