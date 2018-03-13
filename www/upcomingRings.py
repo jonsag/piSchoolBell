@@ -6,9 +6,8 @@ import cgi
 import cgitb; cgitb.enable()  # for troubleshooting
 
 from datetime import datetime, timedelta
-from calendar import day_name
 
-from modules import (htmlFormEscape, 
+from modules import (htmlFormEscape, dayName, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 
@@ -188,7 +187,7 @@ def pageBody():
             oldWeekNumber = weekNumber
                     
         if isNotOnBreak or isWorkDay:
-            print "<br>\n&nbsp;&nbsp;&nbsp;&nbsp;%s, %s" % (date, day_name[int(dayNumber)])
+            print "<br>\n&nbsp;&nbsp;&nbsp;&nbsp;%s, %s" % (date, dayName(dayNumber, verbose))
 
         if breakName:
             print "<br>\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s" % breakName

@@ -6,8 +6,8 @@
  User=pi
  Group=pi
  Type=idle
- #ExecStart=/usr/bin/gpio-watch -s /home/pi/bin/piSchoolBell/gpio-scripts -e switch 2 3
- ExecStart=/usr/bin/gpio-watch -s /home/pi/bin/piSchoolBell/gpio-scripts -e switch 2 3 -l /home/pi/bin/piSchoolBell/gpio-watch.log > /dev/null 2>&1
+ #ExecStart=/usr/bin/gpio-watch -s /home/pi/bin/piSchoolBell/gpio-scripts -e switch 7 8
+ ExecStart=/usr/bin/gpio-watch -s /home/pi/bin/piSchoolBell/gpio-scripts -e switch 7 8 -l /home/pi/bin/piSchoolBell/gpio-watch.log > /dev/null 2>&1
 
  [Install]
  WantedBy=multi-user.target

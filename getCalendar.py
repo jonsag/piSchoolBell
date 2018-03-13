@@ -3,7 +3,7 @@
 # Encoding: UTF-8
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     onError,
+                     onError, dayName, 
                      drygUri, drygPath)
 
 import getopt, sys, json, calendar, MySQLdb
@@ -91,7 +91,7 @@ if connected:
             weekNumber = int(parsedCalendar["dagar"][day]["vecka"])
             dayNumber = int(parsedCalendar["dagar"][day]["dag i vecka"]) - 1
             svDayName = parsedCalendar["dagar"][day]["veckodag"]
-            dayName = calendar.day_name[dayNumber]
+            dayName = dayName(dayNumber, verbose)
             workFreeDay = parsedCalendar["dagar"][day]["arbetsfri dag"]
             
             try:  # is this day an eve

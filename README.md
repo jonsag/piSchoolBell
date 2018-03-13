@@ -57,55 +57,25 @@ Installation
 =============================
 Later i will probably make an installation script, but for now this is how it goes...  
 
-Install prerequisites
+Install git
 -----------------------------
-$ sudo apt-get install git python-dev python-setuptools build-essential python-smbus python-pip mysql-server python-mysqldb apache2  
-
-$ sudo easy_install -U distribute  
-$ sudo pip install RPi.GPIO python-dateutil netifaces  
-
-Install other useful stuff (not necessary for this project)
------------------------------
-$ sudo apt-get install emacs screen  
-
-Initialize mysql
------------------------------
-$ sudo mysql -u root -p  
-Use the same password as pi login  
-Quit with exit  
-
-Set up apache to run python
------------------------------
-$ sudo a2dismod mpm_event  
-$ sudo a2enmod mpm_prefork cgi  
-
-$ sudo echo "Listen 8080" >> /etc/apache2/ports.conf  
-
-Edit /etc/apache2/sites-available/piSchoolBell.conf  
-	<VirtualHost *:8080>  
-    	ServerAdmin webmaster@localhost  
-    	DocumentRoot /var/www/piSchoolBell/  
-    	<Directory /var/www/piSchoolBell/>  
-        	Options -Indexes  
-        	AllowOverride all  
-        	Order allow,deny  
-        	allow from all  
-        	Options +ExecCGI    
-        	AddHandler cgi-script .py  
-    	</Directory>  
-    	ErrorLog ${APACHE_LOG_DIR}/error.log  
-        CustomLog ${APACHE_LOG_DIR}/access.log combined  
-	</VirtualHost>  
-	
-$ sudo a2ensite piSchoolBell.conf  
-$ sudo systemctl restart apache2  
+$ sudo apt-get install git  
 
 Clone repository
 -----------------------------
 $ cd /home/pi  
 $ git clone https://github.com/jonsag/piSchoolBell.git  
 
+Run install script
+-----------------------------
 $ cd /home/pi/piSchoolBell  
+$ sudo ./install  
+
+Initialize mysql
+-----------------------------
+$ sudo mysql -u root -p  
+Use the same password as pi login  
+Quit with exit  
 
 Create database and insert initial data
 -----------------------------
@@ -114,46 +84,8 @@ $ sudo ./mysql-setup.sh
 Add test data, if wanted  
 $ sudo mysql -u root -p piSchoolBell < mysql-test-data.sql  
 
-Create directories and copy files
------------------------------
-$ mkdir -p /home/pi/bin/piSchoolBell  
-$ cp config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
-$ sudo mkdir /var/www/piSchoolBell  
-$ cp www /var/www/piSchoolBell
-$ sudo chown -R pi:www-data /var/www/piSchoolBell 
-$ sudo chmod 755 -R /var/www/piSchoolBell  
 
-Install Adafruit_Python_CharLCD python module by Adafruit from https://github.com/adafruit/Adafruit_Python_CharLCD  
------------------------------
-$ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
-$ sudo python setup.py install  
-
-Install gpio-watch by larsks from https://github.com/larsks/gpio-watch  
------------------------------
-$ cd /home/pi/piSchoolBell/gpio-watch  
-$ make  
-$ sudo make install  
-
-Setup gpio-watch
------------------------------
-$ touch /home/pi/bin/piSchoolBell/gpio-watch.log  
-  
-$ sudo  ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.service  
-$ sudo chmod 644 /lib/systemd/system/gpio.service  
-$ sudo systemctl daemon-reload  
-$ sudo systemctl enable gpio.service  
-$ sudo systemctl start gpio  
-
-Setup cron jobs
------------------------------
-$ crontab -e  
-	*/1 * * * * /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1  
-	
-Set script to run at boot
------------------------------
-Edit /etc/rc.local
-add before 'exit 0'
-	python /home/pi/bin/piSchoolBell/printToLcd.py -1 Booting... -g 2  
+ 
 
 Below is only for my own convieniance during programming of this project
 -----------------------------

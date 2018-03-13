@@ -5,10 +5,9 @@
 import cgi, MySQLdb, re, sys
 import cgitb; cgitb.enable()  # for troubleshooting
 
-from calendar import day_name
 from datetime import datetime
 
-from modules import (htmlFormEscape, validateTime, 
+from modules import (htmlFormEscape, validateTime, dayName, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 addRingTime = False # will display form to add ring time
@@ -222,7 +221,7 @@ def pageBody():
         print '<th>Ring pattern name</th>'
         print '<th>Ring pattern</th>'
         for dayNumber in range(0, 7):
-            print '<th>%s</th>' % day_name[int(dayNumber)]
+            print '<th>%s</th>' % dayName(dayNumber, verbose)
         
         print '<th></th>'
         print '<th></th>'
@@ -319,7 +318,7 @@ def pageBody():
                 isChecked = 'checked="checked"'
                 
             print ('<input type="checkbox" name="%s" value="1" %s> %s<br>' 
-                    % (day_name[int(dayNumber)], isChecked, day_name[int(dayNumber)])
+                    % dayName(dayNumber, verbose), isChecked, dayName(dayNumber, verbose)
                     )
             
         print '<br><br>'
@@ -370,7 +369,7 @@ def pageBody():
                 isChecked = 'checked="checked"'
             
             print ('<input type="checkbox" name="%s" value="1" %s> %s<br>' 
-                    % (day_name[int(dayNumber)], isChecked, day_name[int(dayNumber)])
+                    % (dayName(dayNumber, verbose), isChecked, dayName(dayNumber, verbose))
                     )        
         
         print '<br><br>'

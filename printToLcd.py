@@ -9,7 +9,8 @@ import netifaces as ni
 from datetime import datetime
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     initialize_lcd, print_to_LCD, nextRing, internet_on, testAddress,
+                     initialize_lcd, print_to_LCD, nextRing, internet_on, testAddress, 
+                     button1Gpio, button2Gpio, 
                      remove_leading_zero, getUptime, minUptime, ipWaitTime,
                      onError, usage)
 
@@ -28,6 +29,8 @@ except getopt.GetoptError as e:
     
 line_1 = ""
 line_2 = ""
+button1 = False
+button2 = False
 gpio = False
 verbose = False
     
@@ -61,10 +64,12 @@ cursor = db_create_cursor(cnx)
 if gpio:
     if verbose:
         print
-    if gpio == "2":
+    if gpio == button1Gpio:
+        button1 = True
         if verbose:
             print "+++ Button 1 pressed, pin %s" % gpio
-    elif gpio == "3":
+    elif gpio == button2Gpio:
+        button2 = True
         if verbose:
             print "+++ Button 2 pressed, pin %s" % gpio
     else:
@@ -75,7 +80,7 @@ lcd, lcd_wake_time, lcd_columns = initialize_lcd(verbose)  # load lcd
 lcd.clear()  # clear screen
 
 # displaying ip on lcd
-if gpio == "2":
+if button1:
     # find this devices ip address
     interfaceIPs = []
     if verbose:
@@ -85,24 +90,24 @@ if gpio == "2":
         print "    Found %s interfaces" % len(interfaces)
         print "\n*** Looking up ip addresses..."
         
-        i = 0    
-        for interface in interfaces:
-            ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
-            interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
-            i += 1
-            
-        i = 0
-        for interfaceIP in interfaceIPs:
+    i = 0    
+    for interface in interfaces:
+        ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
+        i += 1
+        
+    i = 0
+    for interfaceIP in interfaceIPs:
+        if verbose:
+            print "    Interface: %s" % interfaceIP['interface%s' % i]
+            print "    IP: %s" % interfaceIP['ip%s' % i]
+        if not interfaceIP['ip%s' % i].startswith('127') and not interfaceIP['ip%s' % i].startswith('169'):
+            line_2 = interfaceIP['ip%s' % i]
             if verbose:
-                print "    Interface: %s" % interfaceIP['interface%s' % i]
-                print "    IP: %s" % interfaceIP['ip%s' % i]
-            if not interfaceIP['ip%s' % i].startswith('127') and not interfaceIP['ip%s' % i].startswith('169'):
-                line_2 = interfaceIP['ip%s' % i]
-                if verbose:
-                    print "*** This is the one we will display"
-            if verbose:
-                print
-            i += 1
+                print "*** This is the one we will display"
+        if verbose:
+            print
+        i += 1
         
 # get current time
 dateTimeNow = datetime.now()

@@ -9,7 +9,6 @@ import Adafruit_CharLCD as LCD
 from ConfigParser import ConfigParser
 from datetime import datetime, timedelta
 from urlparse import urljoin
-from calendar import day_name
 
 import codecs
 from htmlentitydefs import codepoint2name
@@ -18,7 +17,8 @@ config = ConfigParser()  # define config file
 config.read("%s/config.ini" % os.path.dirname(os.path.realpath(__file__)))  # read config file
 
 bellRelayGpio = int(config.get('gpioAssignment', 'bellRelayGpio').strip(" "))
-
+button1Gpio = config.get('gpioAssignment', 'button1Gpio').strip(" ")
+button2Gpio = config.get('gpioAssignment', 'button2Gpio').strip(" ")
 minUptime = int(config.get('misc', 'minUptime').strip(" "))
 
 ipWaitTime = int(config.get('misc', 'ipWaitTime').strip(" ")) 
@@ -219,7 +219,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
             ringPatternName = row[0]
             ringPattern = row[1]
             
-    nextRingDay = day_name[int(dayNumber)]
+    nextRingDay = dayName(dayNumber, verbose)
     
     return nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern 
     
@@ -271,7 +271,28 @@ def internet_on(testAddress, verbose):
         print "*** We are connected to internet"        
     
     return connected
+
+
+def dayName(dayNumber, verbose):
+    if verbose:
+        print "*** Getting day name from daynumber %s" % dayNumber
     
+    if dayNumber == 0:
+        return "Monday"
+    elif dayNumber == 1:
+        return "Tuesday"
+    elif dayNumber == 2:
+        return "Wednesday"
+    elif dayNumber == 3:
+        return "Thursday"
+    elif dayNumber == 4:
+        return "Friday"
+    elif dayNumber == 5:
+        return "Saturday"
+    elif dayNumber == 6:
+        return "Sunday"
+    else:
+        return "Wrong day number"
     
 def initialize_lcd(verbose):
     if verbose:
