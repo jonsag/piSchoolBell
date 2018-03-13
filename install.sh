@@ -42,24 +42,6 @@ else
 fi
 
 
-PHP_INSTALLED=$(which php)
-if [[ "$PHP_INSTALLED" == "" ]]
-then
-  printf "\n\n Installing PHP ...\n"
-  # Install Apache
-  apt-get install php -y
-
-  PHP_INSTALLED=$(which php)
-    if [[ "$PHP_INSTALLED" == "" ]]
-    then
-      printf "\n\n EXITING : PHP installation FAILED\n"
-      exit 1
-    fi
-else
-  printf "\n\n PHP is already installed. \n"
-fi
-
-
 MYSQL_INSTALLED=$(which mysql)
 if [[ "$MYSQL_INSTALLED" == "" ]]
 then
@@ -114,9 +96,12 @@ cp -R config.ini gpio.service gpio-script *.py /home/pi/bin/piSchoolBell/
 chown pi:pi -R /home/pi/bin/piSchoolBell
 
 printf "\n\n Installing piSchoolBell www ...\n"
-cp www /var/www/piSchoolBell
+mkdir /var/www/piSchoolBell
+cp www/* /var/www/piSchoolBell/
 chown -R pi:www-data /var/www/piSchoolBell
-chmod 755 -R /var/www/piSchoolBell
+ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
+ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
+chmod 755 -R /var/www/piSchoolBell/*.py
 
 printf "\n\n Installing Adafruit_Python_CharLCD ...\n
 python /home/pi/piSchoolBell/setup.py install
@@ -134,7 +119,7 @@ systemctl daemon-reload
 systemctl enable gpio.service  
 systemctl start gpio.service
 
-printf "\n\n Installing cron job ...\n
+printf "\n\n Installing cron job ...\n"
 if [ ! -f "/etc/cron.d/piSchoolBell" ]
   then
     cat > /etc/cron.d/piSchoolBell <<CRON
@@ -175,7 +160,7 @@ PORTS
 	</VirtualHost>
 VHOST
 
-a2ensite piSchoolBell.conff
+a2ensite piSchoolBell.conf
 service apache2 restart
 
 printf "\n\n Installation Complete. Some changes might require a reboot. \n\n"
