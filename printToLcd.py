@@ -48,7 +48,7 @@ for option, argument in myopts:
 
 if verbose:
     i = 1
-    print "\n+++ Script run with:"
+    print "\n*** Script run with:"
     for option, argument in myopts:     
         print "        Option %s: %s" % (i, option)
         print "        Argument %s: %s" % (i, argument)
@@ -67,11 +67,11 @@ if gpio:
     if gpio == button1Gpio:
         button1 = True
         if verbose:
-            print "+++ Button 1 pressed, pin %s" % gpio
+            print "*** Button 1 pressed, pin %s" % gpio
     elif gpio == button2Gpio:
         button2 = True
         if verbose:
-            print "+++ Button 2 pressed, pin %s" % gpio
+            print "*** Button 2 pressed, pin %s" % gpio
     else:
         onError(3, "No action for gpio %s" % gpio)
 
@@ -132,7 +132,7 @@ print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
 print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
 
 # close cursor
-db_close_cursor(cnx, cursor)
+db_close_cursor(cnx, cursor, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

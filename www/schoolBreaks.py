@@ -201,7 +201,6 @@ elif updateSchoolBreakId: # update break
                 print "\n<br>Updated break with id = %s" % updateSchoolBreakId
 
 def pageLinks():
-    print '<br>\n'
     print '<br>\n<a href="schoolBreaks.py">Reset page</a>'
     
     print '&emsp;<a href="schoolBreaks.py?addSchoolBreak=1">Add another break</a>'
@@ -335,7 +334,7 @@ if __name__ == '__main__':
     pageLinks()
     
 # close cursor
-db_close_cursor(cnx, cursor)
+db_close_cursor(cnx, cursor, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

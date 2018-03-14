@@ -179,7 +179,6 @@ elif updateRingTimeId: # update ring time
 
 
 def pageLinks():
-    print '<br>\n'
     print '<br>\n<a href="ringTimes.py">Reset page</a>'
 
     print '&emsp;<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
@@ -385,7 +384,7 @@ if __name__ == '__main__':
     
     
 # close cursor
-db_close_cursor(cnx, cursor)
+db_close_cursor(cnx, cursor, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

@@ -21,6 +21,8 @@ button1Gpio = config.get('gpioAssignment', 'button1Gpio').strip(" ")
 button2Gpio = config.get('gpioAssignment', 'button2Gpio').strip(" ")
 minUptime = int(config.get('misc', 'minUptime').strip(" "))
 
+logFile = config.get('logging', 'logFile').strip(" ")
+
 ipWaitTime = int(config.get('misc', 'ipWaitTime').strip(" ")) 
 
 testAddress = config.get('misc', 'testAddress').strip(" ")
@@ -49,7 +51,7 @@ def onError(errorCode, extra):
         
 def usage(exitCode):
     print "\nUsage:"
-    print "----------------------------------------"
+    print "***************************************-"
     print "%s -1 <text line 1> -2 <text line 2>" % sys.argv[0]
     print "\nMisc options:"
     print "-v    verbose output"
@@ -60,7 +62,7 @@ def usage(exitCode):
 
 def db_connect(verbose):
     if verbose:
-        print "\n+++ Connecting to db..."
+        print "\n*** Connecting to db..."
     dbconfig = ConfigParser()
     dbconfig.read('/home/pi/bin/piSchoolBell/mysql-config.ini')
 
@@ -81,14 +83,18 @@ def db_create_cursor(cnx):
     return cursor
 
 
-def db_close_cursor(cnx, cursor):
+def db_close_cursor(cnx, cursor, verbose):
+    if verbose:
+        print "\n*** Closing db cursor..."
     cursor.close()
+    if verbose:
+        print "*** Committing db changes..."
     cnx.commit()
 
 
 def db_disconnect(cnx, verbose):
     if verbose:
-        print "\n+++ Disconnecting from db..."
+        print "\n*** Disconnecting from db..."
     cnx.close()
 
 
@@ -176,7 +182,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
         # find ring time       
         if isNotOnBreak:
             if verbose:
-                print "\n+++ Checking if it is time to ring the bell..."
+                print "\n*** Checking if it is time to ring the bell..."
             query = ("SELECT ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId "
                      "FROM ringTimes WHERE " 
                      "ringTime >= '" + timeNow + "' "
@@ -249,6 +255,116 @@ def validateTime(time, verbose):
     return timeValid
 
 
+
+
+
+def isRingDay(date, weekNumber, cursor, verbose):
+    isWorkDay = False
+    isNotOnBreak = False
+    
+    dayNumber = -1
+    breakName = ''
+    
+    query = ("SELECT date, weekNumber, dayNumber FROM days WHERE "
+             "date = '" + date + "' "
+             "AND "
+             "isWorkDay = '1' "
+             )
+    if verbose:
+        print "<br>\n"
+        print "<br>\n*** Running query: \n    %s" % query
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    if verbose:
+        print "<br>\n*** Row count: %s" % rowCount
+    if rowCount:
+        isWorkDay = True
+        if verbose:
+            print "<br>\n*** This is a school day"
+        for row in result:
+            ringDate = row[0] # this is the day we are going to look for
+            weekNumber = row[1]
+            dayNumber = row[2]
+            if verbose:
+                print "<br>\n*** Date: %s" % ringDate
+                print "<br>\n*** Week number: %s" % weekNumber
+                print "<br>\n*** Day number: %s" % dayNumber
+
+            
+    # check if this is on a break
+    if isWorkDay:
+        query = ("SELECT breakName FROM breaks WHERE " 
+                 "startDate <= '" + str(ringDate) + "' AND "
+                 "endDate >= '" + str(ringDate) + "'"
+                 )
+        if verbose:
+            print "<br>\n*** Running query: \n    %s" % query
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+        if verbose:
+            print "<br>\n*** Row count: %s" % rowCount
+        if not rowCount: # nothing found, not on a break
+            isNotOnBreak = True
+            if verbose:
+                print "<br>\n*** This is not on a break"
+        else:
+            for row in result:
+                breakName = row[0]
+                if verbose:
+                    print "<br>\n*** Break name: %s" % breakName
+    
+    return isWorkDay, isNotOnBreak, weekNumber, dayNumber, breakName 
+
+def findRingTimes(date, dayNumber, cursor, verbose):
+    foundRingTime = False
+    
+    ringTimes = []
+    
+    # find ring times
+    if verbose:
+        print "<br>\n*** Checking if it is time to ring the bell..."
+    query = ("SELECT ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId FROM ringTimes "
+             "ORDER BY ringTime ASC" 
+             )
+    if verbose:
+        print "*** Running query: \n    %s" % query
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    if rowCount:
+        if verbose:
+            print "<br>\n*** It is time to ring bell"
+        for row in result:
+            ringTimeName = row[0]
+            weekDays = row[1]
+            ringTime = row[2]
+            ringPatternId = row[3]
+            if str(weekDays)[dayNumber] == "1":
+                
+                if verbose:
+                    print "<br>\n*** This ring time is valid today"
+                    print "<br>\n*** Ring time name: %s" % ringTimeName
+                    print "<br>\n*** Week days: %s" % weekDays
+                    print "<br>\n*** Ring time: %s" % ringTime
+                    print "<br>\n*** Ring pattern id: %s" % ringPatternId
+                    
+                # find ring pattern
+                query = ("SELECT ringPatternName, ringPattern FROM ringPatterns WHERE " 
+                 "ringPatternId = '" + str(ringPatternId) + "'"
+                 )
+                if verbose:
+                    print "<br>\n*** Running query: \n    %s" % query
+                result, rowCount = db_query(cursor, query, verbose)  # run query
+                if rowCount:
+                    for row in result:
+                        ringPatternName = row[0]
+                        ringPattern = row[1]
+                        
+                    ringTimes.append({'ringTimeName': ringTimeName,
+                                      'ringTime': ringTime,
+                                      'ringPatternName': ringPatternName, 
+                                      'ringPattern': ringPattern
+                                      })
+                    
+    return ringTimes
+
+
 def getUptime():  
     with open('/proc/uptime', 'r') as f:
         uptime_seconds = float(f.readline().split()[0])
@@ -298,10 +414,24 @@ def getDayName(dayNumber, verbose):
         dayName = "Sunday"
         
     return dayName
+
+
+def writeToFile(logFile, message, verbose):
+    timeStamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+    
+    message = "%s: %s" % (timeStamp, message)
+    
+    if verbose:
+        print "\n*** Writing to %s" % logFile
+        print "    %s" % message
+        
+    with open(logFile, "a") as f:
+        f.write("{}\n".format(message))
+        
     
 def initialize_lcd(verbose):
     if verbose:
-        print "\n+++ Initializing LCD..."
+        print "\n*** Initializing LCD..."
 
     # read config for LCD
     lcd_rs = int(config.get('lcd', 'lcd_rs').strip(" "))
@@ -393,7 +523,7 @@ def print_to_LCD(lcd, cursor, row, line, message, lcd_columns, verbose):
     orig_length = len(message)
     if verbose:
         print "\nLine %s: '%s'" % (line, message)
-        print "+++ Length: %s" % orig_length
+        print "*** Length: %s" % orig_length
     # else:
     #    print "%s" % (message)
         
@@ -402,7 +532,7 @@ def print_to_LCD(lcd, cursor, row, line, message, lcd_columns, verbose):
     if spaces > 0:
         message = message.ljust(16, ' ')
     if verbose:
-        print "+++ Added %s space(s)" % spaces
+        print "*** Added %s space(s)" % spaces
     
     if t in message or inf in message:  # message contains special characters        
         message_list = list(message)
@@ -423,7 +553,7 @@ def print_to_LCD(lcd, cursor, row, line, message, lcd_columns, verbose):
         
     if len(message) > lcd_columns:
         if verbose:
-            print "--- Scrolling"
+            print "*** Scrolling"
         for i in range(lcd_columns - orig_length):
             time.sleep(0.5)
             lcd.move_left()

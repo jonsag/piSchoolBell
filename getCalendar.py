@@ -3,7 +3,7 @@
 # Encoding: UTF-8
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     onError, getDayName, 
+                     onError, getDayName, writeToFile, logFile, 
                      drygUri, drygPath)
 
 import getopt, sys, json, MySQLdb
@@ -15,8 +15,9 @@ from urllib2 import urlopen
 
 try:
     myopts, args = getopt.getopt(sys.argv[1:],
+                                 'c'
                                  'vh',
-                                 ['verbose', 'help'])
+                                 ['cron', 'verbose', 'help'])
 
 except getopt.GetoptError as e:
     onError(1, str(e))
@@ -24,11 +25,21 @@ except getopt.GetoptError as e:
 if len(sys.argv) == 1:  # no options passed
     onError(2, 2)
     
+addedDays = 0
+updatedDays = 0
+logging = False
 verbose = False
     
-for option, argument in myopts:     
-    if option in ('-v', '--verbose'):
+for option, argument in myopts:
+    if option in ('-c', '--cron'):
+        logging = True
+    elif option in ('-v', '--verbose'):
         verbose = True
+        
+        
+if logging:
+    writeToFile(logFile, "Get days started", verbose)
+        
 
 timeNow = date.today()
 dateNow = timeNow.strftime("%Y-%m-%d")
@@ -38,9 +49,9 @@ monthNow = timeNow.strftime("%m")
 calendarAddress = urljoin(drygUri, drygPath)
 
 if verbose:
-    print "\n+++ Todays date: %s" % dateNow
+    print "\n*** Todays date: %s" % dateNow
     print
-    print "+++ Calendar source: %s" % calendarAddress
+    print "*** Calendar source: %s" % calendarAddress
     
 # getting calendars for twelve months
 # check if connected to internet
@@ -98,7 +109,7 @@ if connected:
                 holiday = ""
 
             if verbose:
-                print "\n+++ Date: %s, %s" % (date, dayName)
+                print "\n*** Date: %s, %s" % (date, dayName)
                 if workFreeDay == "Nej":
                     print "    School day"
                 if eve:
@@ -140,15 +151,52 @@ if connected:
                     result, rowCount = db_query(cursor, query, verbose) # run query
                 except MySQLdb.Error as e: # some other error
                     if verbose:
-                        print "--- Error: \n    %s" % e
+                        print "*** Error: \n    %s" % e
                     sys.exit()
+                else:
+                    updatedDays = updatedDays + rowCount
+            else:
+                addedDays = addedDays + rowCount
                             
-            db_close_cursor(cnx, cursor) # close cursor and commit changes
+            db_close_cursor(cnx, cursor, verbose) # close cursor and commit changes
                 
             day += 1  # add one day and test it
         
         if verbose:
-            print "\n+++ Cache time: %s" % cacheTime
+            print "\n*** Cache time: %s" % cacheTime
         
     db_disconnect(cnx, verbose) # disconnect from database
+    
+if logging:
+    if addedDays:
+        writeToFile(logFile, "%s days added" % addedDays, verbose)
+    else:
+        writeToFile(logFile, "No days added", verbose)
+        
+    if updatedDays:
+        writeToFile(logFile, "%s days updated" % updatedDays, verbose)
+    else:
+        writeToFile(logFile, "No days updated", verbose)
+        
+    writeToFile(logFile, "Get days ended", verbose)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

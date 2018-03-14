@@ -37,19 +37,34 @@ dateTimeNow = datetime.now()
 dateNow = dateTimeNow.strftime('%Y-%m-%d')
 
 timeNow = dateTimeNow.strftime('%H:%M')
-
-weekNumberNow = datetime.strptime(dateNow, '%Y-%m-%d').strftime('%W')
     
-dayNumberNow = int(datetime.strptime(dateNow, '%Y-%m-%d').strftime('%w')) - 1
-if dayNumberNow == -1:
-    dayNumberNow = 6
+    
+def pageLinks():
+    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    
+    print '<br>\n'
+    print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    
+    print '<br>\n'
+    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    
+    #print '<br>\n'
+    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    
+    print '<br>\n'
+    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    
+    print '<br>\n'
+    
+    print '<br>\n'
+    print '<br>\n<a href="status.py">Status</a>'
     
 def pageBody():
     
     # find next time for ring
     nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern = nextRing(cursor, dateNow, timeNow, verbose)
     
-    print '<br>\nDate: %s <br>\nTime: %s <br>\nWeek number: %s <br>\nDay number: %s' % (dateNow, timeNow, weekNumberNow, dayNumberNow)
+    print "<br>\n%s <br>\n%s" % (dateNow, timeNow)
     
     print '<br>\n'
     
@@ -64,27 +79,15 @@ def pageBody():
            % (ringPatternName, ringPattern)
            )
     
-    print '<br>\n'
-    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
-    
-    print '<br>\n'
-    print '<br>\n<a href="ringTimes.py">Ring times</a>'
-    
-    print '<br>\n'
-    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
-    
-    #print '<br>\n'
-    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
-    
-    print '<br>\n'
-    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    print "<br>\n"
 
 
 if __name__ == '__main__':
     pageBody()
+    pageLinks()
     
 # close cursor
-db_close_cursor(cnx, cursor)
+db_close_cursor(cnx, cursor, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

@@ -110,6 +110,9 @@ cp /home/pi/piSchoolBell/config.ini /home/pi/bin/piSchoolBell/
 cp /home/pi/piSchoolBell/gpio.service /home/pi/bin/piSchoolBell/
 cp /home/pi/piSchoolBell/*.py /home/pi/bin/piSchoolBell/
 cp -r /home/pi/piSchoolBell/gpio-scripts /home/pi/bin/piSchoolBell/
+ln -s gpio-script /home/pi/bin/piSchoolBell/gpio-scripts/7
+ln -s gpio-script /home/pi/bin/piSchoolBell/gpio-scripts/8
+touch /home/pi/bin/piSchoolBell/piSchoolBell.log
 chown pi:pi -R /home/pi/bin/piSchoolBell
 
 
@@ -128,14 +131,15 @@ printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
 python /home/pi/piSchoolBell/Adafruit_Python_CharLCD/setup.py install
 
 
-printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
+printf "\n\n Installing gpio-watch ...\n"
 make --directory /home/pi/piSchoolBell/gpio-watch
 make --directory /home/pi/piSchoolBell/gpio-watch install
 
 
 
-printf "\n\n Installing gpio-watch ...\n"
+printf "\n\n Setting up gpio-watch ...\n"
 touch /home/pi/bin/piSchoolBell/gpio-watch.log
+chown pi:pi /home/pi/bin/piSchoolBell/gpio-watch.log
 ln -s /home/pi/bin/piSchoolBell/gpio.service /lib/systemd/system/gpio.service
 chmod 644 /lib/systemd/system/gpio.service  
 systemctl daemon-reload  
@@ -152,10 +156,10 @@ if [ ! -f "/etc/cron.d/piSchoolBell" ]
 */1 * * * * pi /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1
 
 # Get new days at the first of every month
-10 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py >> /dev/null 2>&1
+5 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py -c >> /dev/null 2>&1
 
-# Delete passed dates every night
-15 0 * * * pi /home/pi/bin/piSchoolBell/purgeDatabase.py >> /dev/null 2>&1
+# Purge database every night
+10 0 * * * pi /home/pi/bin/piSchoolBell/purgeDatabase.py -c >> /dev/null 2>&1
 
 CRON
     service cron restart

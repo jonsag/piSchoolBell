@@ -80,15 +80,20 @@ $ sudo mysql -u root -p
 Use the same password as pi login  
 Quit with exit  
 
-Create database and insert initial data
+Create database
 -----------------------------
 $ sudo /home/pi/piSchoolBell/mysql-setup.sh  
+
+Make web pages secure
+-----------------------------
+$ sudo /home/pi/piSchoolBell/www-secure-setup.sh  
 
 Download dates
 -----------------------------
 /home/pi/bin/piSchoolBell/getCalendar.py -v  
 
-Add test data, if wanted  
+Add test data, if wanted (otherwise some things will act funny until you create your own entries)  
+-----------------------------
 $ sudo mysql -u root -p piSchoolBell < mysql-test-data.sql  
 
 Issues

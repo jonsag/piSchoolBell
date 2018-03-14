@@ -177,7 +177,6 @@ elif updateRingPatternId: # update ring pattern
                 print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId
 
 def pageLinks():
-    print '<br>\n'
     print '<br>\n<a href="ringPatterns.py">Reset page</a>'
     
     print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
@@ -290,7 +289,7 @@ if __name__ == '__main__':
     pageLinks()
     
 # close cursor
-db_close_cursor(cnx, cursor)
+db_close_cursor(cnx, cursor, verbose)
 
 # close db
 db_disconnect(cnx, verbose)

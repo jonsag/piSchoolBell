@@ -63,7 +63,7 @@ UNIQUE (breakName)
 											
 CREATE TABLE IF NOT EXISTS extraDays 
 ( 
-extraDaysId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+extraDayId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
 extraDayName VARCHAR(100) NOT NULL, 
 extraDayDate DATE NOT NULL, 
 UNIQUE (extraDayName) 
