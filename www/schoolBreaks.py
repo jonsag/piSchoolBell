@@ -7,7 +7,7 @@ import cgitb; cgitb.enable()  # for troubleshooting
 
 from datetime import datetime
 
-from modules import (htmlFormEscape, validateDate, 
+from modules import (htmlFormEscape, validateDate, webPageFooter, webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 addSchoolBreak = False # will display form to add break
@@ -119,14 +119,17 @@ elif newSchoolBreakName: # add break
                "<br>\nOnly digits, spaces and - allowed "
                "<br>\nMax 100 characters"
                )
-    elif newStartDate < dateNow:
-        print ("<br>\nError: <br>\nStart date occurs earlier than today - " + newStartDate + " "
-               )
+    #elif newStartDate < dateNow:
+    #    print ("<br>\nError: <br>\nStart date occurs earlier than today - " + newStartDate + " < " + dateNow + " "
+    #           )
     elif newEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + newEndDate + " "
+        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
                )
     elif newEndDate < newStartDate:
         print ("<br>\nError: <br>\nEnd date occurs earlier than start date - " + newEndDate + " < " + newStartDate + " "
+               )
+    elif newEndDate < dateNow:
+        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
                )
     else:
         query = ("INSERT INTO breaks " 
@@ -170,14 +173,17 @@ elif updateSchoolBreakId: # update break
                "<br>\nOnly digits, spaces and , allowed "
                "<br>\nMax 100 characters!"
                )
-    elif updateStartDate < dateNow:
-        print ("<br>\nError: <br>\nStart date occurs earlier than today - " + updateStartDate + " "
-               )
+    #elif updateStartDate < dateNow:
+    #    print ("<br>\nError: <br>\nStart date occurs earlier than today - " + updateStartDate + " < " + dateNow + " "
+    #           )
     elif updateEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + updateEndDate + " "
+        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
                )
     elif updateEndDate < updateStartDate:
         print ("<br>\nError: <br>\nEnd date occurs earlier than start date - " + updateEndDate + " < " + updateStartDate + " "
+               )
+    elif updateEndDate < dateNow:
+        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
                )
     else:
         query = ("UPDATE breaks SET "
@@ -201,6 +207,7 @@ elif updateSchoolBreakId: # update break
                 print "\n<br>Updated break with id = %s" % updateSchoolBreakId
 
 def pageLinks():
+    
     print '<br>\n<a href="schoolBreaks.py">Reset page</a>'
     
     print '&emsp;<a href="schoolBreaks.py?addSchoolBreak=1">Add another break</a>'
@@ -222,7 +229,7 @@ def pageLinks():
     
     #print '<br>\n'
     print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
-    
+        
 
 def pageBody():
 
@@ -329,9 +336,12 @@ def pageBody():
         print '</form>'
                 
 if __name__ == '__main__':
+    webPageHeader()
     pageLinks()
     pageBody()
+    print "<br>\n"
     pageLinks()
+    webPageFooter()
     
 # close cursor
 db_close_cursor(cnx, cursor, verbose)

@@ -5,7 +5,7 @@
 import cgi, MySQLdb, re
 import cgitb; cgitb.enable()  # for troubleshooting
 
-from modules import (htmlFormEscape, 
+from modules import (htmlFormEscape, webPageFooter, webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 addRingPattern = False # will display form to add ring pattern
@@ -177,6 +177,7 @@ elif updateRingPatternId: # update ring pattern
                 print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId
 
 def pageLinks():
+    
     print '<br>\n<a href="ringPatterns.py">Reset page</a>'
     
     print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
@@ -198,8 +199,8 @@ def pageLinks():
     
     #print '<br>\n'
     #print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+        
     
-
 def pageBody():
 
     # get ring patterns
@@ -284,9 +285,13 @@ def pageBody():
         print '</form>'
                 
 if __name__ == '__main__':
+    webPageHeader()
     pageLinks()
     pageBody()
+    print "<br>\n"
     pageLinks()
+    webPageFooter()
+    
     
 # close cursor
 db_close_cursor(cnx, cursor, verbose)

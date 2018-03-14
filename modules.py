@@ -255,7 +255,17 @@ def validateTime(time, verbose):
     return timeValid
 
 
+def webPageHeader():
+    print"<hr>"
 
+
+def webPageFooter():
+    for i in range(0, 5):
+        print "<br>\n"
+    
+    print"<br>\n<hr>"
+    print "<br>\n&copy; Jonix 2018"
+    print '<br>\n<a href="mailto:jonsagebrand@gmail.com?subject=piShoolBell@">jonsagebrand@gmail.com</a>'
 
 
 def isRingDay(date, weekNumber, cursor, verbose):

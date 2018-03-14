@@ -7,7 +7,8 @@ import cgitb; cgitb.enable()  # for troubleshooting
 
 from datetime import datetime, timedelta
 
-from modules import (htmlFormEscape, getDayName, findRingTimes, isRingDay, 
+from modules import (htmlFormEscape, getDayName, findRingTimes, isRingDay, webPageFooter, 
+                     webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 
@@ -42,6 +43,7 @@ timeNow = dateTimeNow.strftime('%H:%M')
 
 
 def pageLinks():
+    
     print '<br>\n<a href="upcomingRings.py">Reset page</a>'
     
     print '<br>\n'
@@ -64,7 +66,6 @@ def pageLinks():
     
     #print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
     
-
 
 def pageBody():    
 
@@ -114,9 +115,12 @@ def pageBody():
             
             
 if __name__ == '__main__':
+    webPageHeader()
     pageLinks()
     pageBody()
+    print "<br>\n"
     pageLinks()
+    webPageFooter()
 
 
 print """

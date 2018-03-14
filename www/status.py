@@ -10,7 +10,8 @@ print
 
 from datetime import datetime, timedelta
 
-from modules import (nextRing, getUptime, isRingDay, findRingTimes, 
+from modules import (nextRing, getUptime, isRingDay, findRingTimes, webPageFooter, 
+                     webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 verbose = False
@@ -86,14 +87,15 @@ def countRingTimes(iMax):
 
 
 def pageLinks():
+    
     print '<br>\n<a href="status.py">Reset page</a>'
     
     print '<br>\n'
     print '<br>\n<a href="index.py">Home</a>'
     
     #print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
-
-
+        
+    
 def pageBody(): 
     
     print "<br>\n"   
@@ -179,10 +181,12 @@ def pageBody():
     
     
 if __name__ == '__main__':
+    webPageHeader()
     pageLinks()
     pageBody()
+    print "<br>\n"
     pageLinks()
-
+    webPageFooter()
 
 print """
  

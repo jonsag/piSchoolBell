@@ -7,7 +7,7 @@ import cgitb; cgitb.enable()  # for troubleshooting
 
 from datetime import datetime
 
-from modules import (nextRing, 
+from modules import (nextRing, webPageFooter, webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 verbose = False
@@ -40,6 +40,7 @@ timeNow = dateTimeNow.strftime('%H:%M')
     
     
 def pageLinks():
+    
     print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
     
     print '<br>\n'
@@ -58,6 +59,11 @@ def pageLinks():
     
     print '<br>\n'
     print '<br>\n<a href="status.py">Status</a>'
+    
+    
+def pageFooter():
+    webPageFooter
+    
     
 def pageBody():
     
@@ -83,8 +89,11 @@ def pageBody():
 
 
 if __name__ == '__main__':
+    webPageHeader()
     pageBody()
     pageLinks()
+    webPageFooter()
+    
     
 # close cursor
 db_close_cursor(cnx, cursor, verbose)

@@ -7,7 +7,7 @@ import cgitb; cgitb.enable()  # for troubleshooting
 
 from datetime import datetime
 
-from modules import (htmlFormEscape, validateTime, getDayName, 
+from modules import (htmlFormEscape, validateTime, getDayName, webPageFooter, webPageHeader, 
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query)
 
 addRingTime = False # will display form to add ring time
@@ -179,6 +179,7 @@ elif updateRingTimeId: # update ring time
 
 
 def pageLinks():
+    
     print '<br>\n<a href="ringTimes.py">Reset page</a>'
 
     print '&emsp;<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
@@ -200,8 +201,8 @@ def pageLinks():
     
     #print '<br>\n'
     print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+        
     
-
 def pageBody():
 
     # get ring times
@@ -378,9 +379,12 @@ def pageBody():
 
                 
 if __name__ == '__main__':
+    webPageHeader()
     pageLinks()
     pageBody()
+    print "<br>\n"
     pageLinks()
+    webPageFooter()
     
     
 # close cursor
