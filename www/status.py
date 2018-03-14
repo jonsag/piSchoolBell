@@ -8,7 +8,11 @@ import cgitb; cgitb.enable()  # for troubleshooting
 print "Content-type: text/html"
 print
 
+import socket, sys, os
+
 from datetime import datetime, timedelta
+
+import netifaces as ni
 
 from modules import (nextRing, getUptime, isRingDay, findRingTimes, webPageFooter, 
                      webPageHeader, 
@@ -119,12 +123,20 @@ def pageBody():
     print "<br>\n"  
     print "<br>\nDatabase:"
     
+    #print "<br>\nTables last updated:"
+    # sudo ls -lhtr /var/lib/mysql/piSchoolBell/
+    # *ibd
+    # mysql> SHOW TABLE STATUS FROM piSchoolBell LIKE 'days';
+    
     # days
     query = "SELECT COUNT(*) FROM days"
     result, rowCount = db_query(cursor, query, verbose)  # run query
     for row in result:
         dayCount = row[0]
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspdays entries: %s" % dayCount
+    #print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" 
+    #       % os.path.getmtime('/var/lib/mysql/piSchoolBell/days.ibd') 
+    #       )
     
     # ring times
     query = "SELECT COUNT(*) FROM ringTimes"
@@ -132,6 +144,9 @@ def pageBody():
     for row in result:
         ringTimeCount = row[0]
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspringTimes entries: %s" % ringTimeCount
+    #print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" 
+    #       % os.path.getmtime('/var/lib/mysql/piSchoolBell/ringTimes.ibd') 
+    #       )
     
     # breaks
     query = "SELECT COUNT(*) FROM breaks"
@@ -139,6 +154,9 @@ def pageBody():
     for row in result:
         breakCount = row[0]
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspbreaks entries: %s" % breakCount
+    #print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" 
+    #       % os.path.getmtime('/var/lib/mysql/piSchoolBell/breaks.ibd') 
+    #       )
     
     # ring patterns
     query = "SELECT COUNT(*) FROM ringPatterns"
@@ -146,6 +164,9 @@ def pageBody():
     for row in result:
         ringPatternCount = row[0]
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspringPatterns entries: %s" % ringPatternCount
+    #print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" 
+    #       % os.path.getmtime('/var/lib/mysql/piSchoolBell/ringPatterns.ibd') 
+    #       )
     
     ## extra days
     #query = "SELECT COUNT(*) FROM extraDays"
@@ -153,6 +174,9 @@ def pageBody():
     #for row in result:
     #    extraDayCount = row[0]
     #print "<br>\n&nbsp;&nbsp;&nbsp;&nbspextraDays entries: %s" % extraDayCount
+    #print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" 
+    #       % os.path.getmtime('/var/lib/mysql/piSchoolBell/extraDays.ibd')
+    #       )
     
     print "<br>\n"
     
@@ -178,6 +202,31 @@ def pageBody():
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspThere's %s days left in the database" % daysToEnd
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspOf them %s are school days" % schoolDayCount
     print "<br>\n&nbsp;&nbsp;&nbsp;&nbspBell will ring %s times" % ringCount
+    
+    ##### system
+    print "<br>\n"
+    
+    # hostname
+    print "<br>\nSystem:"
+    print "<br>\n&nbsp;&nbsp;&nbsp;&nbspHostname: %s" % (socket.gethostname())
+    
+    # ip info
+    # find this devices ip address
+    interfaceIPs = []
+    interfaces = ni.interfaces()
+    print "<br>\n"
+    print "<br>\n&nbsp;&nbsp;&nbsp;&nbspNet interfaces with IP:"
+    i = 0    
+    for interface in interfaces:
+        ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
+        i += 1
+    i = 0
+    for interfaceIP in interfaceIPs:
+        print ("<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s: %s" 
+               % (interfaceIP['interface%s' % i], interfaceIP['ip%s' % i])
+               )
+        i += 1
     
     
 if __name__ == '__main__':
