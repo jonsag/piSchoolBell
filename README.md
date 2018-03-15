@@ -7,6 +7,28 @@ Administration of the school bell is done via a web page.
 
 Hardware setup
 =============================
+
+Part list
+-----------------------------
+1 x Raspberry Pi 3, kjell.com Art# 88000 or Art# 88100  
+1 x LCD display, kjell.com Art# 90215  
+1 x Power adapter, kjell.com Art# 88525  
+1 x Micro SD card, kjell.com Art# 97600  
+1 x 10k potentiometer, kjell.com Art# 90633  
+1 x 5V relay module, kjell.com Art# 87878  
+2 x Push button, kjell.com Art# 36023  
+2 x 10k resistor  
+2 x 1k resistor  
+1 x Switch, kjell.com Art# 36016  
+1 x Casing for rpi, kjell.com Art# 89030  
+1x Casing for relay, kjell.com Art# 89014
+Raspberry PI GPIO header connector, kjell.com Art# 87915, or breakout board     
+Wiring, cables  
+PCB board, kjell.com Art# 89416 or Art# 89435  
+Soldering material  
+
+The build
+-----------------------------
 TBA  
 
 Installing OS
