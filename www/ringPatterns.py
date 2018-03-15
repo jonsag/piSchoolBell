@@ -79,45 +79,45 @@ if deleteRingPatternId: # delete ring pattern
     try:
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
-        print "<br>\nError: Could not run query <br>\n%s" % e
-        print "<br>\nSQL: %s" % query
+        print "\n<br>Error: Could not run query \n<br>%s" % e
+        print "\n<br>SQL: %s" % query
     else:
         if rowCount:
-            print ("<br>\nError: Could not delete ring pattern "
-                   "<br>\nIt is being used at the following ring times: "
+            print ("\n<br>Error: Could not delete ring pattern "
+                   "\n<br>It is being used at the following ring times: "
                    )
             for row in result:
                 ringTimeId = row[0]
                 ringTimeName = row[1]
                 ringTime = row[2]
-                print "<br><br>\nId: %s <br>\n%s, %s" % (ringTimeId, ringTimeName, ringTime) 
+                print "<br>\n<br>Id: %s \n<br>%s, %s" % (ringTimeId, ringTimeName, ringTime) 
         else:
             query = ("DELETE FROM ringPatterns WHERE ringPatternId = '%s'" % deleteRingPatternId)
             try:
                 result, rowCount = db_query(cursor, query, verbose)  # run query
             except MySQLdb.Error as e:
-                print "<br>\nError: Could not delete pattern <br>\n%s" % e
-                print "<br>\nSQL: %s" % query
+                print "\n<br>Error: Could not delete pattern \n<br>%s" % e
+                print "\n<br>SQL: %s" % query
             else:
                 if rowCount:
                     print "\n<br>Deleted ring pattern with id = %s" % deleteRingPatternId
 
 elif newRingPatternName: # add ring pattern
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingPatternName):
-        print ("<br>\nError: <br>\nIllegal characters in name - " + newRingPatternName + " "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal characters in name - " + newRingPatternName + " "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters"
                )
     elif not re.match("^[0-9, ]{1,100}$", newRingPattern):
-        print ("<br>\nError: <br>\nIllegal characters in pattern - " + newRingPattern + " " 
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal characters in pattern - " + newRingPattern + " " 
+               "\n<br>Only digits, spaces and , allowed "
+               "\n<br>Max 100 characters"
                )
     elif len(newRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times - " + newRingPattern + " " 
-               "<br>\nMust be an odd set of times "
-               "<br>\nEg. '20' or '10, 5, 10' and so on"
+        print ("\n<br>Error: \n<br>Pattern has an even set of times - " + newRingPattern + " " 
+               "\n<br>Must be an odd set of times "
+               "\n<br>Eg. '20' or '10, 5, 10' and so on"
                )
     else:
         query = ("INSERT INTO ringPatterns " 
@@ -129,32 +129,32 @@ elif newRingPatternName: # add ring pattern
         try: # insert ring pattern in to db
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # pattern name already in database
-            print ("Error: <br>\nThere was already a pattern with that name. "
-                   "<br>\n    Pattern not added "
-                   "<br>\n%s" % e
+            print ("Error: \n<br>There was already a pattern with that name. "
+                   "\n<br>    Pattern not added "
+                   "\n<br>%s" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not add pattern <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not add pattern \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
-            print "<br>\nAdded new ring pattern"
+            print "\n<br>Added new ring pattern"
             
 elif updateRingPatternId: # update ring pattern
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingPatternName):
-        print ("Error: <br>\nIllegal characters in name - " + updateRingPatternName + " "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal characters in name - " + updateRingPatternName + " "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters!"
                )
     elif not re.match("^[0-9, ]{1,100}$", updateRingPattern):
-        print ("Error: <br>\nIllegal characters in pattern - " + updateRingPattern + " "
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal characters in pattern - " + updateRingPattern + " "
+               "\n<br>Only digits, spaces and , allowed "
+               "\n<br>Max 100 characters!"
                )
     elif len(updateRingPattern.replace(' ', '').split(",")) % 2 == 0:
-        print ("<br>\nError: <br>\nPattern has an even set of times - " + updateRingPattern + " " 
-               "<br>\nMust be an odd set of times "
-               "<br>\nEg. '20' or '10, 5, 10' and so on"
+        print ("\n<br>Error: \n<br>Pattern has an even set of times - " + updateRingPattern + " " 
+               "\n<br>Must be an odd set of times "
+               "\n<br>Eg. '20' or '10, 5, 10' and so on"
                )
     else:
         query = ("UPDATE ringPatterns SET "
@@ -165,40 +165,40 @@ elif updateRingPatternId: # update ring pattern
         try: # update ring pattern
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # pattern name already in database
-            print ("Error: <br>\nThere was already a pattern with that name. "
-                   "<br>\nPattern not updated "
-                   "<br>\n%s>" % e
+            print ("Error: \n<br>There was already a pattern with that name. "
+                   "\n<br>Pattern not updated "
+                   "\n<br>%s>" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not update pattern <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not update pattern \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
             if rowCount:
                 print "\n<br>Updated ring pattern with id = %s" % updateRingPatternId
 
 def pageLinks():
     
-    print '<br>\n<a href="ringPatterns.py">Reset page</a>'
+    print '\n<br><a href="ringPatterns.py">Reset page</a>'
     
     print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="index.py">Home</a>'
+    print '\n<br>'
+    print '\n<br><a href="index.py">Home</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    print '\n<br>'
+    print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    #print '\n<br>'
+    print '\n<br><a href="ringTimes.py">Ring times</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    #print '\n<br>'
+    print '\n<br><a href="schoolBreaks.py">Breaks</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="extraDays.py">Extra school days</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
         
     
 def pageBody():
@@ -208,7 +208,7 @@ def pageBody():
     
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount: # display ring patterns in a table
-        print '<br>\n<br>\n'
+        print '\n<br>\n<br>'
         print '<table style="width:400px">'
         print '<tr>'
         print '<th>Id</th>' 
@@ -288,7 +288,7 @@ if __name__ == '__main__':
     webPageHeader()
     pageLinks()
     pageBody()
-    print "<br>\n"
+    print "\n<br>"
     pageLinks()
     webPageFooter()
     

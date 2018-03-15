@@ -91,8 +91,8 @@ if deleteSchoolBreakId: # delete break
         try:
             result, rowCount = db_query(cursor, query, verbose)  # run query
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not delete break <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not delete break \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
             if rowCount:
                 print "\n<br>Deleted break with id = %s" % deleteSchoolBreakId
@@ -102,34 +102,34 @@ elif newSchoolBreakName: # add break
         newEndDate = newStartDate
         
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newSchoolBreakName):
-        print ("<br>\nError: <br>\nIllegal characters in name - " + newSchoolBreakName + " "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal characters in name - " + newSchoolBreakName + " "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters"
                )
     elif not re.match("^[0-9-]{1,10}$", newStartDate) or not validateDate(newStartDate, verbose):
-        print ("<br>\nError: <br>\nIllegal date, characters or length in start date - " + newStartDate + " " 
-               "<br>\nMust be in the form YY-MM-DD"
-               "<br>\nOnly digits, spaces and - allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal date, characters or length in start date - " + newStartDate + " " 
+               "\n<br>Must be in the form YY-MM-DD"
+               "\n<br>Only digits, spaces and - allowed "
+               "\n<br>Max 100 characters"
                )
     elif not re.match("^[0-9-]{1,10}$", newEndDate) or not validateDate(newEndDate, verbose):
-        print ("<br>\nError: <br>\nIllegal date, characters or length in end date - " + newEndDate + " "
-               "<br>\nMust be in the form YY-MM-DD" 
-               "<br>\nOnly digits, spaces and - allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal date, characters or length in end date - " + newEndDate + " "
+               "\n<br>Must be in the form YY-MM-DD" 
+               "\n<br>Only digits, spaces and - allowed "
+               "\n<br>Max 100 characters"
                )
     #elif newStartDate < dateNow:
-    #    print ("<br>\nError: <br>\nStart date occurs earlier than today - " + newStartDate + " < " + dateNow + " "
+    #    print ("\n<br>Error: \n<br>Start date occurs earlier than today - " + newStartDate + " < " + dateNow + " "
     #           )
     elif newEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
                )
     elif newEndDate < newStartDate:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than start date - " + newEndDate + " < " + newStartDate + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than start date - " + newEndDate + " < " + newStartDate + " "
                )
     elif newEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than today - " + newEndDate + " < " + dateNow + " "
                )
     else:
         query = ("INSERT INTO breaks " 
@@ -142,48 +142,48 @@ elif newSchoolBreakName: # add break
         try: # insert break in to db
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # break name already in database
-            print ("Error: <br>\nThere was already a break with that name. "
-                   "<br>\n    Pattern not added "
-                   "<br>\n%s" % e
+            print ("Error: \n<br>There was already a break with that name. "
+                   "\n<br>    Pattern not added "
+                   "\n<br>%s" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not add break <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not add break \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
-            print "<br>\nAdded new break"
+            print "\n<br>Added new break"
             
 elif updateSchoolBreakId: # update break
     if updateEndDate == '': # no end date stated
         updateEndDate = updateStartDate
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateSchoolBreakName):
-        print ("Error: <br>\nIllegal characters in name - " + updateSchoolBreakName + " "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal characters in name - " + updateSchoolBreakName + " "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters!"
                )
     elif not re.match("^[0-9-]{1,10}$", updateStartDate) or not validateDate(updateStartDate, verbose):
-        print ("Error: <br>\nIllegal date, characters or length in start date - " + updateStartDate + " "
-               "<br>\nMust be in the form YY-MM-DD"
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal date, characters or length in start date - " + updateStartDate + " "
+               "\n<br>Must be in the form YY-MM-DD"
+               "\n<br>Only digits, spaces and , allowed "
+               "\n<br>Max 100 characters!"
                )
     elif not re.match("^[0-9-]{1,10}$", updateEndDate) or not validateDate(updateEndDate, verbose):
-        print ("Error: <br>\nIllegal date, characters or length in end date - " + updateEndDate + " "
-               "<br>\nMust be in the form YY-MM-DD"
-               "<br>\nOnly digits, spaces and , allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal date, characters or length in end date - " + updateEndDate + " "
+               "\n<br>Must be in the form YY-MM-DD"
+               "\n<br>Only digits, spaces and , allowed "
+               "\n<br>Max 100 characters!"
                )
     #elif updateStartDate < dateNow:
-    #    print ("<br>\nError: <br>\nStart date occurs earlier than today - " + updateStartDate + " < " + dateNow + " "
+    #    print ("\n<br>Error: \n<br>Start date occurs earlier than today - " + updateStartDate + " < " + dateNow + " "
     #           )
     elif updateEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
                )
     elif updateEndDate < updateStartDate:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than start date - " + updateEndDate + " < " + updateStartDate + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than start date - " + updateEndDate + " < " + updateStartDate + " "
                )
     elif updateEndDate < dateNow:
-        print ("<br>\nError: <br>\nEnd date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
+        print ("\n<br>Error: \n<br>End date occurs earlier than today - " + updateEndDate + " < " + dateNow + " "
                )
     else:
         query = ("UPDATE breaks SET "
@@ -195,40 +195,40 @@ elif updateSchoolBreakId: # update break
         try: # update break
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # break name already in database
-            print ("Error: <br>\nThere was already a break with that name. "
-                   "<br>\nPattern not updated "
-                   "<br>\n%s>" % e
+            print ("Error: \n<br>There was already a break with that name. "
+                   "\n<br>Pattern not updated "
+                   "\n<br>%s>" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not update break <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not update break \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
             if rowCount:
                 print "\n<br>Updated break with id = %s" % updateSchoolBreakId
 
 def pageLinks():
     
-    print '<br>\n<a href="schoolBreaks.py">Reset page</a>'
+    print '\n<br><a href="schoolBreaks.py">Reset page</a>'
     
     print '&emsp;<a href="schoolBreaks.py?addSchoolBreak=1">Add another break</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="index.py">Home</a>'
+    print '\n<br>'
+    print '\n<br><a href="index.py">Home</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    print '\n<br>'
+    print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    #print '\n<br>'
+    print '\n<br><a href="ringTimes.py">Ring times</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="schoolBreaks.py">Breaks</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="extraDays.py">Extra school days</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    #print '\n<br>'
+    print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
         
 
 def pageBody():
@@ -238,7 +238,7 @@ def pageBody():
     
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount: # display breaks in a table
-        print '<br>\n<br>\n'
+        print '\n<br>\n<br>'
         print '<table style="width:400px">'
         print '<tr>'
         print '<th>Id</th>' 
@@ -339,7 +339,7 @@ if __name__ == '__main__':
     webPageHeader()
     pageLinks()
     pageBody()
-    print "<br>\n"
+    print "\n<br>"
     pageLinks()
     webPageFooter()
     

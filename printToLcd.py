@@ -83,6 +83,8 @@ lcd.clear()  # clear screen
 if button1:
     # find this devices ip address
     interfaceIPs = []
+    line_2 = "Not connected"
+    
     if verbose:
         print "\n*** Finding interfaces..."
     interfaces = ni.interfaces()

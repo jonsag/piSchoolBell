@@ -1,5 +1,7 @@
 # piSchoolBell
-The goal of this project is to run a Raspberry Pi as a controller for a school bell. It will make the school bell ring at the right times taking the calendar into consideration. Also there will be a LCD screen to visualize some things.
+The goal of this project is to run a Raspberry Pi as a controller for a school bell. It will make the school bell ring at the right times taking the calendar into consideration. Also there will be a LCD screen to visualize some things.  
+
+Administration of the school bell is done via a web page.  
 
 Installing OS
 =============================
@@ -96,15 +98,25 @@ Add test data, if wanted (otherwise some things will act funny until you create 
 -----------------------------
 $ sudo mysql -u root -p piSchoolBell < mysql-test-data.sql  
 
+Configuration
+=============================
+Press button on unit to display its IP-address on the second line of the LCD  
+Connect to the unit by pointing your browser to http://<IP-address>:8080  
+Edit or add breaks, ring times and ring patterns  
+
+At the first of every month cron will download calendar from dryg.net, adding data to the database  
+Every night cron will delete past breaks and days from the database  
+Each of these events will be written to the logfile at /home/pi/bin/piSChoolBell/piSchoolBell.log  
+
 Issues
 =============================
-If you get problems with Adafruit_CharLCD
+If you get problems with Adafruit_CharLCD failing to write to LCD
 $ cd /home/pi/piSchoolBell/Adafruit_CharLCD
 $ sudo python setup.py install
  
 
 Below is only for my own convieniance during programming of this project
------------------------------
+=============================
 rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/* pi@192.168.10.44:/home/pi/bin/piSchoolBell/
 
 rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/www/* pi@192.168.10.44:/var/www/piSchoolBell/

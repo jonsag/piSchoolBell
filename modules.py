@@ -2,16 +2,12 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import os, sys, MySQLdb, time, datetime, urllib2
+import os, sys, MySQLdb, time, urllib2, socket
 
 import Adafruit_CharLCD as LCD
 
 from ConfigParser import ConfigParser
 from datetime import datetime, timedelta
-from urlparse import urljoin
-
-import codecs
-from htmlentitydefs import codepoint2name
 
 config = ConfigParser()  # define config file
 config.read("%s/config.ini" % os.path.dirname(os.path.realpath(__file__)))  # read config file
@@ -265,8 +261,32 @@ def webPageFooter():
     
     print"<br>\n<hr>"
     print "<br>\n&copy; Jonix 2018"
-    print '<br>\n<a href="mailto:jonsagebrand@gmail.com?subject=piShoolBell@">jonsagebrand@gmail.com</a>'
+    print ('<br>\n<a href="mailto:jonsagebrand@gmail.com?subject=piShoolBell@%s">jonsagebrand@gmail.com</a>' 
+           % socket.gethostname()
+           )
+    
+    for i in range(0, 5):
+        print "<br>\n"
+    
+def countEntriesInDatabase(tableName, cursor, verbose):
+    query = "SELECT COUNT(*) FROM " + tableName
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    if rowCount:
+        for row in result:
+            count = row[0]
 
+    return count
+        
+def tableLastUpdated(tableName, cursor, verbose):
+    answer = ""
+    query = ("SHOW TABLE STATUS FROM piSchoolBell LIKE '" + tableName + "'")
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    if rowCount:
+        for row in result:
+            answer = row[11]
+    
+    return answer
+    
 
 def isRingDay(date, weekNumber, cursor, verbose):
     isWorkDay = False

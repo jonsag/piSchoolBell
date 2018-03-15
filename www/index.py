@@ -41,24 +41,26 @@ timeNow = dateTimeNow.strftime('%H:%M')
     
 def pageLinks():
     
-    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    print '\n<br>'
     
-    print '<br>\n'
-    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    print '\n<br>'
+    print '\n<br><a href="ringTimes.py">Ring times</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    print '\n<br>'
+    print '\n<br><a href="schoolBreaks.py">Breaks</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="extraDays.py">Extra school days</a>'
     
-    print '<br>\n'
+    print '\n<br>'
+    print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="status.py">Status</a>'
+    print '\n<br>'
+    
+    print '\n<br>'
+    print '\n<br><a href="status.py">Status</a>'
     
     
 def pageFooter():
@@ -70,22 +72,22 @@ def pageBody():
     # find next time for ring
     nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern = nextRing(cursor, dateNow, timeNow, verbose)
     
-    print "<br>\n%s <br>\n%s" % (dateNow, timeNow)
+    print "\n<br>%s \n<br>%s" % (dateNow, timeNow)
     
-    print '<br>\n'
+    print '\n<br>'
     
-    print '<br>\nNext ring:'
-    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+    print '\n<br>Next ring:'
+    print ('\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
            % (nextRingDate, nextRingDay)
            )
-    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+    print ('\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
            % (nextRingTime, ringTimeName)
            )
-    print ('<br>\n&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
+    print ('\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s' 
            % (ringPatternName, ringPattern)
            )
     
-    print "<br>\n"
+    print "\n<br>"
 
 
 if __name__ == '__main__':

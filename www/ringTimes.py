@@ -105,23 +105,23 @@ if deleteRingTimeId: # delete ring time
     try:
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
-        print "<br>\nError: Could not delete time <br>\n%s" % e
-        print "<br>\nSQL: %s" % query
+        print "\n<br>Error: Could not delete time \n<br>%s" % e
+        print "\n<br>SQL: %s" % query
     else:
         if rowCount:
             print "\n<br>Deleted ring time with id = %s" % deleteRingTimeId
 
 elif newRingTimeName: # add ring time
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingTimeName):
-        print ("<br>\nError: <br>\nIllegal characters in name!: '" + newRingTimeName + "' "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters"
+        print ("\n<br>Error: \n<br>Illegal characters in name!: '" + newRingTimeName + "' "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters"
                )
     elif not re.match("^[0-9:]{1,5}$", newRingTime) or not validateTime(newRingTime, verbose):
-        print ("<br>\nError: <br>\nIllegal time, characters or length in: '" + newRingTime + "'! " 
-               "<br>\nMust be in the form HH:MM "
-               "<br>\nOnly digits and : allowed "
+        print ("\n<br>Error: \n<br>Illegal time, characters or length in: '" + newRingTime + "'! " 
+               "\n<br>Must be in the form HH:MM "
+               "\n<br>Only digits and : allowed "
                )
     else:
         query = ("INSERT INTO ringTimes " 
@@ -135,27 +135,27 @@ elif newRingTimeName: # add ring time
         try: # insert ring time in to db
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # time name already in database
-            print ("Error: <br>\nThere was already a time with that name. "
-                   "<br>\n    Time not added "
-                   "<br>\n%s" % e
+            print ("Error: \n<br>There was already a time with that name. "
+                   "\n<br>    Time not added "
+                   "\n<br>%s" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not add time <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not add time \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
-            print "<br>\nAdded new ring time"
+            print "\n<br>Added new ring time"
             
 elif updateRingTimeId: # update ring time
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingTimeName):
-        print ("Error: <br>\nIllegal characters in name!: '" + updateRingTimeName + "' "
-               "<br>\nNo special characters (including Swedish etc.) allowed "
-               "<br>\nOnly characters, digits, spaces and ,. allowed "
-               "<br>\nMax 100 characters!"
+        print ("Error: \n<br>Illegal characters in name!: '" + updateRingTimeName + "' "
+               "\n<br>No special characters (including Swedish etc.) allowed "
+               "\n<br>Only characters, digits, spaces and ,. allowed "
+               "\n<br>Max 100 characters!"
                )
     elif not re.match("^[0-9:]{1,5}$", updateRingTime) or not validateTime(updateRingTime, verbose):
-        print ("Error: <br>\nIllegal time, characters or length in: '" + updateRingTime + "'! "
-               "<br>\nMust be in the form HH:MM "
-               "<br>\nOnly digits and : allowed "
+        print ("Error: \n<br>Illegal time, characters or length in: '" + updateRingTime + "'! "
+               "\n<br>Must be in the form HH:MM "
+               "\n<br>Only digits and : allowed "
                )
     else:
         query = ("UPDATE ringTimes SET "
@@ -166,13 +166,13 @@ elif updateRingTimeId: # update ring time
         try: # update ring time
             result, rowCount = db_query(cursor, query, verbose) # run query
         except (MySQLdb.IntegrityError) as e: # time name already in database
-            print ("Error: <br>\nThere was already a time with that name. "
-                   "<br>\nTime not updated "
-                   "<br>\n%s>" % e
+            print ("Error: \n<br>There was already a time with that name. "
+                   "\n<br>Time not updated "
+                   "\n<br>%s>" % e
                    )
         except MySQLdb.Error as e:
-            print "<br>\nError: Could not update time <br>\n%s" % e
-            print "<br>\nSQL: %s" % query
+            print "\n<br>Error: Could not update time \n<br>%s" % e
+            print "\n<br>SQL: %s" % query
         else:
             if rowCount:
                 print "\n<br>Updated ring time with id = %s" % updateRingTimeId
@@ -180,27 +180,27 @@ elif updateRingTimeId: # update ring time
 
 def pageLinks():
     
-    print '<br>\n<a href="ringTimes.py">Reset page</a>'
+    print '\n<br><a href="ringTimes.py">Reset page</a>'
 
     print '&emsp;<a href="ringTimes.py?addRingTime=1">Add another ring time</a>'
 
-    print '<br>\n'
-    print '<br>\n<a href="index.py">Home</a>'
+    print '\n<br>'
+    print '\n<br><a href="index.py">Home</a>'
     
-    print '<br>\n'
-    print '<br>\n<a href="upcomingRings.py">Upcoming rings</a>'
+    print '\n<br>'
+    print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="ringTimes.py">Ring times</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="ringTimes.py">Ring times</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="schoolBreaks.py">Breaks</a>'
+    #print '\n<br>'
+    print '\n<br><a href="schoolBreaks.py">Breaks</a>'
     
-    #print '<br>\n'
-    #print '<br>\n<a href="extraDays.py">Extra school days</a>'
+    #print '\n<br>'
+    #print '\n<br><a href="extraDays.py">Extra school days</a>'
     
-    #print '<br>\n'
-    print '<br>\n<a href="ringPatterns.py">Ring patterns</a>'
+    #print '\n<br>'
+    print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
         
     
 def pageBody():
@@ -211,7 +211,7 @@ def pageBody():
              )
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount: # display ring times in a table
-        print '<br>\n<br>\n'
+        print '\n<br>\n<br>'
         print '<table style="width:100%">'
         print '<tr>'
         print '<th>Id</th>' 
@@ -382,7 +382,7 @@ if __name__ == '__main__':
     webPageHeader()
     pageLinks()
     pageBody()
-    print "<br>\n"
+    print "\n<br>"
     pageLinks()
     webPageFooter()
     
