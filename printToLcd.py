@@ -94,7 +94,10 @@ if button1:
         
     i = 0    
     for interface in interfaces:
-        ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        try:
+            ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        except:
+            ip = "NA"
         interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
         i += 1
         
@@ -103,7 +106,10 @@ if button1:
         if verbose:
             print "    Interface: %s" % interfaceIP['interface%s' % i]
             print "    IP: %s" % interfaceIP['ip%s' % i]
-        if not interfaceIP['ip%s' % i].startswith('127') and not interfaceIP['ip%s' % i].startswith('169'):
+        if (not interfaceIP['ip%s' % i].startswith('127') 
+            and not interfaceIP['ip%s' % i].startswith('169') 
+            and not interfaceIP['ip%s' % i] == "NA"
+            ):
             line_2 = interfaceIP['ip%s' % i]
             if verbose:
                 print "*** This is the one we will display"

@@ -190,7 +190,10 @@ def pageBody():
     print "\n<br>&nbsp;&nbsp;&nbsp;&nbspNet interfaces with IP:"
     i = 0    
     for interface in interfaces:
-        ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        try:
+            ip = ni.ifaddresses(interface)[ni.AF_INET][0]['addr']
+        except:
+            ip = "No IP assigned"
         interfaceIPs.append({"interface%s" % i: interface, "ip%s" % i: ip})
         i += 1
     i = 0
