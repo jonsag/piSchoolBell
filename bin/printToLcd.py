@@ -9,7 +9,7 @@ import netifaces as ni
 from datetime import datetime
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     initialize_lcd, print_to_LCD, nextRing, internet_on, testAddress, 
+                     initialize_lcd, print_to_LCD, nextRing, internetAccess, testAddress, 
                      button1Gpio, button2Gpio, 
                      remove_leading_zero, getUptime, minUptime, ipWaitTime,
                      onError, usage)
@@ -81,6 +81,7 @@ lcd.clear()  # clear screen
 
 # displaying ip on lcd
 if button1:
+    
     # find this devices ip address
     interfaceIPs = []
     line_2 = "Not connected"
@@ -116,6 +117,12 @@ if button1:
         if verbose:
             print
         i += 1
+    
+    if internetAccess(testAddress, verbose):
+        line_2 = "*%s" % line_2
+    else:
+        line_2 = "-%s" % line_2
+        
         
 # get current time
 dateTimeNow = datetime.now()

@@ -33,44 +33,45 @@ TBA
 
 Install and configure OS
 =============================
-Download Raspbian Stretch Lite from https://www.raspberrypi.org/downloads/raspbian/  
-Choose the Light zip-file  
+Download Raspbian Stretch Lite from 'https://www.raspberrypi.org/downloads/raspbian/'.  
+Choose the Light zip-file.  
 
-Cd to where your download is  
+Cd to where your download is.  
 $ unzip 2017-11-29-raspbian-stretch-lite.zip  
 
-Insert SD-card and find out drive letter  
+Insert SD-card and find out drive letter.  
 $ dmesg  
-For example /dev/mmcblk0 or /dev/sdb  
+For example '/dev/mmcblk0' or '/dev/sdb'.  
 
-Unmount if mounted  
+Unmount if mounted.  
 $ umount /dev/mmcblk0p1  
 $ umount /dev/mmcblk0p2  
 
-Write image to SD-card  
+Write image to SD-card.  
 $ sudo dd bs=4M if=2017-11-29-raspbian-stretch-lite.img of=/dev/mmcblk0 conv=fsync status=progress 
 
-Remove SD-card and insert it again to make new partitons visible     
+Remove SD-card and insert it again to make new partitons visible.     
 
-Mount the first partition  
+Mount the first partition.  
 $ sudo mount /dev/mmcblk0p1 /mnt/tmp  
 
-Write empty file to boot partition to enable ssh at boot  
+Write empty file to boot partition to enable ssh at boot.  
 $ sudo touch /mnt/tmp/ssh  
 
-Unmount  
+Unmount.  
 $ sudo umount /mnt/tmp  
 
-Remove SD-card and insert it a Rpi connected to your local network and boot it up 
+Remove SD-card and insert it a Rpi connected to your local network and boot it up. 
 
 Rpi configuration
 -----------------------------
-Connect to Rpi via ssh  
-Login with user: pi and password:raspberry   
+Connect to Rpi via ssh.  
+Login with user: 'pi' and password: 'raspberry'.   
 
 Configure
 -----------------------------
 $ sudo raspi-config   
+
 1		Change password  
 2 N1	Change hostname  
 2 N2	Set SSID and passphrase   
@@ -80,11 +81,12 @@ $ sudo raspi-config
 4 I4	Set wifi country  
 7 A1	Expand file system to use whole SD-card  
 7 A3	Set memory split to 16  
-Reboot to set new options  
+
+Reboot to set new options.  
 
 Update
 -----------------------------
-Connect again  
+Connect again.  
 $ sudo apt-get update && sudo apt-get upgrade
 
 Installation
@@ -107,8 +109,8 @@ $ sudo ./install.sh
 Initialize mysql
 -----------------------------
 $ sudo mysql -u root -p  
-Use the same password as pi login  
-Quit with exit  
+Use the same password as pi login.  
+Quit with 'exit;'.  
 
 Create database
 -----------------------------
@@ -128,16 +130,30 @@ $ sudo mysql -u root -p piSchoolBell < /home/pi/piSchoolBell/mysql-test-data.sql
 
 Configuration
 =============================
-Press button on unit to display its IP-address on the second line of the LCD  
-Connect to the unit by pointing your browser to http://<IP-address>:8080  
-Edit or add breaks, ring times and ring patterns  
+Press button on unit to display its IP-address on the second line of the LCD.  
+Connect to the unit by pointing your browser to 'http://<IP-address>:8080'.  
+Edit or add breaks, ring times and ring patterns.  
 
-At the first of every month cron will download calendar from dryg.net, adding data to the database  
+Automatic tasks
+-----------------------------
+At the first of every month cron will download calendar from 'dryg.net', adding data to the database  
 Every night cron will delete past breaks and days from the database  
+
+Usage
+=============================
+Normally the LCD display shows:  
+Line 1: HH:MM YYYY-mm-dd, current time and date  
+Line 2: HH:MM YYYY-mm-dd, the time and date for the next bell ring  
+
+By pressing button 1, line 2 will change to displaying the IP to which you can connect to configure the unit.  
+If it shows 'NA' it has not been able to acquire an IP address.
+The first character on line 2 shows if the unit can access internet.  
+If it is a '*' it is connected.  
+If it is a '-' it is not connected  
 
 Issues
 =============================
-If you get problems with Adafruit_CharLCD failing to write to LCD  
+If you get problems with Adafruit_CharLCD failing to write to LCD.  
 $ cd /home/pi/piSchoolBell/Adafruit_CharLCD  
 $ sudo python setup.py install
  

@@ -401,7 +401,7 @@ def getUptime():
         return uptime_seconds
     
     
-def internet_on(testAddress, verbose):
+def internetAccess(testAddress, verbose):
     connected = False
     
     if verbose:
