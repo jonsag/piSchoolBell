@@ -8,7 +8,7 @@ Administration of the school bell is done via a web page.
 Hardware setup
 =============================
 
-Part list
+Parts list
 -----------------------------
 1 x Raspberry Pi 3, kjell.com Art# 88000 or Art# 88100  
 1 x LCD display, kjell.com Art# 90215  
@@ -21,8 +21,8 @@ Part list
 2 x 1k resistor  
 1 x Switch, kjell.com Art# 36016  
 1 x Casing for rpi, kjell.com Art# 89030  
-1x Casing for relay, kjell.com Art# 89014
-Raspberry PI GPIO header connector, kjell.com Art# 87915, or breakout board     
+1 x Casing for relay, kjell.com Art# 89014
+Raspberry PI GPIO header connector, kjell.com Art# 87915, or breakout board  
 Wiring, cables  
 PCB board, kjell.com Art# 89416 or Art# 89435  
 Soldering material  
@@ -31,7 +31,7 @@ The build
 -----------------------------
 TBA  
 
-Installing OS
+Install and configure OS
 =============================
 Download Raspbian Stretch Lite from https://www.raspberrypi.org/downloads/raspbian/  
 Choose the Light zip-file  
