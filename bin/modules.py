@@ -409,10 +409,12 @@ def internetAccess(testAddress, verbose):
     
     try:
         urllib2.urlopen('http://%s' % testAddress, timeout=1)
-        connected = True
     except urllib2.URLError as err: 
         if verbose:
             print "*** Error: \n    %s" % err
+    else:
+        connected = True
+        
     if verbose and connected:
         print "*** We are connected to internet"        
     

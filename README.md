@@ -5,6 +5,8 @@ Also there is a LCD screen to visualize time etc.
 
 Administration of the school bell is done via a web page.  
 
+It is written entirely in python.  
+
 Hardware setup
 =============================
 
@@ -29,7 +31,7 @@ Soldering material
 
 The build
 -----------------------------
-TBA  
+Assemble all the parts according to the files and images in the 'Documents' folder.   
 
 Install and configure OS
 =============================
@@ -128,10 +130,14 @@ Add test data, if wanted (otherwise some things will act funny until you create 
 -----------------------------
 $ sudo mysql -u root -p piSchoolBell < /home/pi/piSchoolBell/mysql-test-data.sql  
 
+Wireless network setup
+-----------------------------
+Use the raspi-config you used earlier. 
+
 Configuration
 =============================
 Press button on unit to display its IP-address on the second line of the LCD.  
-Connect to the unit by pointing your browser to 'http://<IP-address>:8080'.  
+Connect to the unit by pointing your browser to 'http://IP-address:8080'.  
 Edit or add breaks, ring times and ring patterns.  
 
 Automatic tasks
@@ -146,7 +152,7 @@ Line 1: HH:MM YYYY-mm-dd, current time and date
 Line 2: HH:MM YYYY-mm-dd, the time and date for the next bell ring  
 
 By pressing button 1, line 2 will change to displaying the IP to which you can connect to configure the unit.  
-If it shows 'NA' it has not been able to acquire an IP address.
+If it shows 'Not connected' it has not been able to acquire an IP address.
 The first character on line 2 shows if the unit can access internet.  
 If it is a '*' it is connected.  
 If it is a '-' it is not connected  
