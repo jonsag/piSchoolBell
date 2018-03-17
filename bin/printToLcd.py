@@ -2,16 +2,12 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import getopt, sys, time, os
+import getopt, sys
 
 import netifaces as ni
 
-from datetime import datetime
-
-from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     initialize_lcd, print_to_LCD, nextRing, internetAccess, testAddress, 
-                     button1Gpio, button2Gpio, 
-                     remove_leading_zero, getUptime, minUptime, ipWaitTime,
+from modules import (internetAccess, testAddress, 
+                     button1Gpio, button2Gpio, displayOnLCD, 
                      onError, usage)
 
 try:
@@ -54,11 +50,6 @@ if verbose:
         print "        Argument %s: %s" % (i, argument)
         i += 1
 
-# connect to database
-cnx = db_connect(verbose)
-
-# create cursor
-cursor = db_create_cursor(cnx)
 
 # buttons
 if gpio:
@@ -75,12 +66,8 @@ if gpio:
     else:
         onError(3, "No action for gpio %s" % gpio)
 
-# wake up LCD
-lcd, lcd_wake_time, lcd_columns = initialize_lcd(verbose)  # load lcd
-lcd.clear()  # clear screen
-
 # displaying ip on lcd
-if button1:
+def button1Pressed():
     
     # find this devices ip address
     interfaceIPs = []
@@ -123,32 +110,12 @@ if button1:
     else:
         line_2 = "-%s" % line_2
         
+    return line_2
         
-# get current time
-dateTimeNow = datetime.now()
-timeNow = dateTimeNow.strftime('%H:%M')
-dateNow = str(dateTimeNow.strftime('%Y-%m-%d'))
 
-if not line_1:
-    time = dateTimeNow.strftime('%H:%M')
-    day = remove_leading_zero(dateTimeNow.strftime('%d'))
-    month = remove_leading_zero(dateTimeNow.strftime('%m'))
-    year = dateTimeNow.strftime('%Y')
-    line_1 = "%s %s/%s %s" % (time, day, month, year)
-if not line_2:    
-    nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern = nextRing(cursor, dateNow, timeNow, verbose)
-    day = remove_leading_zero(nextRingDate.strftime('%d'))
-    month = remove_leading_zero(nextRingDate.strftime('%m'))
-    year = nextRingDate.strftime('%Y')
-    line_2 = "%s %s/%s %s" % (nextRingTime, day, month, year)
+if __name__ == '__main__':
+    if button1:
+        line_2 = button1Pressed()
+    displayOnLCD(line_1, line_2, verbose)
     
-# print to LCD
-print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
-print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
-
-# close cursor
-db_close_cursor(cnx, cursor, verbose)
-
-# close db
-db_disconnect(cnx, verbose)
 

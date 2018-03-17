@@ -17,7 +17,10 @@ button1Gpio = config.get('gpioAssignment', 'button1Gpio').strip(" ")
 button2Gpio = config.get('gpioAssignment', 'button2Gpio').strip(" ")
 minUptime = int(config.get('misc', 'minUptime').strip(" "))
 
-logFile = config.get('logging', 'logFile').strip(" ")
+logFile = config.get('paths', 'logFile').strip(" ")
+gpioWatchLog = config.get('paths', 'gpioWatchLog').strip(" ")
+tempDir = config.get('paths', 'tempDir').strip(" ")
+USBDir = config.get('paths', 'USBDir').strip(" ")
 
 ipWaitTime = int(config.get('misc', 'ipWaitTime').strip(" ")) 
 
@@ -37,10 +40,10 @@ def onError(errorCode, extra):
     elif errorCode == 2:
         print "No options given"
         usage(errorCode)
-    elif errorCode in (3, 4, 5, 7, 8, 9, 10, 11, 13):
+    elif errorCode in (3, 4):
         print extra
         sys.exit(errorCode)
-    elif errorCode in (6, 14):
+    elif errorCode in (5, 6):
         print extra
         return
 
@@ -73,7 +76,10 @@ def db_connect(verbose):
     return cnx
 
 
-def db_create_cursor(cnx):
+def db_create_cursor(cnx, verbose):
+    if verbose:
+        print "\n*** Creating cursor..."
+        
     cursor = cnx.cursor()
     
     return cursor
@@ -84,7 +90,7 @@ def db_close_cursor(cnx, cursor, verbose):
         print "\n*** Closing db cursor..."
     cursor.close()
     if verbose:
-        print "*** Committing db changes..."
+        print "    Committing db changes..."
     cnx.commit()
 
 
@@ -95,6 +101,8 @@ def db_disconnect(cnx, verbose):
 
 
 def db_query(cursor, query, verbose):
+    if verbose:
+        print "\n*** Running query: \n    %s" % query
     cursor.execute(query)
     results = cursor.fetchall()
     
@@ -150,8 +158,6 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                  "AND "
                  "isWorkDay = '1' "
                  "LIMIT 1")
-        if verbose:
-            print "*** Running query: \n    %s" % query
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:
             isWorkDay = True
@@ -167,8 +173,6 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                      "startDate <= '" + str(nextRingDate) + "' AND "
                      "endDate >= '" + str(nextRingDate) + "'"
                      )
-            if verbose:
-                print "*** Running query: \n    %s" % query
             result, rowCount = db_query(cursor, query, verbose)  # run query
             if not rowCount: # nothing found, not on a break
                 isNotOnBreak = True
@@ -184,8 +188,6 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                      "ringTime >= '" + timeNow + "' "
                      "LIMIT 1"
                      )
-            if verbose:
-                print "*** Running query: \n    %s" % query
             result, rowCount = db_query(cursor, query, verbose)  # run query
             if rowCount:
                 if verbose:
@@ -213,8 +215,6 @@ def nextRing(cursor, dateNow, timeNow, verbose):
     query = ("SELECT ringPatternName, ringPattern FROM ringPatterns WHERE " 
              "ringPatternId = '" + str(ringPatternId) + "'"
              )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         for row in result:
@@ -300,9 +300,6 @@ def isRingDay(date, weekNumber, cursor, verbose):
              "AND "
              "isWorkDay = '1' "
              )
-    if verbose:
-        print "<br>\n"
-        print "<br>\n*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if verbose:
         print "<br>\n*** Row count: %s" % rowCount
@@ -326,8 +323,6 @@ def isRingDay(date, weekNumber, cursor, verbose):
                  "startDate <= '" + str(ringDate) + "' AND "
                  "endDate >= '" + str(ringDate) + "'"
                  )
-        if verbose:
-            print "<br>\n*** Running query: \n    %s" % query
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if verbose:
             print "<br>\n*** Row count: %s" % rowCount
@@ -354,8 +349,6 @@ def findRingTimes(date, dayNumber, cursor, verbose):
     query = ("SELECT ringTimeName, weekDays, TIME_FORMAT(ringTime, '%H:%i') as ringTime, ringPatternId FROM ringTimes "
              "ORDER BY ringTime ASC" 
              )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         if verbose:
@@ -378,8 +371,6 @@ def findRingTimes(date, dayNumber, cursor, verbose):
                 query = ("SELECT ringPatternName, ringPattern FROM ringPatterns WHERE " 
                  "ringPatternId = '" + str(ringPatternId) + "'"
                  )
-                if verbose:
-                    print "<br>\n*** Running query: \n    %s" % query
                 result, rowCount = db_query(cursor, query, verbose)  # run query
                 if rowCount:
                     for row in result:
@@ -460,6 +451,39 @@ def writeToFile(logFile, message, verbose):
     with open(logFile, "a") as f:
         f.write("{}\n".format(message))
         
+        
+def splitPath(path, verbose):
+    if verbose:
+        print "\n*** Extracting directory, file name and extension from\n    %s ..." % path
+
+    dirName = os.path.dirname(path)
+    
+    f = os.path.basename(path)
+    fileName = os.path.splitext(f)[0]
+    extension = os.path.splitext(f)[1].strip(".")
+    
+    if verbose:
+        print "    Directory: %s" % dirName
+        print "    File name: %s" % fileName
+        print "    Extension: %s" % extension
+    
+    return dirName, fileName, extension
+
+
+def tableSelection(table, verbose):
+    selection = ""
+    
+    if table == 'days':
+        selection = "dayId, date, dayName, weekNumber, dayNumber, isWorkDay"
+    elif table == 'breaks':
+        selection = "breakId, breakName, startDate, endDate"
+    elif table == 'ringTimes':
+        selection = "ringTimeId, ringTimeName, weekDays, ringTime, ringPatternId"
+    elif table == 'ringPatterns':
+        selection = "ringPatternId, ringPatternName, ringPattern"
+            
+    return selection
+
     
 def initialize_lcd(verbose):
     if verbose:
@@ -590,3 +614,51 @@ def print_to_LCD(lcd, cursor, row, line, message, lcd_columns, verbose):
             time.sleep(0.5)
             lcd.move_left()
             
+
+def displayOnLCD(line_1, line_2, verbose):
+
+    # wake up LCD
+    lcd, lcd_wake_time, lcd_columns = initialize_lcd(verbose)  # load lcd
+    lcd.clear()  # clear screen
+    
+    if not line_1:
+        # get current time
+        dateTimeNow = datetime.now()
+        timeNow = dateTimeNow.strftime('%H:%M')
+        dateNow = str(dateTimeNow.strftime('%Y-%m-%d'))
+    
+        time = dateTimeNow.strftime('%H:%M')
+        day = remove_leading_zero(dateTimeNow.strftime('%d'))
+        month = remove_leading_zero(dateTimeNow.strftime('%m'))
+        year = dateTimeNow.strftime('%Y')
+        line_1 = "%s %s/%s %s" % (time, day, month, year)
+    
+    if not line_2:    
+        # connect to database
+        cnx = db_connect(verbose)
+    
+        # create cursor
+        cursor = db_create_cursor(cnx, verbose)
+    
+        nextRingDay, nextRingDate, nextRingTime, ringTimeName, ringPatternName, ringPattern = nextRing(cursor, dateNow, timeNow, verbose)
+        day = remove_leading_zero(nextRingDate.strftime('%d'))
+        month = remove_leading_zero(nextRingDate.strftime('%m'))
+        year = nextRingDate.strftime('%Y')
+        line_2 = "%s %s/%s %s" % (nextRingTime, day, month, year)
+        
+        # close cursor
+        db_close_cursor(cnx, cursor, verbose)
+        
+        # close db
+        db_disconnect(cnx, verbose)
+    
+    # print to LCD
+    print_to_LCD(lcd, 0, 0, "1", line_1, lcd_columns, verbose)
+    print_to_LCD(lcd, 0, 1, "2", line_2, lcd_columns, verbose)
+    
+    
+    
+    
+    
+    
+    

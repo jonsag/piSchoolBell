@@ -53,7 +53,7 @@ table, th, td {
 cnx = db_connect(verbose)
 
 # create cursor
-cursor = db_create_cursor(cnx)
+cursor = db_create_cursor(cnx, verbose)
 
 # handle inputs
 for key in fs.keys():

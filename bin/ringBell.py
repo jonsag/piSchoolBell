@@ -62,7 +62,7 @@ if verbose:
 cnx = db_connect(verbose)
 
 # create cursor
-cursor = db_create_cursor(cnx)
+cursor = db_create_cursor(cnx, verbose)
 
 # check if day is school day
 isSchoolDay = False 
@@ -72,8 +72,6 @@ query = ("SELECT * FROM days WHERE "
          "date = '" + dateNow + "' AND "
          "isWorkDay = '1'"
          )
-if verbose:
-    print "*** Running query: \n    %s" % query
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount: # result found, is a work day
     isSchoolDay = True
@@ -89,8 +87,6 @@ if isSchoolDay:
              "startDate <= '" + dateNow + "' AND "
              "endDate >= '" + dateNow + "'"
              )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if not rowCount: # nothing found, not on a break
         isNotOnBreak = True
@@ -102,8 +98,6 @@ else: # check if today is an extra school day
     query = ("SELECT * FROM extraDays WHERE " 
          "extraDayDate = '" + dateNow + "'"
          )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         isNotOnBreak = True
@@ -119,8 +113,6 @@ if isNotOnBreak:
     query = ("SELECT weekDays, ringPatternId FROM ringTimes WHERE " 
              "ringTime = '" + timeNow + "'"
              )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         if verbose:
@@ -141,8 +133,6 @@ if isRingTime:
     query = ("SELECT ringPattern FROM ringPatterns WHERE " 
              "ringPatternId = '" + str(ringPatternId) + "'"
              )
-    if verbose:
-        print "*** Running query: \n    %s" % query
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         for row in result:

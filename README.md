@@ -111,7 +111,7 @@ $ sudo ./install.sh
 Initialize mysql
 -----------------------------
 $ sudo mysql -u root -p  
-Use the same password as pi login.  
+Use the same password as login for user pi.  
 Quit with 'exit;'.  
 
 Create database

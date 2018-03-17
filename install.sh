@@ -105,7 +105,7 @@ apt-get install emacs screen locate -y
 
 
 printf "\n\n Installing piSchoolBell app ...\n"
-mkdir -p /home/pi/bin/piSchoolBell
+mkdir -p /home/pi/bin/piSchoolBell/tmp
 cp -r /home/pi/piSchoolBell/bin/* /home/pi/bin/piSchoolBell/
 ln -s gpio-script /home/pi/bin/piSchoolBell/gpio-scripts/7
 ln -s gpio-script /home/pi/bin/piSchoolBell/gpio-scripts/8

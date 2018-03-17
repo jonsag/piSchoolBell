@@ -85,7 +85,7 @@ if connected:
         
         while True: # will keep on running as long as there is days in a month
             
-            cursor = db_create_cursor(cnx) # create cursor
+            cursor = db_create_cursor(cnx, verbose) # create cursor
             
             try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
@@ -130,8 +130,6 @@ if connected:
                      "'" + str(weekNumber) + "', "
                      "'" + str(dayNumber) + "', "
                      "'" + isWorkDay + "')")
-            if verbose:
-                print "*** Running query: \n    %s" % query
             try: # insert date in db
                 result, rowCount = db_query(cursor, query, verbose) # run query
             except (MySQLdb.IntegrityError) as e: # date already in database
@@ -145,8 +143,6 @@ if connected:
                          "WHERE "
                          "date = STR_TO_DATE('" + date + "', '%Y-%m-%d')"
                          )
-                if verbose:
-                    print "*** Running query: \n    %s" % query
                 try: # update item instead
                     result, rowCount = db_query(cursor, query, verbose) # run query
                 except MySQLdb.Error as e: # some other error

@@ -48,7 +48,7 @@ if logging:
 cnx = db_connect(verbose)
 
 # create cursor
-cursor = db_create_cursor(cnx)
+cursor = db_create_cursor(cnx, verbose)
 
 # delete from dates
 if verbose:
@@ -56,8 +56,6 @@ if verbose:
 query = ("SELECT dayId, date FROM days WHERE " 
          "date < '" + dateNow + "'"
          )
-if verbose:
-    print "*** Running query: \n    %s" % query
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount: # result found, is a work day
     if purge and verbose:
@@ -71,8 +69,6 @@ if rowCount: # result found, is a work day
     query = ("DELETE FROM days WHERE "
              "date < '" + dateNow + "'"
              )
-    if purge and verbose:
-        print "\n*** Running query: \n    %s" % query
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount: # result found, is a work day
@@ -91,8 +87,6 @@ if verbose:
 query = ("SELECT breakId, breakName, startDate, endDate FROM breaks WHERE " 
          "endDate < '" + dateNow + "'"
          )
-if verbose:
-    print "*** Running query: \n    %s" % query
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount: # result found, is a work day
     if purge and verbose:
@@ -106,8 +100,6 @@ if rowCount: # result found, is a work day
     query = ("DELETE FROM breaks WHERE "
              "endDate < '" + dateNow + "'"
              )
-    if purge and verbose:
-        print "\n*** Running query: \n    %s" % query
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount: # result found, is a work day
@@ -125,8 +117,6 @@ if verbose:
 query = ("SELECT extraDayId, extraDayName, extraDayDate FROM extraDays WHERE " 
          "extraDayDate < '" + dateNow + "'"
          )
-if verbose:
-    print "*** Running query: \n    %s" % query
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount: # result found, is a work day
     if purge and verbose:
@@ -140,8 +130,6 @@ if rowCount: # result found, is a work day
     query = ("DELETE FROM extraDays WHERE "
              "extraDayDate < '" + dateNow + "'"
              )
-    if purge and verbose:
-        print "\n*** Running query: \n    %s" % query
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount: # result found, is a work day
