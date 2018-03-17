@@ -23,23 +23,6 @@ GRANT ALL ON $DB_NAME.* TO '$DB_USERNAME'@'$DB_SERVER';
 
 USE $DB_NAME;
 
-CREATE TABLE IF NOT EXISTS ringTimes 
-( 
-ringTimeId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-ringTimeName VARCHAR(100) NOT NULL, 
-weekDays INT(7) DEFAULT '1111100', 
-ringTime TIME NOT NULL, 
-ringPatternId INT(11) NOT NULL, 
-CONSTRAINT weekDays_ringTime UNIQUE (weekDays,ringTime) 
-);
-
-CREATE TABLE IF NOT EXISTS ringPatterns 
-( 
-ringPatternId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-ringPatternName VARCHAR(100) NOT NULL, 
-ringPattern VARCHAR(100) NOT NULL, 
-UNIQUE (ringPatternName) 
-);
 
 CREATE TABLE IF NOT EXISTS days 
 ( 
@@ -51,7 +34,8 @@ dayNumber INT(1) NOT NULL,
 isWorkDay BOOLEAN NOT NULL, 
 UNIQUE (date) 
 );
-											
+
+
 CREATE TABLE IF NOT EXISTS breaks 
 ( 
 breakId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
@@ -60,6 +44,27 @@ startDate DATE NOT NULL,
 endDate DATE NOT NULL, 
 UNIQUE (breakName) 
 );
+
+
+CREATE TABLE IF NOT EXISTS ringTimes 
+( 
+ringTimeId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ringTimeName VARCHAR(100) NOT NULL, 
+weekDays INT(7) DEFAULT '1111100', 
+ringTime TIME NOT NULL, 
+ringPatternId INT(11) NOT NULL, 
+CONSTRAINT weekDays_ringTime UNIQUE (weekDays,ringTime) 
+);
+
+
+CREATE TABLE IF NOT EXISTS ringPatterns 
+( 
+ringPatternId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+ringPatternName VARCHAR(100) NOT NULL, 
+ringPattern VARCHAR(100) NOT NULL, 
+UNIQUE (ringPatternName) 
+);
+											
 											
 CREATE TABLE IF NOT EXISTS extraDays 
 ( 
