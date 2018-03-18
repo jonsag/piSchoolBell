@@ -20,7 +20,9 @@ minUptime = int(config.get('misc', 'minUptime').strip(" "))
 logFile = config.get('paths', 'logFile').strip(" ")
 gpioWatchLog = config.get('paths', 'gpioWatchLog').strip(" ")
 tempDir = config.get('paths', 'tempDir').strip(" ")
+
 USBDir = config.get('paths', 'USBDir').strip(" ")
+labelMatch = config.get('paths', 'labelMatch').strip(" ").upper()
 
 ipWaitTime = int(config.get('misc', 'ipWaitTime').strip(" ")) 
 
@@ -40,10 +42,10 @@ def onError(errorCode, extra):
     elif errorCode == 2:
         print "No options given"
         usage(errorCode)
-    elif errorCode in (3, 4):
+    elif errorCode in (3, 4, 5): # stops execution
         print extra
         sys.exit(errorCode)
-    elif errorCode in (5, 6):
+    elif errorCode in (6, 7): # returns to script
         print extra
         return
 
@@ -483,6 +485,28 @@ def tableSelection(table, verbose):
         selection = "ringPatternId, ringPatternName, ringPattern"
             
     return selection
+
+
+def findUSBMountPoint(USBDir, labelMatch, verbose):
+    foundDirs = []
+    
+    if verbose:
+        print "\n*** Searching for USB mounted at %s \n    with label matching %s ..." % (USBDir, labelMatch)
+    
+    for d in os.listdir(USBDir):
+        path = os.path.join(USBDir, d)
+        if d.startswith(labelMatch) and os.path.isdir(path):
+            foundDirs.append(path)
+    
+    if foundDirs:
+        if verbose:
+            if verbose:
+                print "*** Found USB: %s" % foundDirs[0]
+        return foundDirs[0]
+    else:
+        if verbose:
+            print "*** Did not find any USB"
+        return ""
 
     
 def initialize_lcd(verbose):

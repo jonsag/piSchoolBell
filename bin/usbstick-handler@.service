@@ -6,6 +6,6 @@ After=dev-%i.device
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/local/bin/automount /dev/%I
+ExecStart=/usr/local/bin/automount %I
 ExecStop=/usr/bin/pumount /dev/%I
  

@@ -8,7 +8,8 @@ from datetime import datetime
 from shutil import copy, copyfile
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query, 
-                     tempDir, USBDir, logFile, gpioWatchLog, splitPath, displayOnLCD, 
+                     tempDir, USBDir, labelMatch, findUSBMountPoint, logFile, gpioWatchLog, 
+                     splitPath, displayOnLCD, 
                      tableSelection, 
                      onError, usage)
 
@@ -46,6 +47,14 @@ def dumpToFile():
     
     timeNow = datetime.today()
     timeStamp = timeNow.strftime("%Y%m%d%H%M%S")
+    
+    USBPath = findUSBMountPoint(USBDir, labelMatch, verbose)
+    if not USBPath:
+        LCDMessage = "No USB inserted"
+        if verbose:
+            print "\n*** Printing to LCD: \n    %s" % LCDMessage
+        displayOnLCD("", LCDMessage, verbose)
+        onError(5, "No matching USB mounted")
     
     # database
     outFilePath = os.path.join(tempDir, "piSchoolBellDb-%s.csv" % timeStamp)
@@ -97,15 +106,15 @@ def dumpToFile():
     outFile.close()
     
     if verbose:
-        print "\n*** Moving file \n    %s \n    to \n    %s" %(outFilePath, USBDir)
-    copy(outFilePath, USBDir)
+        print "\n*** Moving file \n    %s \n    to \n    %s" %(outFilePath, USBPath)
+    copy(outFilePath, USBPath)
     filesWritten += 1
         
     
     
     # log files                
     dirName, fileName, extension = splitPath(logFile, verbose)
-    logFileName = os.path.join(USBDir, "%s-%s.%s" % (fileName, timeStamp, extension))
+    logFileName = os.path.join(USBPath, "%s-%s.%s" % (fileName, timeStamp, extension))
     if verbose:
         print "\n*** Copying \n    %s \n    to \n    %s ..." % (logFile, logFileName)
     copyfile(logFile, logFileName)
@@ -114,7 +123,7 @@ def dumpToFile():
     if verbose:
         print "    %s" % gpioWatchLog
     dirName, fileName, extension = splitPath(gpioWatchLog, verbose)
-    gpioWatchLogName = os.path.join(USBDir, "%s-%s.%s" % (fileName, timeStamp, extension))
+    gpioWatchLogName = os.path.join(USBPath, "%s-%s.%s" % (fileName, timeStamp, extension))
     if verbose:
         print "\n*** Copying \n    %s \n    to \n    %s ..." % (gpioWatchLog, gpioWatchLogName)
     copyfile(gpioWatchLog, gpioWatchLogName)
@@ -134,14 +143,22 @@ def dumpToFile():
 def readFromFile():
     timeNow = datetime.today()
     timeStamp = timeNow.strftime("%Y%m%d%H%M%S")
+    
+    USBPath = findUSBMountPoint(USBDir, labelMatch, verbose)
+    if not USBPath:
+        LCDMessage = "No USB inserted"
+        if verbose:
+            print "\n*** Printing to LCD: \n    %s" % LCDMessage
+        displayOnLCD("", LCDMessage, verbose)
+        onError(4, "No matching USB mounted")
         
     if verbose:
         print "\n*** Searching for files in %s ..." % USBDir
         
     foundFiles = []
-    for f in os.listdir(USBDir):
+    for f in os.listdir(USBPath):
         if f.startswith("piSchoolBellDb-") and f.endswith(".csv"):
-            foundFiles.append(os.path.join(USBDir, f))
+            foundFiles.append(os.path.join(USBPath, f))
                               
     if foundFiles:
         if verbose:
