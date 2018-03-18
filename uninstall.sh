@@ -40,6 +40,13 @@ rm /etc/apache2/ports.conf.bak
 service apache2 restart
 
 
+printf "\n\n Disabling USB auto mount ...\n"
+rm /etc/udev/rules.d/usbstick.rules
+rm /lib/systemd/system/usbstick-handler@.service
+systemctl daemon-reload
+rm /usr/local/bin/automount
+
+
 printf "\n\n Uninstallation Complete. Some changes might require a reboot. \n\n"
 exit 1
 

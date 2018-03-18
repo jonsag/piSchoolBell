@@ -38,7 +38,7 @@ for option, argument in myopts:
         
         
 if logging:
-    writeToFile(logFile, "Get days started", verbose)
+    writeToFile(logFile, "Get calendar: Started", verbose)
         
 
 timeNow = date.today()
@@ -58,7 +58,11 @@ if verbose:
 connected = True
 
 if connected:
-    cnx = db_connect(verbose) # connect to database
+    # connect to database
+    cnx = db_connect(verbose)
+    
+    # create cursor
+    cursor = db_create_cursor(cnx, verbose)
     
     for i in range(0, 12, 1):
         lookupDate = timeNow + relativedelta(months=i)
@@ -84,9 +88,7 @@ if connected:
         day = 0
         
         while True: # will keep on running as long as there is days in a month
-            
-            cursor = db_create_cursor(cnx, verbose) # create cursor
-            
+                        
             try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
             except: # month finished
@@ -153,28 +155,30 @@ if connected:
                     updatedDays = updatedDays + rowCount
             else:
                 addedDays = addedDays + rowCount
-                            
-            db_close_cursor(cnx, cursor, verbose) # close cursor and commit changes
-                
+                                            
             day += 1  # add one day and test it
         
         if verbose:
             print "\n*** Cache time: %s" % cacheTime
         
-    db_disconnect(cnx, verbose) # disconnect from database
+    # close cursor
+    db_close_cursor(cnx, cursor, verbose)
+    
+    # close db
+    db_disconnect(cnx, verbose)
     
 if logging:
     if addedDays:
-        writeToFile(logFile, "%s days added" % addedDays, verbose)
+        writeToFile(logFile, "Get calendar: %s days added" % addedDays, verbose)
     else:
-        writeToFile(logFile, "No days added", verbose)
+        writeToFile(logFile, "Get calendar: No days added", verbose)
         
     if updatedDays:
-        writeToFile(logFile, "%s days updated" % updatedDays, verbose)
+        writeToFile(logFile, "Get calendar: %s days updated" % updatedDays, verbose)
     else:
-        writeToFile(logFile, "No days updated", verbose)
+        writeToFile(logFile, "Get calendar: No days updated", verbose)
         
-    writeToFile(logFile, "Get days ended", verbose)
+    writeToFile(logFile, "Get calendar: Ended", verbose)
 
 
 

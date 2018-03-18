@@ -42,7 +42,7 @@ timeNow = date.today()
 dateNow = timeNow.strftime("%Y-%m-%d")
 
 if logging:
-    writeToFile(logFile, "Purge database started", verbose)
+    writeToFile(logFile, "Purge database: Started", verbose)
 
 # connect to database
 cnx = db_connect(verbose)
@@ -75,7 +75,7 @@ if rowCount: # result found, is a work day
             if verbose:
                 print "*** %s dates deleted" % rowCount
             if logging:
-                writeToFile(logFile, "%s days deleted" % rowCount, verbose)
+                writeToFile(logFile, "Purge database: %s days deleted" % rowCount, verbose)
 else:
     if verbose:
         print "*** No obsolete dates found"
@@ -106,7 +106,7 @@ if rowCount: # result found, is a work day
             if verbose:
                 print "*** %s breaks deleted" % rowCount
             if logging:
-                writeToFile(logFile, "%s breaks deleted" % rowCount, verbose)
+                writeToFile(logFile, "Purge database: %s breaks deleted" % rowCount, verbose)
 else:
     if verbose:
         print "*** No obsolete breaks found"
@@ -136,7 +136,7 @@ if rowCount: # result found, is a work day
             if verbose:
                 print "*** %s extra days deleted" % rowCount
             if logging:
-                writeToFile(logFile, "%s extra days deleted" % rowCount, verbose)
+                writeToFile(logFile, "Purge database: %s extra days deleted" % rowCount, verbose)
 else:
     if verbose:
         print "*** No obsolete extra days found"
@@ -148,4 +148,4 @@ db_close_cursor(cnx, cursor, verbose)
 db_disconnect(cnx, verbose)
 
 if logging:
-    writeToFile(logFile, "Purge database ended", verbose)
+    writeToFile(logFile, "Purge database: Ended", verbose)
