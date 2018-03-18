@@ -191,9 +191,9 @@ cp /home/pi/piSchoolBell/usbstick.rules /etc/udev/rules.d/
 
 ln -s /home/pi/bin/piSchoolBell/usbstick-handler@.service /lib/systemd/system/usbstick-handler@.service
 chmod 644 /lib/systemd/system/usbstick-handler@.service
-systemctl daemon-reload  
-systemctl enable usbstick-handler@.service  
-systemctl start usbstick-handler@.service
+#systemctl daemon-reload  
+#systemctl enable usbstick-handler@.service  
+#systemctl start usbstick-handler@.service
 
 #cp /home/pi/piSchoolBell/cpmount /usr/local/bin/
 cp /home/pi/piSchoolBell/automount /usr/local/bin/
