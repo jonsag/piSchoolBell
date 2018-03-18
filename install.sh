@@ -6,13 +6,11 @@
 clear
 
 
-
 if [[ `whoami` != "root" ]]
 then
   printf "\n\n Script must be run as root. \n\n"
   exit 1
 fi
-
 
 
 OS_VERSION=$(cat /etc/os-release | grep VERSION=)
@@ -21,7 +19,6 @@ then
   printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
   exit 1
 fi
-
 
 
 APACHE_INSTALLED=$(which apache2)
@@ -45,7 +42,6 @@ else
 fi
 
 
-
 MYSQL_INSTALLED=$(which mysql)
 if [[ "$MYSQL_INSTALLED" == "" ]]
 then
@@ -62,7 +58,6 @@ then
 else
   printf "\n\n MYSQL is already installed. \n"
 fi
-
 
 
 PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python-mysql*)
@@ -83,25 +78,20 @@ else
 fi
 
 
-
 printf "\n\n Installing the rest ...\n"
 apt-get install python-dev python-setuptools build-essential python-smbus python-pip -y
-
 
 
 printf "\n\n easy_install ...\n"
 easy_install -U distribute
 
 
-
 printf "\n\n pip ...\n"
 pip install RPi.GPIO python-dateutil netifaces
 
 
-
 printf "\n\n Installing other stuff ...\n"
 apt-get install emacs screen locate -y
-
 
 
 printf "\n\n Installing piSchoolBell app ...\n"
@@ -113,7 +103,6 @@ touch /home/pi/bin/piSchoolBell/piSchoolBell.log
 chown pi:pi -R /home/pi/bin/piSchoolBell
 
 
-
 printf "\n\n Installing piSchoolBell www ...\n"
 mkdir /var/www/piSchoolBell
 cp www/* /var/www/piSchoolBell/
@@ -121,7 +110,6 @@ chown -R pi:www-data /var/www/piSchoolBell
 ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
 chmod 755 -R /var/www/piSchoolBell/*.py
-
 
 
 printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
@@ -133,7 +121,6 @@ make --directory /home/pi/piSchoolBell/gpio-watch
 make --directory /home/pi/piSchoolBell/gpio-watch install
 
 
-
 printf "\n\n Setting up gpio-watch ...\n"
 touch /home/pi/bin/piSchoolBell/gpio-watch.log
 chown pi:pi /home/pi/bin/piSchoolBell/gpio-watch.log
@@ -142,7 +129,6 @@ chmod 644 /lib/systemd/system/gpio.service
 systemctl daemon-reload  
 systemctl enable gpio.service  
 systemctl start gpio.service
-
 
 
 printf "\n\n Installing cron job ...\n"
@@ -163,15 +149,12 @@ CRON
   fi
 
 
-
 printf "\n\n Set up apache to run cgi ...\n"
 a2dismod mpm_event
 a2enmod mpm_prefork cgi
 
 
-
 printf "\n\n Configuring Apache ...\n"
-
   cat >> /etc/apache2/ports.conf <<PORTS
 Listen 8080
 PORTS
@@ -197,18 +180,43 @@ a2ensite piSchoolBell.conf
 service apache2 restart
 
 
+printf "\n\n Setting up USB auto mount ...\n"
+#mkdir /media/usb1
+#mkdir /media/usb2
+#mkdir /media/usb3
+#mkdir /media/usb4
+
+apt-get install pmount -y
+cp /home/pi/piSchoolBell/usbstick.rules /etc/udev/rules.d/
+
+ln -s /home/pi/bin/piSchoolBell/usbstick-handler@.service /lib/systemd/system/usbstick-handler@.service
+chmod 644 /lib/systemd/system/usbstick-handler@.service
+systemctl daemon-reload  
+systemctl enable usbstick-handler@.service  
+systemctl start usbstick-handler@.service
+
+#cp /home/pi/piSchoolBell/cpmount /usr/local/bin/
+cp /home/pi/piSchoolBell/automount /usr/local/bin/
+
 
 printf "\n\n Some after adjustments ...\n"
-cp /root/.bashrc /root/.bashrc.old
-
 cat >> /home/pi/.bashrc <<ALIAS
 alias list='ls -alFh'
 ALIAS
 
+cp /root/.bashrc /root/.bashrc.old
 cp /home/pi/.bashrc /root/.bashrc
 
 
 
 printf "\n\n Installation Complete. Some changes might require a reboot. \n\n"
 exit 1
+
+
+
+
+
+
+
+
 

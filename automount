@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PART=$1
+FS_LABEL=`lsblk -o name,label | grep ${PART} | awk '{print $2}'`
+
+if [ -z ${FS_LABEL} ]
+then
+    /usr/bin/pmount --umask 000 --noatime -w --sync /dev/${PART} /media/${PART}
+else
+    /usr/bin/pmount --umask 000 --noatime -w --sync /dev/${PART} /media/${FS_LABEL}_${PART}
+fi
