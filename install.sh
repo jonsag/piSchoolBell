@@ -183,13 +183,15 @@ service apache2 restart
 printf "\n\n Setting up USB auto mount ...\n"
 apt-get install pmount -y
 
-ln -s /home/pi/piSchoolBell/usbstick.rules /etc/udev/rules.d/usbstick.rules
+ln -s /home/pi/bin/piSchoolBell/usbstick.rules /etc/udev/rules.d/usbstick.rules
+udevadm control --reload-rules
+#udevadm trigger
 
 ln -s /home/pi/bin/piSchoolBell/usbstick-handler@.service /lib/systemd/system/usbstick-handler@.service
 systemctl daemon-reload  
 
-ln -s /home/pi/piSchoolBell/automount /usr/local/bin/automount
-
+ln -s /home/pi/bin/piSchoolBell/automount /usr/local/bin/automount
+ln -s /home/pi/bin/piSchoolBell/autoumount /usr/local/bin/autoumount
 
 printf "\n\n Some after adjustments ...\n"
 cat >> /home/pi/.bashrc <<ALIAS

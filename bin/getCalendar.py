@@ -143,7 +143,7 @@ if connected:
                          "dayNumber = '" + str(dayNumber) + "', "
                          "isWorkDay = '" + isWorkDay + "' " 
                          "WHERE "
-                         "date = STR_TO_DATE('" + date + "', '%Y-%m-%d')"
+                         "date = '" + date + "'"
                          )
                 try: # update item instead
                     result, rowCount = db_query(cursor, query, verbose) # run query
@@ -160,6 +160,17 @@ if connected:
         
         if verbose:
             print "\n*** Cache time: %s" % cacheTime
+            print
+            
+            if addedDays:
+                print "Get calendar: %s days added" % addedDays
+            else:
+                print "Get calendar: No days added"
+                
+            if updatedDays:
+                print "Get calendar: %s days updated" % updatedDays
+            else:
+                print "Get calendar: No days updated"
         
     # close cursor
     db_close_cursor(cnx, cursor, verbose)

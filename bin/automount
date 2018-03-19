@@ -6,6 +6,8 @@ FS_LABEL=`lsblk -o name,label | grep ${PART} | awk '{print $2}'`
 if [ -z ${FS_LABEL} ]
 then
     /usr/bin/pmount --umask 000 --noatime -w --sync /dev/${PART} /media/${PART}
+    /home/pi/bin/piSchoolBell/printToLcd.py -1 ${PART} -2 "USB mounted"
 else
     /usr/bin/pmount --umask 000 --noatime -w --sync /dev/${PART} /media/${FS_LABEL}_${PART}
+    /home/pi/bin/piSchoolBell/printToLcd.py -1 ${FS_LABEL}_${PART} -2 "USB mounted" 
 fi

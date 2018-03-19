@@ -7,5 +7,5 @@ After=dev-%i.device
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/local/bin/automount %I
-ExecStop=/usr/bin/pumount /dev/%I
+ExecStop=/usr/local/bin/autoumount /dev/%I
  
