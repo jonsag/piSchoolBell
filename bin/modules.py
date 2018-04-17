@@ -491,7 +491,7 @@ def findUSBMountPoint(USBDir, labelMatch, verbose):
     foundDirs = []
     
     if verbose:
-        print "\n*** Searching for USB mounted at %s \n    with label matching %s ..." % (USBDir, labelMatch)
+        print "\n*** Searching for USB mounted at %s \n    with label matching '%s' ..." % (USBDir, labelMatch)
     
     for d in os.listdir(USBDir):
         path = os.path.join(USBDir, d)
