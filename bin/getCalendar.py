@@ -3,7 +3,7 @@
 # Encoding: UTF-8
 
 from modules import (db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query,
-                     onError, getDayName, writeToFile, logFile, 
+                     onError, getDayName, writeToFile, logFile, internetAccess, testAddress,
                      drygUri, drygPath)
 
 import getopt, sys, json, MySQLdb
@@ -36,10 +36,8 @@ for option, argument in myopts:
     elif option in ('-v', '--verbose'):
         verbose = True
         
-        
 if logging:
     writeToFile(logFile, "Get calendar: Started", verbose)
-        
 
 timeNow = date.today()
 dateNow = timeNow.strftime("%Y-%m-%d")
@@ -55,7 +53,7 @@ if verbose:
     
 # getting calendars for twelve months
 # check if connected to internet
-connected = True
+connected = internetAccess(testAddress, verbose)
 
 if connected:
     # connect to database
@@ -87,11 +85,11 @@ if connected:
         
         day = 0
         
-        while True: # will keep on running as long as there is days in a month
+        while True:  # will keep on running as long as there is days in a month
                         
             try:  # does this month have this day
                 date = parsedCalendar["dagar"][day]["datum"]
-            except: # month finished
+            except:  # month finished
                 break
             
             weekNumber = int(parsedCalendar["dagar"][day]["vecka"])
@@ -119,7 +117,7 @@ if connected:
                 if holiday:
                     print "    Holiday: %s" % holiday
                     
-            if workFreeDay == "Nej": # true if this is a school day
+            if workFreeDay == "Nej":  # true if this is a school day
                 isWorkDay = "1"
             else:
                 isWorkDay = "0"
@@ -132,9 +130,9 @@ if connected:
                      "'" + str(weekNumber) + "', "
                      "'" + str(dayNumber) + "', "
                      "'" + isWorkDay + "')")
-            try: # insert date in db
-                result, rowCount = db_query(cursor, query, verbose) # run query
-            except (MySQLdb.IntegrityError) as e: # date already in database
+            try:  # insert date in db
+                result, rowCount = db_query(cursor, query, verbose)  # run query
+            except (MySQLdb.IntegrityError) as e:  # date already in database
                 if verbose:
                     print "*** Date already in table"
                 query = ("UPDATE days SET "
@@ -145,9 +143,9 @@ if connected:
                          "WHERE "
                          "date = '" + date + "'"
                          )
-                try: # update item instead
-                    result, rowCount = db_query(cursor, query, verbose) # run query
-                except MySQLdb.Error as e: # some other error
+                try:  # update item instead
+                    result, rowCount = db_query(cursor, query, verbose)  # run query
+                except MySQLdb.Error as e:  # some other error
                     if verbose:
                         print "*** Error: \n    %s" % e
                     sys.exit()
@@ -178,6 +176,10 @@ if connected:
     # close db
     db_disconnect(cnx, verbose)
     
+else:
+    if verbose:
+        print "\n*** Could not connect to internet"
+    
 if logging:
     if addedDays:
         writeToFile(logFile, "Get calendar: %s days added" % addedDays, verbose)
@@ -189,25 +191,8 @@ if logging:
     else:
         writeToFile(logFile, "Get calendar: No days updated", verbose)
         
+    if not connected:
+        writeToFile(logFile, "Get calendar: Could not connect to internet", verbose)
+        
     writeToFile(logFile, "Get calendar: Ended", verbose)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
