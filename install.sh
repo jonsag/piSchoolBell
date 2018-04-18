@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Die on any errors
+set -e
 
-#set -e
 clear
 
 

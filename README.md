@@ -24,9 +24,10 @@ Parts list
 1 x Switch, kjell.com Art#36016  
 1 x Casing for rpi, kjell.com Art#89030  
 1 x Casing for relay, kjell.com Art#89014
+1 x RTC-module, kjell.com Art#87984    
 Raspberry PI GPIO header connector, kjell.com Art#87915, or breakout board  
 Wiring, cables  
-PCB board, kjell.com Art#89416 or Art#89435  
+PCB board, kjell.com Art#89416 or Art#89435
 Soldering material  
 
 The build
