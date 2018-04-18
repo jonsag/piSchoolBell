@@ -1,0 +1,27 @@
+#!/bin/bash
+
+gpio=$1
+
+if [ gpio == 9]; then
+
+	if [ "$2" == "-v" ]; then
+	   arg2=$2
+	
+	   echo "/home/pi/bin/piSchoolBell/databaseReadWrite.py -d $arg2"
+	   python /home/pi/bin/piSchoolBell/databaseReadWrite.py -d $arg2
+	else
+	   python /home/pi/bin/piSchoolBell/databaseReadWrite.py -d #>> /dev/null 2>&1
+	fi
+
+elif [ gpio == 9]; then
+
+	if [ "$2" == "-v" ]; then
+	   arg2=$2
+	
+	   echo "/home/pi/bin/piSchoolBell/databaseReadWrite.py -r $arg2"
+	   python /home/pi/bin/piSchoolBell/databaseReadWrite.py -r $arg2
+	else
+	   python /home/pi/bin/piSchoolBell/databaseReadWrite.py -r #>> /dev/null 2>&1
+	fi
+
+fi

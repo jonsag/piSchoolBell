@@ -81,6 +81,7 @@ $ sudo raspi-config
 4 I2	Set time zone  
 4 I3	Choose keyboard layout    
 4 I4	Set wifi country  
+5 P5	Enable I2C interface  
 7 A1	Expand file system to use whole SD-card  
 7 A3	Set memory split to 16  
 
@@ -107,6 +108,19 @@ Run install script
 -----------------------------
 $ cd /home/pi/piSchoolBell  
 $ sudo ./install.sh  
+
+Set hardware clock
+-----------------------------
+Check that time and date is correct  
+$ date  
+
+Set hardware clock  
+$ sudo hwclock -w
+
+Comment out the following lines in /lib/udev/hwclock-set  
+	if [ -e /run/systemd/system ] ; then  
+    	exit 0  
+	fi  
 
 Initialize mysql
 -----------------------------
