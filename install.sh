@@ -79,7 +79,7 @@ fi
 
 
 printf "\n\n Installing the rest ...\n"
-apt-get install python-dev python-setuptools build-essential python-smbus python-pip -y
+apt-get install python-dev python-setuptools build-essential python-smbus python-pip at -y
 
 
 printf "\n\n easy_install ...\n"

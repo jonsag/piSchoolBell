@@ -224,6 +224,12 @@ Run some tests
 -----------------------------
 /home/pi/bin/piSchoolBell/printToLcd.py -v
 
+i2cdetect -y 1
+
+cat /proc/driver/rtc
+
+
+
 
 
 
