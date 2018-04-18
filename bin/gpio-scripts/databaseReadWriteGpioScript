@@ -2,7 +2,7 @@
 
 gpio=$1
 
-if [ gpio == 9]; then
+if [ $gpio == "9" ]; then
 
 	if [ "$2" == "-v" ]; then
 	   arg2=$2
@@ -13,7 +13,7 @@ if [ gpio == 9]; then
 	   python /home/pi/bin/piSchoolBell/databaseReadWrite.py -d #>> /dev/null 2>&1
 	fi
 
-elif [ gpio == 9]; then
+elif [ $gpio == "10" ]; then
 
 	if [ "$2" == "-v" ]; then
 	   arg2=$2
