@@ -125,7 +125,9 @@ $ sudo /home/pi/piSchoolBell/www-secure-setup.sh
 
 Download dates
 -----------------------------
-/home/pi/bin/piSchoolBell/getCalendar.py -v  
+$ /home/pi/bin/piSchoolBell/getCalendar.py -v  
+
+See 'Issues' below if you get problem with this  
 
 Add test data, if wanted (otherwise some things will act funny until you create your own entries)  
 -----------------------------
@@ -137,13 +139,14 @@ Use the raspi-config you used earlier.
 
 If you are adding the RTC module
 =============================
+
+Enable i2c
+---------------------------------
 $ sudo raspi-config 
 
 5 P5	Enable I2C interface  
 
 $ ./install-rtc.sh  
-
-Reboot
 
 Set hardware clock
 -----------------------------
@@ -157,6 +160,8 @@ Comment out the following lines in /lib/udev/hwclock-set
 	if [ -e /run/systemd/system ] ; then  
     	exit 0  
 	fi 
+	
+Reboot  
 
 Configuration
 =============================
@@ -183,8 +188,8 @@ If it is a '-' it is not connected
 
 Issues
 =============================
-If you get problems with Adafruit_CharLCD failing to write to LCD.  
-$ cd /home/pi/piSchoolBell/Adafruit_CharLCD  
+If you get problems with Adafruit_Python_CharLCD failing to write to LCD.  
+$ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
 $ sudo python setup.py install
  
 

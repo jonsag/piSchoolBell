@@ -12,6 +12,7 @@ then
   exit 1
 fi
 
+
 printf "\n\n Installing real-time-clock ...\n"
 #echo "rtc-ds1307" >> /etc/modules
 #sed -i '/exit 0/i echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device\nhwclock -s' /etc/rc.local
