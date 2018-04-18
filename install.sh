@@ -93,14 +93,6 @@ pip install RPi.GPIO python-dateutil netifaces
 printf "\n\n Installing other stuff ...\n"
 apt-get install emacs screen locate -y
 
-printf "\n\n Installing real-time-clock ...\n"
-#echo "rtc-ds1307" >> /etc/modules
-#sed -i '/exit 0/i echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device\nhwclock -s' /etc/rc.local
-sed -i '/exit 0/i /sbin/hwclock -s' /etc/rc.local
-echo "dtoverlay=i2c-rtc,ds3231" >> /boot/config.txt
-echo "HWCLOCKACCESS=no" >> /etc/default/hwclock
-apt-get purge fake-hwclock -y
-update-rc.d -f fake-hwclock remove
 
 printf "\n\n Installing piSchoolBell app ...\n"
 mkdir -p /home/pi/bin/piSchoolBell/tmp
