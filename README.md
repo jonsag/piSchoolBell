@@ -166,7 +166,7 @@ Reboot
 Configuration
 =============================
 Press button on unit to display its IP-address on the second line of the LCD.  
-Connect to the unit by pointing your browser to 'http://<IP-address>:8080'.  
+Connect to the unit by pointing your browser to 'http://'IP-address':8080'.  
 Edit or add breaks, ring times and ring patterns.  
 
 Automatic tasks
