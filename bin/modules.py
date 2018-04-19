@@ -42,7 +42,7 @@ def onError(errorCode, extra):
     elif errorCode == 2:
         print "No options given"
         usage(errorCode)
-    elif errorCode in (3, 4, 5): # stops execution
+    elif errorCode in (3, 4, 5, 8): # stops execution
         print extra
         sys.exit(errorCode)
     elif errorCode in (6, 7): # returns to script

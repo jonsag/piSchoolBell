@@ -318,7 +318,7 @@ def pageBody():
                 isChecked = 'checked="checked"'
                 
             print ('<input type="checkbox" name="%s" value="1" %s> %s<br>' 
-                    % getDayName(dayNumber, verbose), isChecked, getDayName(dayNumber, verbose)
+                    % (getDayName(dayNumber, verbose), isChecked, getDayName(dayNumber, verbose))
                     )
             
         print '<br><br>'

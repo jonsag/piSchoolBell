@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 # Encoding: UTF-8
 
-import getopt, sys
+import getopt, sys, MySQLdb
 
 import netifaces as ni
 
 from modules import (internetAccess, testAddress, 
                      button1Gpio, button2Gpio, displayOnLCD, 
+                     db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query, 
                      onError, usage)
 
 try:
@@ -66,8 +67,37 @@ if gpio:
     else:
         onError(3, "No action for gpio %s" % gpio)
 
-# displaying ip on lcd
+# displaying info on lcd
 def button1Pressed():
+    # find days in database
+    line_1 = "No data"
+    
+    # connect to database
+    cnx = db_connect(verbose)
+    
+    # create cursor
+    cursor = db_create_cursor(cnx, verbose)
+    
+    query = "SELECT date, DATEDIFF(date,CURDATE())  FROM days ORDER BY date DESC LIMIT 1"
+    result, rowCount = db_query(cursor, query, verbose)  # run query
+    try:
+        result, rowCount = db_query(cursor, query, verbose)  # run query
+    except MySQLdb.Error as e:
+        print "\n<br>Error: Could not get number of days \n<br>%s" % e
+        print "\n<br>SQL: %s" % query
+    else:
+        if rowCount:
+            if verbose:
+                print "\n*** Got a result"
+            for row in result:
+                lastDate = row[0]
+                daysToEnd = row[1]
+            if verbose:
+                print "    Days in db: %s" % daysToEnd
+                print "    Days in db: %s" % lastDate
+                
+            
+            line_1 = "%s, %s" % (daysToEnd, lastDate.strftime("%Y-%m-%d"))
     
     # find this devices ip address
     interfaceIPs = []
@@ -110,12 +140,18 @@ def button1Pressed():
     else:
         line_2 = "-%s" % line_2
         
-    return line_2
+    return line_1, line_2
+
+    # close cursor
+    db_close_cursor(cnx, cursor, verbose)
+
+    # close db
+    db_disconnect(cnx, verbose)
         
 
 if __name__ == '__main__':
     if button1:
-        line_2 = button1Pressed()
+        line_1, line_2 = button1Pressed()
     displayOnLCD(line_1, line_2, verbose)
     
 

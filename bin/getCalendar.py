@@ -15,9 +15,10 @@ from urllib2 import urlopen
 
 try:
     myopts, args = getopt.getopt(sys.argv[1:],
+                                 'm:'
                                  'c'
                                  'vh',
-                                 ['cron', 'verbose', 'help'])
+                                 ['months=', 'cron', 'verbose', 'help'])
 
 except getopt.GetoptError as e:
     onError(1, str(e))
@@ -27,11 +28,17 @@ if len(sys.argv) == 1:  # no options passed
     
 addedDays = 0
 updatedDays = 0
+months = 12
 logging = False
 verbose = False
     
 for option, argument in myopts:
-    if option in ('-c', '--cron'):
+    if option in ('-m', '--months'):
+        try:
+            months = int(argument)
+        except:
+            onError(8, "You must state a number as argument to -m")
+    elif option in ('-c', '--cron'):
         logging = True
     elif option in ('-v', '--verbose'):
         verbose = True
@@ -52,6 +59,7 @@ if verbose:
     print "*** Calendar source: %s" % calendarAddress
     
 # getting calendars for twelve months
+
 # check if connected to internet
 connected = internetAccess(testAddress, verbose)
 
@@ -62,7 +70,7 @@ if connected:
     # create cursor
     cursor = db_create_cursor(cnx, verbose)
     
-    for i in range(0, 12, 1):
+    for i in range(0, months, 1):
         lookupDate = timeNow + relativedelta(months=i)
         lookupYear = lookupDate.strftime("%Y")
         lookupMonth = lookupDate.strftime("%m")

@@ -24,7 +24,7 @@ Parts list
 1 x Switch, kjell.com Art#36016  
 1 x Casing for rpi, kjell.com Art#89030  
 1 x Casing for relay, kjell.com Art#89014
-1 x RTC-module, kjell.com Art#87984    
+1 x RTC-module, kjell.com Art#87984  
 Raspberry PI GPIO header connector, kjell.com Art#87915, or breakout board  
 Wiring, cables  
 PCB board, kjell.com Art#89416 or Art#89435
@@ -166,7 +166,7 @@ Reboot
 Configuration
 =============================
 Press button on unit to display its IP-address on the second line of the LCD.  
-Connect to the unit by pointing your browser to 'http://IP-address:8080'.  
+Connect to the unit by pointing your browser to 'http://<IP-address>:8080'.  
 Edit or add breaks, ring times and ring patterns.  
 
 Automatic tasks
@@ -180,11 +180,37 @@ Normally the LCD display shows:
 Line 1: HH:MM YYYY-mm-dd, current time and date  
 Line 2: HH:MM YYYY-mm-dd, the time and date for the next bell ring  
 
-By pressing button 1, line 2 will change to displaying the IP to which you can connect to configure the unit.  
-If it shows 'Not connected' it has not been able to acquire an IP address.
-The first character on line 2 shows if the unit can access internet.  
-If it is a '*' it is connected.  
-If it is a '-' it is not connected  
+By pressing button 1, display will show:    
+	Line 1: days left in db, last date in db  
+	Line 2: IP-address  
+		If it shows 'Not connected' it has not been able to acquire an IP address.
+		The first character on line 2 shows if the unit can access internet.  
+		If it is a '*' it is connected.  
+		If it is a '-' it is not connected  
+		
+Pressing button 2 will make the LCD go back to showing default info  
+
+USE THE BELOW WITH CAUTION, NOT TESTED ENOUGH
+-----------------------------
+To make a database dump to USB-stick:  
+Format a stick to fat32 and label it 'PISCHOOLBEL'    
+Insert into Pi  
+	Display will show:  
+		The USBs label and drive letter  
+		'USB mounted'  
+Press button 3  
+	Display will confirm writing  
+	When finished display shows number of files written  
+	
+To read back edited file to database  
+Insert the same USB-stick as above  
+	Display will show:  
+		The USBs label and drive letter  
+		'USB mounted'  
+Press button 4  
+	Display will confirm reading  
+	...  
+Not implemented yet  
 
 Issues
 =============================

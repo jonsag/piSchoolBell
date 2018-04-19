@@ -58,6 +58,8 @@ def dumpToFile():
             print "\n*** Printing to LCD: \n    %s" % LCDMessage   
         displayOnLCD("", LCDMessage, verbose)
         onError(5, "No matching USB mounted")
+    else:
+        displayOnLCD("", "Writing files...", verbose)
     
     # database
     outFilePath = os.path.join(tempDir, "piSchoolBellDb-%s.csv" % timeStamp)
@@ -167,6 +169,8 @@ def readFromFile():
             print "\n*** Printing to LCD: \n    %s" % LCDMessage
         displayOnLCD("", LCDMessage, verbose)
         onError(4, "No matching USB mounted")
+    else:
+        displayOnLCD("", "Reading files...", verbose)
         
     if verbose:
         print "\n*** Searching for files in %s ..." % USBDir
