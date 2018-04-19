@@ -157,9 +157,9 @@ Set hardware clock
 $ sudo hwclock -w
 
 Comment out the following lines in /lib/udev/hwclock-set  
-	if [ -e /run/systemd/system ] ; then  
-    	exit 0  
-	fi 
+&nbsp;&nbsp;&nbsp;&nbsp;if [ -e /run/systemd/system ] ; then  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit 0  
+&nbsp;&nbsp;&nbsp;&nbsp;fi 
 	
 Reboot  
 
@@ -181,42 +181,42 @@ Line 1: HH:MM YYYY-mm-dd, current time and date
 Line 2: HH:MM YYYY-mm-dd, the time and date for the next bell ring  
 
 By pressing button 1, display will show:    
-	Line 1: days left in db, last date in db  
-	Line 2: IP-address  
-		If it shows 'Not connected' it has not been able to acquire an IP address.
-		The first character on line 2 shows if the unit can access internet.  
-		If it is a '*' it is connected.  
-		If it is a '-' it is not connected  
+&nbsp;&nbsp;&nbsp;&nbsp;Line 1: days left in db, last date in db  
+&nbsp;&nbsp;&nbsp;&nbsp;Line 2: IP-address  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it shows 'Not connected' it has not been able to acquire an IP address.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The first character on line 2 shows if the unit can access internet.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '*' it is connected.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '-' it is not connected  
 		
 Pressing button 2 will make the LCD go back to showing default info  
 
 USE THE BELOW WITH CAUTION, NOT TESTED ENOUGH
 -----------------------------
-To make a database dump to USB-stick:  
+To dump database and logs to USB-stick:  
 Format a stick to fat32 and label it 'PISCHOOLBEL'    
 Insert into Pi  
-	Display will show:  
-		The USBs label and drive letter  
-		'USB mounted'  
+&nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The USBs label and drive letter  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB mounted'  
 Press button 3  
-	Display will confirm writing  
-	When finished display shows number of files written  
+&nbsp;&nbsp;&nbsp;&nbsp;Display will confirm writing  
+&nbsp;&nbsp;&nbsp;&nbsp;When finished display shows number of files written  
 	
 Remove USB  
-	Display will show:  
-		drive letter  
-		'USB umounted'  
+&nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drive letter  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB umounted'  
 		
-Edit the files with the highest data and time on the stick  
+Edit the database file with the highest date and time on the stick  
 	
 To read back edited file to database  
 Insert the same USB-stick as above  
-	Display will show:  
-		The USBs label and drive letter  
-		'USB mounted'  
+&nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The USBs label and drive letter  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB mounted'  
 Press button 4  
-	Display will confirm reading  
-	...  
+&nbsp;&nbsp;&nbsp;&nbsp;Display will confirm reading  
+&nbsp;&nbsp;&nbsp;&nbsp;...  
 Not implemented yet  
 
 Issues
