@@ -1,38 +1,42 @@
 # piSchoolBell
 This runs a Raspberry Pi as a controller for a school bell.  
 It makes the school bell ring at the right times taking the calendar into consideration.  
-Also there is a LCD screen to visualize time etc.  
+Also there is an LCD screen to visualize time, database stats, upcoming rings etc.  
 
-Administration of the school bell is done via a web page.  
+Administration of the school bell is done via a web UI.  
 
 It is written entirely in python.  
+
+It makes use of the Adafruit_Python_CharLCD library. (https://github.com/adafruit/Adafruit_Python_CharLCD)  
+
+Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. (https://github.com/larsks/gpio-watch)  
 
 Hardware setup
 =============================
 
 Parts list
 -----------------------------
-1 x Raspberry Pi 3, kjell.com Art#88000 or Art#88100  
-1 x LCD display, kjell.com Art#90215  
-1 x Power adapter, kjell.com Art#88525  
+1 x Raspberry Pi 3 B+, kjell.com Art#88100 (could be any of the later models)  
+1 x LCD display, kjell.com Art#90215 (16x2 characters, based on the HD44780 chip)  
+1 x USB micro power adapter, kjell.com Art#88525  
 1 x Micro SD card, kjell.com Art#97600  
 1 x 10k potentiometer, kjell.com Art#90633  
 1 x 5V relay module, kjell.com Art#87878  
-2 x Push button, kjell.com Art#36023  
-2 x 10k resistor  
-2 x 1k resistor  
+4 x Push button, kjell.com Art#36023  
+4 x 10k resistor  
+4 x 1k resistor  
 1 x Switch, kjell.com Art#36016  
 1 x Casing for rpi, kjell.com Art#89030  
-1 x Casing for relay, kjell.com Art#89014
+1 x Casing for relay, kjell.com Art#89014  
 1 x RTC-module, kjell.com Art#87984  
-Raspberry PI GPIO header connector, kjell.com Art#87915, or breakout board  
+GPIO header connector, kjell.com Art#87915 (or breakout board)  
 Wiring, cables  
-PCB board, kjell.com Art#89416 or Art#89435
+PCB board, kjell.com Art#89416 or Art#89435 (or a breadboard, just to set it up)  
 Soldering material  
 
 The build
 -----------------------------
-Assemble all the parts according to the files and images in the 'Documents' folder.   
+Assemble all the parts according to the files and images in the 'Documents' folder.  
 
 Install and configure OS
 =============================
@@ -51,7 +55,7 @@ $ umount /dev/mmcblk0p1
 $ umount /dev/mmcblk0p2  
 
 Write image to SD-card.  
-$ sudo dd bs=4M if=2017-11-29-raspbian-stretch-lite.img of=/dev/mmcblk0 conv=fsync status=progress 
+$ sudo dd bs=4M if=2017-11-29-raspbian-stretch-lite.img of=/dev/mmcblk0 conv=fsync status=progress  
 
 Remove SD-card and insert it again to make new partitons visible.     
 
@@ -87,10 +91,10 @@ $ sudo raspi-config
 
 Reboot to set new options.  
 
-Update
+Update raspbian
 -----------------------------
 Connect again.  
-$ sudo apt-get update && sudo apt-get upgrade
+$ sudo apt-get update && sudo apt-get upgrade  
 
 Installation
 ============================= 
@@ -154,7 +158,7 @@ Check that time and date is correct
 $ date  
 
 Set hardware clock  
-$ sudo hwclock -w
+$ sudo hwclock -w  
 
 Comment out the following lines in /lib/udev/hwclock-set  
 &nbsp;&nbsp;&nbsp;&nbsp;if [ -e /run/systemd/system ] ; then  
@@ -171,8 +175,8 @@ Edit or add breaks, ring times and ring patterns.
 
 Automatic tasks
 -----------------------------
-At the first of every month cron will download calendar from 'dryg.net', adding data to the database  
-Every night cron will delete past breaks and days from the database  
+At the first of every month cron will download calendar from 'dryg.net', adding data to the database.  
+Every night cron will delete past breaks and days from the database.  
 
 Usage
 =============================
@@ -193,7 +197,7 @@ Pressing button 2 will make the LCD go back to showing default info.
 USE THE BELOW WITH CAUTION, NOT TESTED ENOUGH
 -----------------------------
 To dump database and logs to USB-stick:  
-Format a stick to fat32 and label it 'PISCHOOLBEL'    
+Format a stick to fat32 and label it 'PISCHOOLBEL'.    
 Insert into Pi.  
 &nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The USBs label and drive letter  
@@ -224,7 +228,7 @@ Issues
 =============================
 If you get problems with Adafruit_Python_CharLCD failing to write to LCD.  
 $ cd /home/pi/piSchoolBell/Adafruit_Python_CharLCD  
-$ sudo python setup.py install
+$ sudo python setup.py install  
  
 
 Below is only for my own convieniance during programming of this project
