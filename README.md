@@ -166,7 +166,7 @@ Reboot
 Configuration
 =============================
 Press button on unit to display its IP-address on the second line of the LCD.  
-Connect to the unit by pointing your browser to 'http://'IP-address':8080'.  
+Connect to the unit by pointing your browser to 'http://IP-address:8080'.  
 Edit or add breaks, ring times and ring patterns.  
 
 Automatic tasks
@@ -183,22 +183,22 @@ Line 2: HH:MM YYYY-mm-dd, the time and date for the next bell ring
 By pressing button 1, display will show:    
 &nbsp;&nbsp;&nbsp;&nbsp;Line 1: days left in db, last date in db  
 &nbsp;&nbsp;&nbsp;&nbsp;Line 2: IP-address  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it shows 'Not connected' it has not been able to acquire an IP address.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it shows 'Not connected' it has not been able to acquire an IP address.  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The first character on line 2 shows if the unit can access internet.  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '*' it is connected.  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '-' it is not connected  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '-' it is not connected.  
 		
-Pressing button 2 will make the LCD go back to showing default info  
+Pressing button 2 will make the LCD go back to showing default info.  
 
 USE THE BELOW WITH CAUTION, NOT TESTED ENOUGH
 -----------------------------
 To dump database and logs to USB-stick:  
 Format a stick to fat32 and label it 'PISCHOOLBEL'    
-Insert into Pi  
+Insert into Pi.  
 &nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The USBs label and drive letter  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB mounted'  
-Press button 3  
+Press button 3.  
 &nbsp;&nbsp;&nbsp;&nbsp;Display will confirm writing  
 &nbsp;&nbsp;&nbsp;&nbsp;When finished display shows number of files written  
 	
@@ -207,17 +207,18 @@ Remove USB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drive letter  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB umounted'  
 		
-Edit the database file with the highest date and time on the stick  
+Edit the database file with the highest date and time on the stick.  
 	
-To read back edited file to database  
-Insert the same USB-stick as above  
+To read back edited file to database:  
+Insert the USB-stick.  
 &nbsp;&nbsp;&nbsp;&nbsp;Display will show:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The USBs label and drive letter  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'USB mounted'  
-Press button 4  
+Press button 4.  
 &nbsp;&nbsp;&nbsp;&nbsp;Display will confirm reading  
 &nbsp;&nbsp;&nbsp;&nbsp;...  
-Not implemented yet  
+Not implemented yet.  
+For now it only shows how many lines to read back to the database.  
 
 Issues
 =============================
