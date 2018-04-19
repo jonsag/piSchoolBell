@@ -202,6 +202,13 @@ Press button 3
 	Display will confirm writing  
 	When finished display shows number of files written  
 	
+Remove USB  
+	Display will show:  
+		drive letter  
+		'USB umounted'  
+		
+Edit the files with the highest data and time on the stick  
+	
 To read back edited file to database  
 Insert the same USB-stick as above  
 	Display will show:  
