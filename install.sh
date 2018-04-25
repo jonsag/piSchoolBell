@@ -102,12 +102,12 @@ ln -s printToLcdGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/8
 ln -s databaseReadWriteGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/9
 ln -s databaseReadWriteGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/10
 touch /home/pi/bin/piSchoolBell/piSchoolBell.log
-chown pi:pi -R /home/pi/bin/piSchoolBell
+chown pi:pi -R /home/pi/bin
 
 
 printf "\n\n Installing piSchoolBell www ...\n"
 mkdir /var/www/piSchoolBell
-cp www/* /var/www/piSchoolBell/
+cp /home/pi/piSchoolBell/www/* /var/www/piSchoolBell/
 chown -R pi:www-data /var/www/piSchoolBell
 ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
@@ -139,6 +139,9 @@ if [ ! -f "/etc/cron.d/piSchoolBell" ]
     cat > /etc/cron.d/piSchoolBell <<CRON
 # Print time and next ring to LCD every minute
 */1 * * * * pi /home/pi/bin/piSchoolBell/printToLcd.py >> /dev/null 2>&1
+
+# Check if its time to ring bell
+*/1 * * * * pi /home/pi/bin/piSchoolBell/ringBell.py >> /dev/null 2>&
 
 # Get new days at the first of every month
 5 0 1 * * pi /home/pi/bin/piSchoolBell/getCalendar.py -c >> /dev/null 2>&1
