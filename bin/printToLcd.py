@@ -11,12 +11,15 @@ from modules import (internetAccess, testAddress,
                      db_connect, db_create_cursor, db_close_cursor, db_disconnect, db_query, 
                      onError, usage)
 
+from ringBell import ringBell
+
 try:
     myopts, args = getopt.getopt(sys.argv[1:],
                                  '1:2:'
                                  'g:'
+                                 'c'
                                  'vh',
-                                 ['line1=', 'line2=', 'gpio=', 'verbose', 'help'])
+                                 ['line1=', 'line2=', 'gpio=', 'cron', 'verbose', 'help'])
 
 except getopt.GetoptError as e:
     onError(1, str(e))
@@ -26,6 +29,7 @@ except getopt.GetoptError as e:
     
 line_1 = ""
 line_2 = ""
+cron = False
 button1 = False
 button2 = False
 gpio = False
@@ -38,6 +42,8 @@ for option, argument in myopts:
         line_2 = argument
     elif option in ('-g', '--gpio'):  # button 11 - light LCD
         gpio = argument
+    elif option in ('-c', '--cron'): # also ring bell
+        cron = True
     elif option in ('-v', '--verbose'):  # verbose output
         verbose = True
     elif option in ('-h', '--help'):  # display help text
@@ -148,6 +154,7 @@ def button1Pressed():
     # close db
     db_disconnect(cnx, verbose)
         
+    ringBell()
 
 if __name__ == '__main__':
     if button1:
