@@ -98,7 +98,7 @@ printf "\n\n Installing piSchoolBell app ...\n"
 mkdir -p /home/pi/bin/piSchoolBell/tmp
 cp -r /home/pi/piSchoolBell/bin/* /home/pi/bin/piSchoolBell/
 ln -s printToLcdGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/7
-ln -s printTOLcdGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/8
+ln -s printToLcdGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/8
 ln -s databaseReadWriteGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/9
 ln -s databaseReadWriteGpioScript /home/pi/bin/piSchoolBell/gpio-scripts/10
 touch /home/pi/bin/piSchoolBell/piSchoolBell.log
