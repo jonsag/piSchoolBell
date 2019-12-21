@@ -10612,7 +10612,7 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <wire x1="127" y1="111.76" x2="114.3" y2="111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$27" class="0">
+<net name="GND" class="0">
 <segment>
 <pinref part="X1" gate="G$1" pin="GND_A"/>
 <wire x1="294.64" y1="160.02" x2="307.34" y2="160.02" width="0.1524" layer="91"/>
