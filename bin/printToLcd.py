@@ -15,9 +15,8 @@ try:
     myopts, args = getopt.getopt(sys.argv[1:],
                                  '1:2:'
                                  'g:'
-                                 'c'
                                  'vh',
-                                 ['line1=', 'line2=', 'gpio=', 'cron', 'verbose', 'help'])
+                                 ['line1=', 'line2=', 'gpio=', 'verbose', 'help'])
 
 except getopt.GetoptError as e:
     onError(1, str(e))

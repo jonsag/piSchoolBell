@@ -180,4 +180,3 @@ db_close_cursor(cnx, cursor, verbose)
 # close db
 db_disconnect(cnx, verbose)
 
-

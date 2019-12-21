@@ -29,6 +29,7 @@ Parts list
 1 x Casing for rpi, kjell.com Art#89030  
 1 x Casing for relay, kjell.com Art#89014  
 1 x RTC-module, kjell.com Art#87984  
+1 x CR2032 battery, kjell.com ART#33715  
 GPIO header connector, kjell.com Art#87915 (or breakout board)  
 Wiring, cables  
 PCB board, kjell.com Art#89416 or Art#89435 (or a breadboard, just to set it up)  
@@ -193,6 +194,25 @@ By pressing button 1, display will show:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If it is a '-' it is not connected.  
 		
 Pressing button 2 will make the LCD go back to showing default info.  
+
+Hardware clock / RTC
+-----------------------------  
+Check system time:  
+$ date  
+Check HW-time:  
+$ sudo hwclock -r  
+Set HW-clock to system time:  
+$ sudo hwclock -w  
+Set system clock from HW-clock:  
+$ sudo hwclock -s  
+
+Set system date manually:  
+$ date +%Y%m%d -s "20120418"  
+Set system time manually:  
+$ date +%T -s "11:14:00"  
+
+Set HW-clock manually:  
+4 sudo hwclock --set --date="2011-08-14 16:45:05"  
 
 USE THE BELOW WITH CAUTION, NOT TESTED ENOUGH
 -----------------------------

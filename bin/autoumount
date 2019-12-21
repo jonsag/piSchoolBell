@@ -3,6 +3,6 @@
 PART=$1
 
 /usr/bin/pumount ${PART}
-/home/pi/bin/piSchoolBell/printToLcd.py -1 ${PART} -2 "USB umounted"
+/home/pi/bin/piSchoolBell/printToLcd.py -1 ${PART} -2 "USB unmounted"
 
 
