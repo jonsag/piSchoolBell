@@ -128,7 +128,7 @@ Make web pages secure
 -----------------------------
 $ sudo /home/pi/piSchoolBell/www-secure-setup.sh  
 
-Download dates
+Download (Swedish) dates
 -----------------------------
 $ /home/pi/bin/piSchoolBell/getCalendar.py -v  
 
