@@ -28,7 +28,7 @@ fi
 cd /home/pi
 
 cat >> /var/www/piSchoolBell/.htaccess <<ACCESS
-AuthName "Secure Heating Hub"
+AuthName "piSchoolBell"
 AuthType Basic
 AuthUserFile /home/pi/bin/piSchoolBell/.htpasswd
 require valid-user
