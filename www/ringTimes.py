@@ -98,7 +98,6 @@ for key in fs.keys():
 
 weekDays = ''.join(weekDays)
 
-
 # handle inputs
 if deleteRingTimeId: # delete ring time
     query = ("DELETE FROM ringTimes WHERE ringTimeId = '%s'" % deleteRingTimeId)
@@ -123,7 +122,7 @@ elif newRingTimeName: # add ring time
                "\n<br>Must be in the form HH:MM "
                "\n<br>Only digits and : allowed "
                )
-    else:
+    else:    
         query = ("INSERT INTO ringTimes " 
                  "(ringTimeName, weekDays, ringTime, ringPatternId) " 
                  "VALUES " 
@@ -230,7 +229,7 @@ def pageBody():
         for row in result:
             ringTimeId = row[0]
             ringTimeName = row[1]
-            weekDays = row[2]
+            weekDays = str(row[2])
             ringTime = row[3]
             ringPatternId = row[4]
             
@@ -257,7 +256,7 @@ def pageBody():
             print '<th>%s</th>' % ringPatternName
             print '<th>%s</th>' % ringPattern
             for dayNumber in range(0, 7): # print day name
-                if str(weekDays)[dayNumber] == "1":
+                if weekDays[dayNumber] == "1":
                     print '<th>On</th>'
                 else:
                     print '<th>Off</th>'

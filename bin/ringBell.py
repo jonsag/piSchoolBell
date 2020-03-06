@@ -120,7 +120,7 @@ if isNotOnBreak:
         for row in result:
             weekDays = row[0]
             ringPatternId = row[1]
-        if str(weekDays)[dayNumberNow] == "1":
+        if weekDays[dayNumberNow] == "1":
             isRingTime = True
             if verbose:
                 print "*** This ring time is valid today"

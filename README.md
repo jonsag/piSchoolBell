@@ -11,6 +11,17 @@ It makes use of the Adafruit_Python_CharLCD library. (https://github.com/adafrui
 
 Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. (https://github.com/larsks/gpio-watch)  
 
+Update
+==========
+Bug discovered  
+There was a fault in the database setup.  
+Instead of updating, you can:  
+Log in to database  
+>$ sudo mysql -u root -p piSchoolBell  
+
+Change column type  
+>MariaDB [piSchoolBell]> ALTER TABLE ringTimes CHANGE weekDays weekDays VARCHAR(7);
+
 Hardware setup
 =============================
 

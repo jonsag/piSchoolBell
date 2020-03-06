@@ -199,7 +199,7 @@ def nextRing(cursor, dateNow, timeNow, verbose):
                     weekDays = row[1]
                     nextRingTime = row[2]
                     ringPatternId = row[3]
-                if str(weekDays)[dayNumber] == "1":
+                if weekDays[dayNumber] == "1":
                     foundRingTime = True
                     if verbose:
                         print "*** This ring time is valid today"
@@ -360,7 +360,7 @@ def findRingTimes(date, dayNumber, cursor, verbose):
             weekDays = row[1]
             ringTime = row[2]
             ringPatternId = row[3]
-            if str(weekDays)[dayNumber] == "1":
+            if weekDays[dayNumber] == "1":
                 
                 if verbose:
                     print "<br>\n*** This ring time is valid today"
