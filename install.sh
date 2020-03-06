@@ -176,8 +176,8 @@ PORTS
         	Options +ExecCGI    
         	AddHandler cgi-script .py  
     	</Directory>  
-    	ErrorLog ${APACHE_LOG_DIR}/error.log  
-        CustomLog ${APACHE_LOG_DIR}/access.log combined  
+    	ErrorLog \${APACHE_LOG_DIR}/error.log  
+        CustomLog \${APACHE_LOG_DIR}/access.log combined  
 	</VirtualHost>
 VHOST
 
