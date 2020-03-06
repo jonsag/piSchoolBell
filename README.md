@@ -148,9 +148,11 @@ Run install script
 
 >$ sudo ./install.sh   
 
-Initialize mysql
+Initialize mysql (mariadb)
 ----------
->$ sudo mysql -u root -p  
+>$ sudo mysql_secure_installation  
+
+Set root password, and press 'enter' on all remaining questions
 
 Use the same password as login for user pi.  
 Quit with 'exit;'.  
@@ -207,7 +209,10 @@ Reboot
 Configuration
 ==========
 Press button on unit to display its IP-address on the second line of the LCD.  
-Connect to the unit by pointing your browser to 'http://IP-address:8080'.  
+Connect to the unit by pointing your browser to  
+
+	http://\<IP-address\>:8080'.  
+
 Edit or add breaks, ring times and ring patterns.  
 
 Automatic tasks
