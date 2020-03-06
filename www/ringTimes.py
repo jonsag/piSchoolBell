@@ -122,7 +122,7 @@ elif newRingTimeName: # add ring time
                "\n<br>Must be in the form HH:MM "
                "\n<br>Only digits and : allowed "
                )
-    else:    
+    else:
         query = ("INSERT INTO ringTimes " 
                  "(ringTimeName, weekDays, ringTime, ringPatternId) " 
                  "VALUES " 
@@ -229,7 +229,7 @@ def pageBody():
         for row in result:
             ringTimeId = row[0]
             ringTimeName = row[1]
-            weekDays = str(row[2])
+            weekDays = row[2]
             ringTime = row[3]
             ringPatternId = row[4]
             
