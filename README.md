@@ -215,6 +215,8 @@ Connect to the unit by pointing your browser to
 
 Edit or add breaks, ring times and ring patterns.  
 
+Remember, you can't really add rings on saturdays or sundays, as this is mainly intended for use on normal school schedules.  
+
 Automatic tasks
 ----------
 At the first of every month cron will download calendar from 'dryg.net', adding data to the database.  
