@@ -13,7 +13,15 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. (ht
 
 Update
 ==========
-21/3 -20
+7/3 -20
+----------
+Changed all GPIO pins to make an easier PCB layout possible.  
+This makes all older electric installs incompatible.  
+Added KiCad files for new pin layout.  
+
+Corrected editing of ring times.  
+
+6/3 -20
 ----------
 Bug discovered  
 There was a fault in the database setup.  
