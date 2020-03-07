@@ -159,7 +159,9 @@ elif updateRingTimeId: # update ring time
     else:
         query = ("UPDATE ringTimes SET "
                  "ringTimeName = '" + updateRingTimeName + "', "
-                 "ringTime = '" + updateRingTime + "' "
+                 "ringTime = '" + updateRingTime + "', "
+                 "ringPatternID = '" + newRingPatternId + "', "
+                 "weekDays = '" + weekDays + "' "
                  "WHERE "
                  "ringTimeId = '%s'" % updateRingTimeId)
         try: # update ring time
