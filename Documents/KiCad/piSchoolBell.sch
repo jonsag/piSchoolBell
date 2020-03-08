@@ -248,8 +248,6 @@ Wire Wire Line
 Wire Wire Line
 	9350 3300 9350 2800
 Wire Wire Line
-	6650 3200 9700 3200
-Wire Wire Line
 	6650 2800 9350 2800
 Wire Wire Line
 	4100 2050 9350 2050
@@ -388,4 +386,46 @@ Wire Wire Line
 Wire Wire Line
 	8900 5550 8900 4850
 Connection ~ 8900 4850
+$Comp
+L Device:LED D1
+U 1 1 5E645FB1
+P 9850 2950
+F 0 "D1" H 9843 2695 50  0000 C CNN
+F 1 "LED" H 9843 2786 50  0000 C CNN
+F 2 "My_Misc:LED_D5.0mm_larger_pads" H 9850 2950 50  0001 C CNN
+F 3 "~" H 9850 2950 50  0001 C CNN
+	1    9850 2950
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R9
+U 1 1 5E6478D8
+P 9850 2550
+F 0 "R9" V 9643 2550 50  0000 C CNN
+F 1 "220R" V 9734 2550 50  0000 C CNN
+F 2 "My_Misc:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal_larger_pads" V 9780 2550 50  0001 C CNN
+F 3 "~" H 9850 2550 50  0001 C CNN
+	1    9850 2550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6650 3200 9450 3200
+Wire Wire Line
+	9450 3200 9450 2950
+Wire Wire Line
+	9450 2950 9700 2950
+Connection ~ 9450 3200
+Wire Wire Line
+	9450 3200 9700 3200
+Wire Wire Line
+	10000 2950 10250 2950
+Wire Wire Line
+	10250 2950 10250 2550
+Wire Wire Line
+	10250 2550 10000 2550
+Wire Wire Line
+	9700 2550 8900 2550
+Wire Wire Line
+	8900 2550 8900 3400
+Connection ~ 8900 3400
 $EndSCHEMATC
