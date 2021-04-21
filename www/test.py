@@ -3,7 +3,9 @@
 # Encoding: UTF-8
 
 import cgi
-import cgitb; cgitb.enable()  # for troubleshooting
+import cgitb
+
+cgitb.enable()  # for troubleshooting
 
 print "Content-type: text/html"
 print
@@ -34,4 +36,6 @@ print """
 </body>
 
 </html>
-""" % cgi.escape(message)
+""" % cgi.escape(
+    message
+)
