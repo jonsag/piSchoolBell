@@ -7,8 +7,8 @@ import cgitb
 
 cgitb.enable()  # for troubleshooting
 
-print "Content-type: text/html"
-print
+print("Content-type: text/html")
+print()
 
 import socket, sys, os
 
@@ -34,7 +34,7 @@ from modules import (
 
 verbose = False
 
-print """
+print("""
 <html>
 
 <head><title>piSchoolBell - status</title></head>
@@ -42,7 +42,7 @@ print """
 <body>
  
 <h3> piSchoolBell - status</h3>
-"""
+""")
 
 
 # connect to database
@@ -106,47 +106,47 @@ def countRingTimes(iMax):
 
 def pageLinks():
 
-    print '\n<br><a href="status.py">Reset page</a>'
+    print('\n<br><a href="status.py">Reset page</a>')
 
-    print "\n<br>"
-    print '\n<br><a href="index.py">Home</a>'
+    print("\n<br>")
+    print('\n<br><a href="index.py">Home</a>')
 
-    print "\n<br>"
-    print '\n<br><a href="displayLogs.py">Log files</a>'
+    print("\n<br>")
+    print('\n<br><a href="displayLogs.py">Log files</a>')
 
     # print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
 
 
 def pageBody():
 
-    print "\n<br>"
+    print("\n<br>")
 
     # time and date
-    print (
+    print((
         "\n<br>Date: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
         "\n<br>Time: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
         "\n<br>\n<br>Week number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
         "\n<br>Day number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
         % (dateNow, timeNow, weekNumberNow, dayNumberNow)
-    )
+    ))
 
     # uptime
     uptimeSeconds = getUptime()
     uptime = str(timedelta(seconds=uptimeSeconds))
 
-    print "\n<br>"
-    print "\n<br>Uptime: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s" % uptime
+    print("\n<br>")
+    print("\n<br>Uptime: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s" % uptime)
 
     ##### database
-    print "\n<br>"
-    print "\n<br>Database:"
+    print("\n<br>")
+    print("\n<br>Database:")
 
     for tableName in ("days", "ringTimes", "breaks", "ringPatterns"):
         entries = countEntriesInDatabase(tableName, cursor, verbose)
         if entries:
-            print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s entries: %s" % (tableName, entries)
+            print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s entries: %s" % (tableName, entries))
         else:
-            print "\n<br>&nbsp;&nbsp;&nbsp;&nbspError retriveing %s" % tableName
+            print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retriveing %s" % tableName)
 
         # lastUpdated = tableLastUpdated(tableName, cursor, verbose)
         # if lastUpdated:
@@ -154,7 +154,7 @@ def pageBody():
         # else:
         #    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspError retriveing date"
 
-    print "\n<br>"
+    print("\n<br>")
 
     # how long does days run
     query = (
@@ -165,9 +165,9 @@ def pageBody():
         for row in result:
             lastDate = row[0]
             daysToEnd = row[1]
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspLast day in database: %s" % lastDate
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspLast day in database: %s" % lastDate)
     else:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last date: No days in database"
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last date: No days in database")
 
     # last break
     query = "SELECT endDate FROM breaks ORDER BY endDate DESC LIMIT 1"
@@ -175,36 +175,36 @@ def pageBody():
     if rowCount:
         for row in result:
             lastBreakEnds = row[0]
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspLast break ends: %s" % lastBreakEnds
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspLast break ends: %s" % lastBreakEnds)
     else:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last break: No breaks in database"
-    print "\n<br>"
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last break: No breaks in database")
+    print("\n<br>")
 
     # count rings and school days
     ringCount, schoolDayCount = countRingTimes(daysToEnd)
-    print "\n<br>&nbsp;&nbsp;&nbsp;&nbspThere's %s days left in the database" % daysToEnd
+    print("\n<br>&nbsp;&nbsp;&nbsp;&nbspThere's %s days left in the database" % daysToEnd)
     if schoolDayCount:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspOf them %s are school days" % schoolDayCount
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspOf them %s are school days" % schoolDayCount)
     else:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspNo days of them are school days"
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspNo days of them are school days")
     if ringCount:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspBell will ring %s times" % ringCount
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspBell will ring %s times" % ringCount)
     else:
-        print "\n<br>&nbsp;&nbsp;&nbsp;&nbspBell will not ring"
+        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspBell will not ring")
 
     ##### system
-    print "\n<br>"
+    print("\n<br>")
 
     # hostname
-    print "\n<br>System:"
-    print "\n<br>&nbsp;&nbsp;&nbsp;&nbspHostname: %s" % socket.gethostname()
+    print("\n<br>System:")
+    print("\n<br>&nbsp;&nbsp;&nbsp;&nbspHostname: %s" % socket.gethostname())
 
     # ip info
     # find this devices ip address
     interfaceIPs = []
     interfaces = ni.interfaces()
-    print "\n<br>"
-    print "\n<br>&nbsp;&nbsp;&nbsp;&nbspNet interfaces with IP:"
+    print("\n<br>")
+    print("\n<br>&nbsp;&nbsp;&nbsp;&nbspNet interfaces with IP:")
     i = 0
     for interface in interfaces:
         try:
@@ -215,10 +215,10 @@ def pageBody():
         i += 1
     i = 0
     for interfaceIP in interfaceIPs:
-        print (
+        print((
             "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s: %s"
             % (interfaceIP["interface%s" % i], interfaceIP["ip%s" % i])
-        )
+        ))
         i += 1
 
 
@@ -226,15 +226,15 @@ if __name__ == "__main__":
     webPageHeader()
     pageLinks()
     pageBody()
-    print "\n<br>"
+    print("\n<br>")
     pageLinks()
     webPageFooter()
 
-print """
+print("""
  
 
  
 </body>
 
 </html>
-"""
+""")

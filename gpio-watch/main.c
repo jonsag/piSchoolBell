@@ -32,11 +32,11 @@
 
 #define OPTSTRING "s:e:vdl:"
 
-#define OPT_SCRIPT_DIR		's'
-#define OPT_DEFAULT_EDGE	'e'
-#define OPT_VERBOSE		'v'
-#define OPT_LOGFILE		'l'
-#define OPT_DETACH		'd'
+#define OPT_SCRIPT_DIR 's'
+#define OPT_DEFAULT_EDGE 'e'
+#define OPT_VERBOSE 'v'
+#define OPT_LOGFILE 'l'
+#define OPT_DETACH 'd'
 
 // Where to look for event scripts.  Scripts in this directory
 // must be named after the pin number being monitored (so,
@@ -52,37 +52,38 @@
 char *script_dir = DEFAULT_SCRIPT_DIR;
 char *logfile = NULL;
 int default_edge = EDGE_BOTH;
-int detach       = 0;
+int detach = 0;
 
 // This will hold the list of pins to monitor generated from
 // command line arguments.
 struct pin *pins = NULL;
 int num_pins = 0;
 
-void usage (FILE *out) {
+void usage(FILE *out)
+{
 	fprintf(out, "gpio-watch: usage: gpio-watch [-l logfile] [-s script_dir] [-e default_edge] [-dv] pin[:edge] [...]\n");
 }
 
 // Run a script in response to an event.
-void run_script (int pin, int value) {
+void run_script(int pin, int value)
+{
 	char *script_path,
-	     pin_str[GPIODIRLEN],
-	     value_str[2];
+		pin_str[GPIODIRLEN],
+		value_str[2];
 	int script_path_len;
 	pid_t pid;
 	int status;
 
-	script_path_len = strlen(script_dir)
-			+ GPIODIRLEN
-			+ 2;
+	script_path_len = strlen(script_dir) + GPIODIRLEN + 2;
 	script_path = (char *)malloc(script_path_len);
 
 	snprintf(script_path, script_path_len,
-			"%s/%d", script_dir, pin);
+			 "%s/%d", script_dir, pin);
 
-	if (! is_file(script_path)) {
+	if (!is_file(script_path))
+	{
 		LOG_WARN("pin %d: script \"%s\" does not exist",
-				pin, script_path);
+				 pin, script_path);
 		return;
 	}
 
@@ -91,30 +92,36 @@ void run_script (int pin, int value) {
 
 	LOG_INFO("pin %d: running script %s", pin, script_path);
 
-	if (0 == (pid = fork())) {
+	if (0 == (pid = fork()))
+	{
 		int res;
 		res = execl(script_path, script_path, pin_str, value_str, (char *)NULL);
-		if (-1 == res) exit(255);
+		if (-1 == res)
+			exit(255);
 	}
 
 	wait(&status);
 
-	if (WIFEXITED(status)) {
-		if (0 != WEXITSTATUS(status)) {
+	if (WIFEXITED(status))
+	{
+		if (0 != WEXITSTATUS(status))
+		{
 			LOG_WARN("pin %d: event script exited with status = %d",
-					pin, WEXITSTATUS(status));
+					 pin, WEXITSTATUS(status));
 		}
-	} else if (WIFSIGNALED(status)) {
+	}
+	else if (WIFSIGNALED(status))
+	{
 		LOG_WARN("pin %d: event script exited due to signal %d",
-				pin, WTERMSIG(status));
+				 pin, WTERMSIG(status));
 	}
 
 	free(script_path);
-
 }
 
 // Loop forever monitoring pins for activity.
-int watch_pins() {
+int watch_pins()
+{
 	struct pollfd *fdlist;
 	int i;
 	char *pin_path;
@@ -124,7 +131,7 @@ int watch_pins() {
 
 	unsigned char switch_state[num_pins];
 	long long now,
-	     down_at[num_pins];
+		down_at[num_pins];
 
 	valbuf[2] = '\0';
 	memset(switch_state, 0, num_pins);
@@ -133,11 +140,12 @@ int watch_pins() {
 	pin_path = (char *)malloc(pin_path_len);
 
 	fdlist = (struct pollfd *)malloc(sizeof(struct pollfd) * num_pins);
-	for (i=0; i<num_pins; i++) {
+	for (i = 0; i < num_pins; i++)
+	{
 		int fd;
 
 		snprintf(pin_path, pin_path_len,
-				"%s/gpio%d/value", GPIO_BASE, pins[i].pin);
+				 "%s/gpio%d/value", GPIO_BASE, pins[i].pin);
 		fd = open(pin_path, O_RDONLY);
 		read(fd, valbuf, 2);
 		fdlist[i].fd = fd;
@@ -146,86 +154,101 @@ int watch_pins() {
 
 	LOG_INFO("starting to monitor for gpio events");
 
-	while (1) {
+	while (1)
+	{
 		int err;
 
 		err = poll(fdlist, num_pins, -1);
-		if (-1 == err) {
+		if (-1 == err)
+		{
 			perror("poll");
 			exit(1);
 		}
 
-		for (i=0; i<num_pins; i++) {
-			if (fdlist[i].revents & POLLPRI) {
+		for (i = 0; i < num_pins; i++)
+		{
+			if (fdlist[i].revents & POLLPRI)
+			{
 				LOG_DEBUG("pin %d: received event",
-						pins[i].pin);
+						  pins[i].pin);
 				lseek(fdlist[i].fd, 0, SEEK_SET);
 				read(fdlist[i].fd, valbuf, 2);
 
 				// for pins use 'switch' edge mode, we only trigger
 				// an event when we receive the '1' event more than
 				// DEBOUNCE_INTERVAL nanoseconds after the '0' event.
-  				if (EDGE_SWITCH == pins[i].edge) {
+				if (EDGE_SWITCH == pins[i].edge)
+				{
 					clock_gettime(CLOCK_MONOTONIC, &ts);
 					now = ts.tv_sec * NANOS + ts.tv_nsec;
 
-					if (switch_state[i] == 0 && valbuf[0] == '1') {
+					if (switch_state[i] == 0 && valbuf[0] == '1')
+					{
 						down_at[i] = now;
 						switch_state[i] = 1;
-					} else if (switch_state[i] == 1 && valbuf[0] == '0') {
-						if (now - down_at[i] > DEBOUNCE_INTERVAL) {
+					}
+					else if (switch_state[i] == 1 && valbuf[0] == '0')
+					{
+						if (now - down_at[i] > DEBOUNCE_INTERVAL)
+						{
 							switch_state[i] = 0;
 							goto run_script;
 						}
 					}
 
 					continue;
-  				}
+				}
 
-run_script:
+			run_script:
 				run_script(pins[i].pin,
-						valbuf[0] == '1' ? 1 : 0);
+						   valbuf[0] == '1' ? 1 : 0);
 			}
 		}
 	}
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 	struct pollfd *fdlist;
 	int numfds = 0;
 	int ch;
 	int i;
 
-	while (-1 != (ch = getopt(argc, argv, OPTSTRING))) {
-		switch (ch) {
-			case OPT_LOGFILE:
-				logfile = strdup(optarg);
-				break;
-			case OPT_DETACH:
-				detach = 1;
-				break;
-			case OPT_SCRIPT_DIR:
-				script_dir = strdup(optarg);
-				break;
-			case OPT_DEFAULT_EDGE:
-				if (-1 == (default_edge = parse_edge(optarg))) {
-					fprintf(stderr, "error: invalid edge value: %s\n", optarg);
-					exit(1);
-				}
-				break;
-			case OPT_VERBOSE:
-				loglevel += 1;
-				break;
+	while (-1 != (ch = getopt(argc, argv, OPTSTRING)))
+	{
+		switch (ch)
+		{
+		case OPT_LOGFILE:
+			logfile = strdup(optarg);
+			break;
+		case OPT_DETACH:
+			detach = 1;
+			break;
+		case OPT_SCRIPT_DIR:
+			script_dir = strdup(optarg);
+			break;
+		case OPT_DEFAULT_EDGE:
+			if (-1 == (default_edge = parse_edge(optarg)))
+			{
+				fprintf(stderr, "error: invalid edge value: %s\n", optarg);
+				exit(1);
+			}
+			break;
+		case OPT_VERBOSE:
+			loglevel += 1;
+			break;
 
-			case '?':
-				usage(stderr);
-				exit(2);
+		case '?':
+			usage(stderr);
+			exit(2);
 		}
 	}
 
-	if (logfile) {
+	if (logfile)
+	{
 		int fd;
-		if (-1 == (fd = open(logfile, O_WRONLY|O_CREAT|O_APPEND, 0644))) {
+		if (-1 == (fd = open(logfile, O_WRONLY | O_CREAT | O_APPEND, 0644)))
+		{
 			LOG_ERROR("failed to open logfile %s", logfile);
 			exit(1);
 		}
@@ -237,30 +260,36 @@ int main(int argc, char **argv) {
 		dup(fd);
 	}
 
-	if (! is_dir(script_dir)) {
+	if (!is_dir(script_dir))
+	{
 		LOG_ERROR("error: script directory \"%s\" does not exist.",
-				script_dir);
+				  script_dir);
 		exit(1);
 	}
 
-	for (i=optind; i<argc; i++) {
+	for (i = optind; i < argc; i++)
+	{
 		char *pos,
-		     *pinspec;
+			*pinspec;
 		struct pin p;
 
 		pinspec = strdup(argv[i]);
 		pos = strchr(pinspec, ':');
 
-		if (pos) {
+		if (pos)
+		{
 			*pos = '\0';
 			pos++;
 			p.pin = atoi(pinspec);
-			if (-1 == (p.edge = parse_edge(pos))) {
+			if (-1 == (p.edge = parse_edge(pos)))
+			{
 				fprintf(stderr, "error: unknown edge spec: %s\n",
 						argv[i]);
 				exit(1);
 			}
-		} else {
+		}
+		else
+		{
 			p.pin = atoi(pinspec);
 			p.edge = default_edge;
 		}
@@ -269,19 +298,20 @@ int main(int argc, char **argv) {
 
 		num_pins++;
 		pins = realloc(pins, sizeof(struct pin) * num_pins);
-		pins[num_pins-1] = p;
+		pins[num_pins - 1] = p;
 	}
 
-	for (i=0; i<num_pins; i++) {
+	for (i = 0; i < num_pins; i++)
+	{
 		pin_export(pins[i].pin);
 		pin_set_edge(pins[i].pin, pins[i].edge);
 		pin_set_direction(pins[i].pin, DIRECTION_IN);
 	}
 
-	if (detach) daemon(1, logfile ? 1: 0);
+	if (detach)
+		daemon(1, logfile ? 1 : 0);
 
 	watch_pins();
 
 	return 0;
 }
-

@@ -67,7 +67,7 @@ def dumpToFile():
         LCDMessage = "No USB inserted"
 
         if verbose:
-            print "\n*** Printing to LCD: \n    %s" % LCDMessage
+            print("\n*** Printing to LCD: \n    %s" % LCDMessage)
         displayOnLCD("", LCDMessage, verbose)
         onError(5, "No matching USB mounted")
     else:
@@ -77,7 +77,7 @@ def dumpToFile():
     outFilePath = os.path.join(tempDir, "piSchoolBellDb-%s.csv" % timeStamp)
 
     if verbose:
-        print "\n*** Creating file %s ..." % outFilePath
+        print("\n*** Creating file %s ..." % outFilePath)
     outFile = open(outFilePath, "a")
 
     # connect to database
@@ -88,7 +88,7 @@ def dumpToFile():
 
     for table in ("breaks", "ringTimes", "ringPatterns", "days"):
         if verbose:
-            print "\n*** Reading table %s..." % table
+            print("\n*** Reading table %s..." % table)
 
         selection = tableSelection(table, verbose)
 
@@ -97,7 +97,7 @@ def dumpToFile():
 
         if rowCount:
             if verbose:
-                print "\n*** Table: %s" % table
+                print("\n*** Table: %s" % table)
 
             columnNames = selection.replace(", ", ";")
             outFile.write("%s;%s\n" % (table, columnNames))
@@ -113,21 +113,21 @@ def dumpToFile():
                     values = "%s;%s" % (values, column)
 
                     if verbose:
-                        print "    %s: %s" % (columnName, column)
+                        print("    %s: %s" % (columnName, column))
 
                     i += 1
 
                 outFile.write("%s\n" % values)
 
                 if verbose:
-                    print
+                    print()
 
     if verbose:
-        print "\n*** Closing file %s ..." % outFilePath
+        print("\n*** Closing file %s ..." % outFilePath)
     outFile.close()
 
     if verbose:
-        print "\n*** Moving file \n    %s \n    to \n    %s" % (outFilePath, USBPath)
+        print("\n*** Moving file \n    %s \n    to \n    %s" % (outFilePath, USBPath))
 
     copy(outFilePath, USBPath)
     filesWritten += 1
@@ -138,13 +138,13 @@ def dumpToFile():
     logFileName = os.path.join(USBPath, "%s-%s.%s" % (fileName, timeStamp, extension))
 
     if verbose:
-        print "\n*** Copying \n    %s \n    to \n    %s ..." % (logFile, logFileName)
+        print("\n*** Copying \n    %s \n    to \n    %s ..." % (logFile, logFileName))
 
     copyfile(logFile, logFileName)
     filesWritten += 1
 
     if verbose:
-        print "    %s" % gpioWatchLog
+        print("    %s" % gpioWatchLog)
 
     dirName, fileName, extension = splitPath(gpioWatchLog, verbose)
 
@@ -153,9 +153,12 @@ def dumpToFile():
     )
 
     if verbose:
-        print "\n*** Copying \n    %s \n    to \n    %s ..." % (
-            gpioWatchLog,
-            gpioWatchLogName,
+        print(
+            "\n*** Copying \n    %s \n    to \n    %s ..."
+            % (
+                gpioWatchLog,
+                gpioWatchLogName,
+            )
         )
 
     copyfile(gpioWatchLog, gpioWatchLogName)
@@ -170,7 +173,7 @@ def dumpToFile():
     LCDMessage = "%s files written" % filesWritten
 
     if verbose:
-        print "\n*** Printing to LCD: \n    %s" % LCDMessage
+        print("\n*** Printing to LCD: \n    %s" % LCDMessage)
 
     displayOnLCD("", LCDMessage, verbose)
 
@@ -183,14 +186,14 @@ def readFromFile():
     if not USBPath:
         LCDMessage = "No USB inserted"
         if verbose:
-            print "\n*** Printing to LCD: \n    %s" % LCDMessage
+            print("\n*** Printing to LCD: \n    %s" % LCDMessage)
         displayOnLCD("", LCDMessage, verbose)
         onError(4, "No matching USB mounted")
     else:
         displayOnLCD("", "Reading files...", verbose)
 
     if verbose:
-        print "\n*** Searching for files in %s ..." % USBDir
+        print("\n*** Searching for files in %s ..." % USBDir)
 
     foundFiles = []
     for f in os.listdir(USBPath):
@@ -199,15 +202,15 @@ def readFromFile():
 
     if foundFiles:
         if verbose:
-            print "    %s files found:" % len(foundFiles)
+            print("    %s files found:" % len(foundFiles))
             for f in foundFiles:
-                print "    %s" % f
+                print("    %s" % f)
 
         foundFiles = sorted(foundFiles, reverse=True)
         inFile = foundFiles[0]
 
         if verbose:
-            print "\n*** %s\n    is the latest" % inFile
+            print("\n*** %s\n    is the latest" % inFile)
 
         rowsInserted, rowsUpdated = importToDb(
             inFile, verbose
@@ -215,23 +218,23 @@ def readFromFile():
 
         if rowsInserted:
             if verbose:
-                print "\n*** %s rows inserted" % rowsInserted
+                print("\n*** %s rows inserted" % rowsInserted)
         else:
             if verbose:
-                print "\n*** Nothing inserted"
+                print("\n*** Nothing inserted")
 
         if rowsUpdated:
             if verbose:
-                print "\n*** %s rows updated" % rowsUpdated
+                print("\n*** %s rows updated" % rowsUpdated)
         else:
             if verbose:
-                print "\n*** Nothing updated"
+                print("\n*** Nothing updated")
 
         displayOnLCD("", "%s rows inserted" % rowsInserted, verbose)
 
     else:
         if verbose:
-            print "*** No file found"
+            print("*** No file found")
 
         displayOnLCD("", "No file found", verbose)
 
@@ -250,7 +253,7 @@ def importToDb(inFile, verbose):
 
     # open file
     if verbose:
-        print "\n*** Opening file: \n    %s" % inFile
+        print("\n*** Opening file: \n    %s" % inFile)
     with open(inFile) as f:
         content = f.readlines()
     content = [x.strip() for x in content]  # remove unwanted \n and so on
@@ -265,13 +268,13 @@ def importToDb(inFile, verbose):
         oldVerbose = verbose
         # verbose = False
         if verbose:
-            print "Line %s: %s" % (lineNumber, line)
+            print("Line %s: %s" % (lineNumber, line))
 
         for table in ("breaks", "ringTimes", "ringPatterns", "days"):
             if line.startswith(table):
                 thisTable = table
                 if verbose:
-                    print "\n*** Now processing table: %s" % thisTable
+                    print("\n*** Now processing table: %s" % thisTable)
                 isHeaderLine = True
                 break
 
@@ -287,17 +290,17 @@ def importToDb(inFile, verbose):
             for column in selection:
                 if i != 0:
                     if verbose:
-                        print "    %s: %s" % (column, values[i])
+                        print("    %s: %s" % (column, values[i]))
                     if i == 1 and values[i]:
-                        print "This should be updated"
+                        print("This should be updated")
                     elif i == 1:
-                        print "This should be added"
+                        print("This should be added")
                 i += 1
 
         verbose = oldVerbose
 
     if verbose:
-        print "\n*** %s rows parsed" % lineNumber
+        print("\n*** %s rows parsed" % lineNumber)
 
     # close cursor
     db_close_cursor(cnx, cursor, verbose)

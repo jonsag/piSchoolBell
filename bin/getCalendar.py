@@ -22,8 +22,8 @@ import getopt, sys, json, MySQLdb
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from urlparse import urljoin
-from urllib2 import urlopen
+from urllib.parse import urljoin
+from urllib.request import urlopen
 
 try:
     myopts, args = getopt.getopt(
@@ -64,9 +64,9 @@ monthNow = timeNow.strftime("%m")
 calendarAddress = urljoin(drygUri, drygPath)
 
 if verbose:
-    print "\n*** Todays date: %s" % dateNow
-    print
-    print "*** Calendar source: %s" % calendarAddress
+    print("\n*** Todays date: %s" % dateNow)
+    print()
+    print("*** Calendar source: %s" % calendarAddress)
 
 # getting calendars for twelve months
 
@@ -88,16 +88,16 @@ if connected:
         calendarPath = "%s/%s/%s" % (calendarAddress, lookupYear, lookupMonth)
 
         if verbose:
-            print "\n*** Getting calendar data for: %s-%s" % (lookupYear, lookupMonth)
-            print "    %s" % calendarPath
+            print("\n*** Getting calendar data for: %s-%s" % (lookupYear, lookupMonth))
+            print("    %s" % calendarPath)
 
         calendarData = urlopen(calendarPath).read()  # read calendar data
 
         parsedCalendar = json.loads(calendarData)  # load json
 
         if verbose:
-            print
-            print json.dumps(parsedCalendar, indent=4, sort_keys=True)
+            print()
+            print(json.dumps(parsedCalendar, indent=4, sort_keys=True))
 
         cacheTime = parsedCalendar["cachetid"]
 
@@ -127,13 +127,13 @@ if connected:
                 holiday = ""
 
             if verbose:
-                print "\n*** Date: %s, %s" % (date, dayName)
+                print("\n*** Date: %s, %s" % (date, dayName))
                 if workFreeDay == "Nej":
-                    print "    School day"
+                    print("    School day")
                 if eve:
-                    print "    Eve: %s" % eve
+                    print("    Eve: %s" % eve)
                 if holiday:
-                    print "    Holiday: %s" % holiday
+                    print("    Holiday: %s" % holiday)
 
             if workFreeDay == "Nej":  # true if this is a school day
                 isWorkDay = "1"
@@ -154,7 +154,7 @@ if connected:
                 result, rowCount = db_query(cursor, query, verbose)  # run query
             except (MySQLdb.IntegrityError) as e:  # date already in database
                 if verbose:
-                    print "*** Date already in table"
+                    print("*** Date already in table")
                 query = (
                     "UPDATE days SET "
                     "dayName = '" + dayName + "', "
@@ -168,7 +168,7 @@ if connected:
                     result, rowCount = db_query(cursor, query, verbose)  # run query
                 except MySQLdb.Error as e:  # some other error
                     if verbose:
-                        print "*** Error: \n    %s" % e
+                        print("*** Error: \n    %s" % e)
                     sys.exit()
                 else:
                     updatedDays = updatedDays + rowCount
@@ -178,18 +178,18 @@ if connected:
             day += 1  # add one day and test it
 
         if verbose:
-            print "\n*** Cache time: %s" % cacheTime
-            print
+            print("\n*** Cache time: %s" % cacheTime)
+            print()
 
             if addedDays:
-                print "Get calendar: %s days added" % addedDays
+                print("Get calendar: %s days added" % addedDays)
             else:
-                print "Get calendar: No days added"
+                print("Get calendar: No days added")
 
             if updatedDays:
-                print "Get calendar: %s days updated" % updatedDays
+                print("Get calendar: %s days updated" % updatedDays)
             else:
-                print "Get calendar: No days updated"
+                print("Get calendar: No days updated")
 
     # close cursor
     db_close_cursor(cnx, cursor, verbose)
@@ -199,7 +199,7 @@ if connected:
 
 else:
     if verbose:
-        print "\n*** Could not connect to internet"
+        print("\n*** Could not connect to internet")
 
 if logging:
     if addedDays:

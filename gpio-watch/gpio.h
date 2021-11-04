@@ -37,7 +37,8 @@
 #define GPIO_BASE "/sys/class/gpio"
 #endif
 
-struct pin {
+struct pin
+{
 	int pin;
 	int edge;
 };
@@ -49,4 +50,3 @@ int pin_set_edge(int pin, int edge);
 int pin_set_direction(int pin, int direction);
 
 #endif // _GPIO_H
-

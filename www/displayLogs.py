@@ -9,10 +9,10 @@ cgitb.enable()  # for troubleshooting
 
 from modules import logFile, webPageFooter
 
-print "Content-type: text/html"
-print
+print("Content-type: text/html")
+print()
 
-print """
+print("""
 <html>
 
 <head><title>piSchoolBell - log files</title></head>
@@ -20,26 +20,26 @@ print """
 <body>
  
 <h3> piSchoolBell - log files</h3>
-"""
+""")
 
 
 def pageLinks():
-    print "\n<br>"
-    print '\n<br><a href="displayLogs.py">Reset page</a>'
+    print("\n<br>")
+    print('\n<br><a href="displayLogs.py">Reset page</a>')
 
-    print "\n<br>"
-    print '\n<br><a href="index.py">Home</a>'
+    print("\n<br>")
+    print('\n<br><a href="index.py">Home</a>')
 
     # print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
 
 
 def pageBody():
-    print "\n<br>"
+    print("\n<br>")
 
     for fileName in (logFile, "/home/pi/bin/piSchoolBell/gpio-watch.log"):
-        print "\n<br>"
-        print "\n<br>File name: %s" % fileName
-        print "\n<hr>"
+        print("\n<br>")
+        print("\n<br>File name: %s" % fileName)
+        print("\n<hr>")
 
         with open(fileName) as f:
             content = f.readlines()
@@ -48,9 +48,9 @@ def pageBody():
 
         if content:
             for line in content:
-                print "\n<br>%s" % line
+                print("\n<br>%s" % line)
         else:
-            print "\n<br>------ No entries in %s -----" % fileName
+            print("\n<br>------ No entries in %s -----" % fileName)
 
 
 if __name__ == "__main__":
@@ -60,11 +60,11 @@ if __name__ == "__main__":
     webPageFooter()
 
 
-print """
+print("""
  
 
  
 </body>
 
 </html>
-"""
+""")

@@ -27,7 +27,8 @@
 
 int loglevel = 1;
 
-void logprint(const char *fmt, ...) {
+void logprint(const char *fmt, ...)
+{
         va_list args;
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);
@@ -35,7 +36,8 @@ void logprint(const char *fmt, ...) {
 }
 
 // logging functions
-const char *logtime(void) {
+const char *logtime(void)
+{
         static char buf[100];
 
         struct timeval tv;
@@ -44,4 +46,3 @@ const char *logtime(void) {
 
         return buf;
 }
-

@@ -27,10 +27,10 @@ from modules import (
 verbose = False
 
 
-print "Content-type: text/html"
-print
+print("Content-type: text/html")
+print()
 
-print """
+print("""
 <html>
 
 <head><title>piSchoolBell - upcoming rings</title></head>
@@ -38,7 +38,7 @@ print """
 <body>
  
 <h3> piSchoolBell - upcoming rings</h3>
-"""
+""")
 
 
 # connect to database
@@ -55,25 +55,25 @@ timeNow = dateTimeNow.strftime("%H:%M")
 
 def pageLinks():
 
-    print '\n<br><a href="upcomingRings.py">Reset page</a>'
+    print('\n<br><a href="upcomingRings.py">Reset page</a>')
 
-    print "\n<br>"
-    print '\n<br><a href="index.py">Home</a>'
+    print("\n<br>")
+    print('\n<br><a href="index.py">Home</a>')
 
     # print '\n<br>'
     # print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
 
-    print "\n<br>"
-    print '\n<br><a href="ringTimes.py">Ring times</a>'
+    print("\n<br>")
+    print('\n<br><a href="ringTimes.py">Ring times</a>')
 
     # print '\n<br>'
-    print '\n<br><a href="schoolBreaks.py">Breaks</a>'
+    print('\n<br><a href="schoolBreaks.py">Breaks</a>')
 
     # print '\n<br>'
     # print '\n<br><a href="extraDays.py">Extra school days</a>'
 
     # print '\n<br>'
-    print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
+    print('\n<br><a href="ringPatterns.py">Ring patterns</a>')
 
     # print '&emsp;<a href="ringPatterns.py?addRingPattern=1">Add another ring pattern</a>'
 
@@ -92,38 +92,38 @@ def pageBody():
         )
 
         if weekNumber != oldWeekNumber:
-            print "<br>\n<br>Week number: %s" % weekNumber
+            print("<br>\n<br>Week number: %s" % weekNumber)
             oldWeekNumber = weekNumber
 
         if isNotOnBreak or isWorkDay:
-            print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s, %s" % (
+            print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s, %s" % (
                 date,
                 getDayName(dayNumber, verbose),
-            )
+            ))
 
         if breakName:
-            print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s" % breakName
+            print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%s" % breakName)
 
         if isNotOnBreak:
             ringTimes = findRingTimes(date, dayNumber, cursor, verbose)
             if ringTimes:
                 for ringTime in ringTimes:
-                    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                    print (
+                    print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                    print((
                         "%s, %s"
                         % (
                             ringTime["ringTime"],
                             ringTime["ringTimeName"],
                         )
-                    )
-                    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                    print (
+                    ))
+                    print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
+                    print((
                         "%s, %s"
                         % (
                             ringTime["ringPatternName"],
                             ringTime["ringPattern"],
                         )
-                    )
+                    ))
 
         i += 1
         if i >= 30:
@@ -138,16 +138,16 @@ if __name__ == "__main__":
     webPageHeader()
     pageLinks()
     pageBody()
-    print "\n<br>"
+    print("\n<br>")
     pageLinks()
     webPageFooter()
 
 
-print """
+print("""
  
 
  
 </body>
 
 </html>
-"""
+""")

@@ -10,7 +10,7 @@ from time import sleep
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
-    print ("Error importing RPi.GPIO!")
+    print("Error importing RPi.GPIO!")
 
 from modules import (
     db_connect,
@@ -60,12 +60,17 @@ if dayNumberNow == -1:
     dayNumberNow = 6
 
 if verbose:
-    print("*** Date: %s \n    Time: %s \n    Week number: %s \n    Day number: %s" % (
-        dateNow,
-        timeNow,
-        weekNumberNow,
-        dayNumberNow,
-    ))
+    print(
+        (
+            "*** Date: %s \n    Time: %s \n    Week number: %s \n    Day number: %s"
+            % (
+                dateNow,
+                timeNow,
+                weekNumberNow,
+                dayNumberNow,
+            )
+        )
+    )
 
 # connect to database
 cnx = db_connect(verbose)
@@ -82,13 +87,13 @@ result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount:  # result found, is a work day
     isSchoolDay = True
     if verbose:
-        print "*** This is a school day"
+        print("*** This is a school day")
 
 # check if day is not on a break
 isNotOnBreak = False
 if isSchoolDay:
     if verbose:
-        print "\n*** Checking if today is not on a break..."
+        print("\n*** Checking if today is not on a break...")
     query = (
         "SELECT * FROM breaks WHERE "
         "startDate <= '" + dateNow + "' AND "
@@ -98,23 +103,23 @@ if isSchoolDay:
     if not rowCount:  # nothing found, not on a break
         isNotOnBreak = True
         if verbose:
-            print "*** This is not on a break"
+            print("*** This is not on a break")
 else:  # check if today is an extra school day
     if verbose:
-        print "\n*** Checking if today is an extra school day..."
+        print("\n*** Checking if today is an extra school day...")
     query = "SELECT * FROM extraDays WHERE " "extraDayDate = '" + dateNow + "'"
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         isNotOnBreak = True
         if verbose:
-            print "*** This is an extra school day"
+            print("*** This is an extra school day")
 
 
 # check if it is time to ring bell and what ring pattern to use
 isRingTime = False
 if isNotOnBreak:
     if verbose:
-        print "\n*** Checking if it is time to ring the bell..."
+        print("\n*** Checking if it is time to ring the bell...")
     query = (
         "SELECT weekDays, ringPatternId FROM ringTimes WHERE "
         "ringTime = '" + timeNow + "'"
@@ -122,20 +127,20 @@ if isNotOnBreak:
     result, rowCount = db_query(cursor, query, verbose)  # run query
     if rowCount:
         if verbose:
-            print "*** It is time to ring bell"
+            print("*** It is time to ring bell")
         for row in result:
             weekDays = row[0]
             ringPatternId = row[1]
         if weekDays[dayNumberNow] == "1":
             isRingTime = True
             if verbose:
-                print "*** This ring time is valid today"
+                print("*** This ring time is valid today")
 
 # find ring pattern
 ringPattern = ""
 if isRingTime:
     if verbose:
-        print "\n*** Looking up which ring pattern to use..."
+        print("\n*** Looking up which ring pattern to use...")
     query = (
         "SELECT ringPattern FROM ringPatterns WHERE "
         "ringPatternId = '" + str(ringPatternId) + "'"
@@ -157,7 +162,7 @@ if ringPattern != "":
 
     i = 0
     if verbose:
-        print
+        print()
 
     for time in ringPattern:
         timeDelay = (
@@ -165,11 +170,11 @@ if ringPattern != "":
         )  # delay is stated in tenth of a second
         if i % 2 == 0:
             if verbose:
-                print "*** Ringing bell for %s s..." % timeDelay
+                print("*** Ringing bell for %s s..." % timeDelay)
             bellRelayState = True
         else:
             if verbose:
-                print "*** Pausing bell for %s s..." % timeDelay
+                print("*** Pausing bell for %s s..." % timeDelay)
             bellRelayState = False
 
         GPIO.output(bellRelayGpio, bellRelayState)  # set bell gpio pin
@@ -179,7 +184,7 @@ if ringPattern != "":
 
     GPIO.output(bellRelayGpio, False)  # make sure relay is turned off
     if verbose:
-        print "*** Stopped ringing"
+        print("*** Stopped ringing")
 
     GPIO.cleanup(bellRelayGpio)
 

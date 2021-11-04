@@ -8,8 +8,8 @@ clear
 
 if [[ `whoami` != "root" ]]
 then
-  printf "\n\n Script must be run as root. \n\n"
-  exit 1
+    printf "\n\n Script must be run as root. \n\n"
+    exit 1
 fi
 
 

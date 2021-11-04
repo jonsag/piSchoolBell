@@ -53,25 +53,25 @@ for option, argument in myopts:
 
 if verbose:
     i = 1
-    print "\n*** Script run with:"
+    print("\n*** Script run with:")
     for option, argument in myopts:
-        print "        Option %s: %s" % (i, option)
-        print "        Argument %s: %s" % (i, argument)
+        print("        Option %s: %s" % (i, option))
+        print("        Argument %s: %s" % (i, argument))
         i += 1
 
 
 # buttons
 if gpio:
     if verbose:
-        print
+        print()
     if gpio == button1Gpio:
         button1 = True
         if verbose:
-            print "*** Button 1 pressed, pin %s" % gpio
+            print("*** Button 1 pressed, pin %s" % gpio)
     elif gpio == button2Gpio:
         button2 = True
         if verbose:
-            print "*** Button 2 pressed, pin %s" % gpio
+            print("*** Button 2 pressed, pin %s" % gpio)
     else:
         onError(3, "No action for gpio %s" % gpio)
 
@@ -93,18 +93,18 @@ def button1Pressed():
     try:
         result, rowCount = db_query(cursor, query, verbose)  # run query
     except MySQLdb.Error as e:
-        print "\n<br>Error: Could not get number of days \n<br>%s" % e
-        print "\n<br>SQL: %s" % query
+        print("\n<br>Error: Could not get number of days \n<br>%s" % e)
+        print("\n<br>SQL: %s" % query)
     else:
         if rowCount:
             if verbose:
-                print "\n*** Got a result"
+                print("\n*** Got a result")
             for row in result:
                 lastDate = row[0]
                 daysToEnd = row[1]
             if verbose:
-                print "    Days in db: %s" % daysToEnd
-                print "    Days in db: %s" % lastDate
+                print("    Days in db: %s" % daysToEnd)
+                print("    Days in db: %s" % lastDate)
 
             line_1 = "%s, %s" % (daysToEnd, lastDate.strftime("%Y-%m-%d"))
 
@@ -113,11 +113,11 @@ def button1Pressed():
     line_2 = "Not connected"
 
     if verbose:
-        print "\n*** Finding interfaces..."
+        print("\n*** Finding interfaces...")
     interfaces = ni.interfaces()
     if verbose:
-        print "    Found %s interfaces" % len(interfaces)
-        print "\n*** Looking up ip addresses..."
+        print("    Found %s interfaces" % len(interfaces))
+        print("\n*** Looking up ip addresses...")
 
     i = 0
     for interface in interfaces:
@@ -131,8 +131,8 @@ def button1Pressed():
     i = 0
     for interfaceIP in interfaceIPs:
         if verbose:
-            print "    Interface: %s" % interfaceIP["interface%s" % i]
-            print "    IP: %s" % interfaceIP["ip%s" % i]
+            print("    Interface: %s" % interfaceIP["interface%s" % i])
+            print("    IP: %s" % interfaceIP["ip%s" % i])
         if (
             not interfaceIP["ip%s" % i].startswith("127")
             and not interfaceIP["ip%s" % i].startswith("169")
@@ -140,9 +140,9 @@ def button1Pressed():
         ):
             line_2 = interfaceIP["ip%s" % i]
             if verbose:
-                print "*** This is the one we will display"
+                print("*** This is the one we will display")
         if verbose:
-            print
+            print()
         i += 1
 
     if internetAccess(testAddress, verbose):

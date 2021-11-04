@@ -19,22 +19,25 @@
 #ifndef _LOGGING_H
 #define _LOGGING_H
 
-#define LEVEL_WARN  1
-#define LEVEL_INFO  2
+#define LEVEL_WARN 1
+#define LEVEL_INFO 2
 #define LEVEL_DEBUG 3
 
-#define LOG_ERROR(fmt, ...) \
+#define LOG_ERROR(fmt, ...)        \
 	logprint("%s %s:%d " fmt "\n", \
-	logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#define LOG_WARN(fmt, ...)  if (loglevel >= LEVEL_WARN)  \
+			 logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define LOG_WARN(fmt, ...)                                  \
+	if (loglevel >= LEVEL_WARN)                             \
 	logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, \
-	__LINE__, ##__VA_ARGS__)
-#define LOG_INFO(fmt, ...)  if (loglevel >= LEVEL_INFO)  \
+			 __LINE__, ##__VA_ARGS__)
+#define LOG_INFO(fmt, ...)                                  \
+	if (loglevel >= LEVEL_INFO)                             \
 	logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, \
-	__LINE__, ##__VA_ARGS__)
-#define LOG_DEBUG(fmt, ...) if (loglevel >= LEVEL_DEBUG) \
+			 __LINE__, ##__VA_ARGS__)
+#define LOG_DEBUG(fmt, ...)                                 \
+	if (loglevel >= LEVEL_DEBUG)                            \
 	logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, \
-	__LINE__, ##__VA_ARGS__)
+			 __LINE__, ##__VA_ARGS__)
 
 extern int loglevel;
 
@@ -43,4 +46,3 @@ void logprint(const char *fmt, ...);
 const char *logtime(void);
 
 #endif // _LOGGING_H
-

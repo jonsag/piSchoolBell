@@ -22,10 +22,10 @@ from modules import (
 
 verbose = False
 
-print "Content-type: text/html"
-print
+print("Content-type: text/html")
+print()
 
-print """
+print("""
 <html>
 
 <head><title>piSchoolBell</title></head>
@@ -33,7 +33,7 @@ print """
 <body>
  
 <h3> piSchoolBell </h3>
-"""
+""")
 
 # connect to database
 cnx = db_connect(verbose)
@@ -51,26 +51,26 @@ timeNow = dateTimeNow.strftime("%H:%M")
 
 def pageLinks():
 
-    print '\n<br><a href="upcomingRings.py">Upcoming rings</a>'
+    print('\n<br><a href="upcomingRings.py">Upcoming rings</a>')
 
-    print "\n<br>"
+    print("\n<br>")
 
-    print "\n<br>"
-    print '\n<br><a href="ringTimes.py">Ring times</a>'
+    print("\n<br>")
+    print('\n<br><a href="ringTimes.py">Ring times</a>')
 
-    print "\n<br>"
-    print '\n<br><a href="schoolBreaks.py">Breaks</a>'
+    print("\n<br>")
+    print('\n<br><a href="schoolBreaks.py">Breaks</a>')
 
     # print '\n<br>'
     # print '\n<br><a href="extraDays.py">Extra school days</a>'
 
-    print "\n<br>"
-    print '\n<br><a href="ringPatterns.py">Ring patterns</a>'
+    print("\n<br>")
+    print('\n<br><a href="ringPatterns.py">Ring patterns</a>')
 
-    print "\n<br>"
+    print("\n<br>")
 
-    print "\n<br>"
-    print '\n<br><a href="status.py">Status</a>'
+    print("\n<br>")
+    print('\n<br><a href="status.py">Status</a>')
 
 
 def pageFooter():
@@ -89,22 +89,22 @@ def pageBody():
         ringPattern,
     ) = nextRing(cursor, dateNow, timeNow, verbose)
 
-    print "\n<br>%s \n<br>%s" % (dateNow, timeNow)
+    print(("\n<br>%s \n<br>%s" % (dateNow, timeNow)))
 
-    print "\n<br>"
+    print("\n<br>")
 
-    print "\n<br>Next ring:"
-    print ("\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s, %s" % (nextRingDate, nextRingDay))
-    print (
+    print("\n<br>Next ring:")
+    print(("\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s, %s" % (nextRingDate, nextRingDay)))
+    print((
         "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s"
         % (nextRingTime, ringTimeName)
-    )
-    print (
+    ))
+    print((
         "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s, %s"
         % (ringPatternName, ringPattern)
-    )
+    ))
 
-    print "\n<br>"
+    print("\n<br>")
 
 
 if __name__ == "__main__":
@@ -120,11 +120,11 @@ db_close_cursor(cnx, cursor, verbose)
 # close db
 db_disconnect(cnx, verbose)
 
-print """
+print("""
  
 
  
 </body>
 
 </html>
-"""
+""")

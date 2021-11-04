@@ -17,8 +17,8 @@ import getopt, sys, MySQLdb
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from urlparse import urljoin
-from urllib2 import urlopen
+from urllib.parse import urljoin
+from urllib.request import urlopen
 
 try:
     myopts, args = getopt.getopt(
@@ -58,36 +58,36 @@ cursor = db_create_cursor(cnx, verbose)
 
 # delete from dates
 if verbose:
-    print "\n*** Finding dates older than today..."
+    print("\n*** Finding dates older than today...")
 query = "SELECT dayId, date FROM days WHERE " "date < '" + dateNow + "'"
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount:  # result found, is a work day
     if purge and verbose:
-        print "\n*** The following dates will be deleted:"
+        print("\n*** The following dates will be deleted:")
     elif verbose:
-        print "\n*** The following dates is up for deletion:"
+        print("\n*** The following dates is up for deletion:")
     for row in result:
         if verbose:
-            print "    Id %s: %s" % (row[0], row[1])
+            print("    Id %s: %s" % (row[0], row[1]))
 
     query = "DELETE FROM days WHERE " "date < '" + dateNow + "'"
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:  # result found, is a work day
             if verbose:
-                print "*** %s dates deleted" % rowCount
+                print("*** %s dates deleted" % rowCount)
             if logging:
                 writeToFile(
                     logFile, "Purge database: %s days deleted" % rowCount, verbose
                 )
 else:
     if verbose:
-        print "*** No obsolete dates found"
+        print("*** No obsolete dates found")
 
 
 # delete from breaks
 if verbose:
-    print "\n*** Finding dates older than today..."
+    print("\n*** Finding dates older than today...")
 query = (
     "SELECT breakId, breakName, startDate, endDate FROM breaks WHERE "
     "endDate < '" + dateNow + "'"
@@ -95,30 +95,30 @@ query = (
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount:  # result found, is a work day
     if purge and verbose:
-        print "\n*** The following breaks will be deleted:"
+        print("\n*** The following breaks will be deleted:")
     elif verbose:
-        print "\n*** The following breaks is up for deletion:"
+        print("\n*** The following breaks is up for deletion:")
     for row in result:
         if verbose:
-            print "    Id %s: %s, %s, %s" % (row[0], row[1], row[2], row[3])
+            print("    Id %s: %s, %s, %s" % (row[0], row[1], row[2], row[3]))
 
     query = "DELETE FROM breaks WHERE " "endDate < '" + dateNow + "'"
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:  # result found, is a work day
             if verbose:
-                print "*** %s breaks deleted" % rowCount
+                print("*** %s breaks deleted" % rowCount)
             if logging:
                 writeToFile(
                     logFile, "Purge database: %s breaks deleted" % rowCount, verbose
                 )
 else:
     if verbose:
-        print "*** No obsolete breaks found"
+        print("*** No obsolete breaks found")
 
 # delete from extraDays
 if verbose:
-    print "\n*** Finding extra days older than today..."
+    print("\n*** Finding extra days older than today...")
 query = (
     "SELECT extraDayId, extraDayName, extraDayDate FROM extraDays WHERE "
     "extraDayDate < '" + dateNow + "'"
@@ -126,26 +126,26 @@ query = (
 result, rowCount = db_query(cursor, query, verbose)  # run query
 if rowCount:  # result found, is a work day
     if purge and verbose:
-        print "\n*** The following breaks will be deleted:"
+        print("\n*** The following breaks will be deleted:")
     elif verbose:
-        print "\n*** The following breaks is up for deletion:"
+        print("\n*** The following breaks is up for deletion:")
     for row in result:
         if verbose:
-            print "    Id %s: %s, %s, %s" % (row[0], row[1], row[2], row[3])
+            print("    Id %s: %s, %s, %s" % (row[0], row[1], row[2], row[3]))
 
     query = "DELETE FROM extraDays WHERE " "extraDayDate < '" + dateNow + "'"
     if purge:
         result, rowCount = db_query(cursor, query, verbose)  # run query
         if rowCount:  # result found, is a work day
             if verbose:
-                print "*** %s extra days deleted" % rowCount
+                print("*** %s extra days deleted" % rowCount)
             if logging:
                 writeToFile(
                     logFile, "Purge database: %s extra days deleted" % rowCount, verbose
                 )
 else:
     if verbose:
-        print "*** No obsolete extra days found"
+        print("*** No obsolete extra days found")
 
 # close cursor
 db_close_cursor(cnx, cursor, verbose)

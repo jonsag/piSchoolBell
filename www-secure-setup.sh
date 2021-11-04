@@ -12,16 +12,16 @@ clear
 
 if [[ `whoami` != "root" ]]
 then
-  printf "\n\n Script must be run as root. \n\n"
-  exit 1
+    printf "\n\n Script must be run as root. \n\n"
+    exit 1
 fi
 
 
 OS_VERSION=$(cat /etc/os-release | grep VERSION=)
 if [[ $OS_VERSION != *"stretch"* ]]
 then
-  printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
-  exit 1
+    printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
+    exit 1
 fi
 
 
