@@ -12,7 +12,8 @@ from modules import logFile, webPageFooter
 print("Content-type: text/html")
 print()
 
-print("""
+print(
+    """
 <html>
 
 <head><title>piSchoolBell - log files</title></head>
@@ -20,7 +21,8 @@ print("""
 <body>
  
 <h3> piSchoolBell - log files</h3>
-""")
+"""
+)
 
 
 def pageLinks():
@@ -60,11 +62,13 @@ if __name__ == "__main__":
     webPageFooter()
 
 
-print("""
+print(
+    """
  
 
  
 </body>
 
 </html>
-""")
+"""
+)

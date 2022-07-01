@@ -34,7 +34,8 @@ from modules import (
 
 verbose = False
 
-print("""
+print(
+    """
 <html>
 
 <head><title>piSchoolBell - status</title></head>
@@ -42,7 +43,8 @@ print("""
 <body>
  
 <h3> piSchoolBell - status</h3>
-""")
+"""
+)
 
 
 # connect to database
@@ -122,13 +124,15 @@ def pageBody():
     print("\n<br>")
 
     # time and date
-    print((
-        "\n<br>Date: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-        "\n<br>Time: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-        "\n<br>\n<br>Week number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-        "\n<br>Day number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
-        % (dateNow, timeNow, weekNumberNow, dayNumberNow)
-    ))
+    print(
+        (
+            "\n<br>Date: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
+            "\n<br>Time: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
+            "\n<br>\n<br>Week number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
+            "\n<br>Day number: \n<br>&nbsp;&nbsp;&nbsp;&nbsp;%s "
+            % (dateNow, timeNow, weekNumberNow, dayNumberNow)
+        )
+    )
 
     # uptime
     uptimeSeconds = getUptime()
@@ -146,13 +150,13 @@ def pageBody():
         if entries:
             print("\n<br>&nbsp;&nbsp;&nbsp;&nbsp%s entries: %s" % (tableName, entries))
         else:
-            print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retriveing %s" % tableName)
+            print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving %s" % tableName)
 
         # lastUpdated = tableLastUpdated(tableName, cursor, verbose)
         # if lastUpdated:
         #    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspLast updated: %s" % lastUpdated
         # else:
-        #    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspError retriveing date"
+        #    print "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbspError retrieving date"
 
     print("\n<br>")
 
@@ -167,7 +171,9 @@ def pageBody():
             daysToEnd = row[1]
         print("\n<br>&nbsp;&nbsp;&nbsp;&nbspLast day in database: %s" % lastDate)
     else:
-        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last date: No days in database")
+        print(
+            "\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last date: No days in database"
+        )
 
     # last break
     query = "SELECT endDate FROM breaks ORDER BY endDate DESC LIMIT 1"
@@ -177,14 +183,20 @@ def pageBody():
             lastBreakEnds = row[0]
         print("\n<br>&nbsp;&nbsp;&nbsp;&nbspLast break ends: %s" % lastBreakEnds)
     else:
-        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last break: No breaks in database")
+        print(
+            "\n<br>&nbsp;&nbsp;&nbsp;&nbspError retrieving last break: No breaks in database"
+        )
     print("\n<br>")
 
     # count rings and school days
     ringCount, schoolDayCount = countRingTimes(daysToEnd)
-    print("\n<br>&nbsp;&nbsp;&nbsp;&nbspThere's %s days left in the database" % daysToEnd)
+    print(
+        "\n<br>&nbsp;&nbsp;&nbsp;&nbspThere's %s days left in the database" % daysToEnd
+    )
     if schoolDayCount:
-        print("\n<br>&nbsp;&nbsp;&nbsp;&nbspOf them %s are school days" % schoolDayCount)
+        print(
+            "\n<br>&nbsp;&nbsp;&nbsp;&nbspOf them %s are school days" % schoolDayCount
+        )
     else:
         print("\n<br>&nbsp;&nbsp;&nbsp;&nbspNo days of them are school days")
     if ringCount:
@@ -215,10 +227,12 @@ def pageBody():
         i += 1
     i = 0
     for interfaceIP in interfaceIPs:
-        print((
-            "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s: %s"
-            % (interfaceIP["interface%s" % i], interfaceIP["ip%s" % i])
-        ))
+        print(
+            (
+                "\n<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;&nbsp;&nbsp;&nbsp%s: %s"
+                % (interfaceIP["interface%s" % i], interfaceIP["ip%s" % i])
+            )
+        )
         i += 1
 
 
@@ -230,11 +244,13 @@ if __name__ == "__main__":
     pageLinks()
     webPageFooter()
 
-print("""
+print(
+    """
  
 
  
 </body>
 
 </html>
-""")
+"""
+)

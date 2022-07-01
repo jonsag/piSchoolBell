@@ -44,7 +44,8 @@ fs = cgi.FieldStorage()
 print("Content-type: text/html")
 print()
 
-print("""
+print(
+    """
 <html>
 
 <head><title>piSchoolBell - ring times</title></head>
@@ -58,7 +59,8 @@ table, th, td {
 <body>
  
 <h3> piSchoolBell - ring times</h3>
-""")
+"""
+)
 
 
 # connect to database
@@ -126,22 +128,28 @@ if deleteRingTimeId:  # delete ring time
 
 elif newRingTimeName:  # add ring time
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", newRingTimeName):
-        print((
-            "\n<br>Error: \n<br>Illegal characters in name!: '" + newRingTimeName + "' "
-            "\n<br>No special characters (including Swedish etc.) allowed "
-            "\n<br>Only characters, digits, spaces and ,. allowed "
-            "\n<br>Max 100 characters"
-        ))
+        print(
+            (
+                "\n<br>Error: \n<br>Illegal characters in name!: '"
+                + newRingTimeName
+                + "' "
+                "\n<br>No special characters (including Swedish etc.) allowed "
+                "\n<br>Only characters, digits, spaces and ,. allowed "
+                "\n<br>Max 100 characters"
+            )
+        )
     elif not re.match("^[0-9:]{1,5}$", newRingTime) or not validateTime(
         newRingTime, verbose
     ):
-        print((
-            "\n<br>Error: \n<br>Illegal time, characters or length in: '"
-            + newRingTime
-            + "'! "
-            "\n<br>Must be in the form HH:MM "
-            "\n<br>Only digits and : allowed "
-        ))
+        print(
+            (
+                "\n<br>Error: \n<br>Illegal time, characters or length in: '"
+                + newRingTime
+                + "'! "
+                "\n<br>Must be in the form HH:MM "
+                "\n<br>Only digits and : allowed "
+            )
+        )
     else:
         query = (
             "INSERT INTO ringTimes "
@@ -155,11 +163,13 @@ elif newRingTimeName:  # add ring time
         try:  # insert ring time in to db
             result, rowCount = db_query(cursor, query, verbose)  # run query
         except (MySQLdb.IntegrityError) as e:  # time name already in database
-            print((
-                "Error: \n<br>There was already a time with that name. "
-                "\n<br>    Time not added "
-                "\n<br>%s" % e
-            ))
+            print(
+                (
+                    "Error: \n<br>There was already a time with that name. "
+                    "\n<br>    Time not added "
+                    "\n<br>%s" % e
+                )
+            )
         except MySQLdb.Error as e:
             print("\n<br>Error: Could not add time \n<br>%s" % e)
             print("\n<br>SQL: %s" % query)
@@ -168,22 +178,28 @@ elif newRingTimeName:  # add ring time
 
 elif updateRingTimeId:  # update ring time
     if not re.match("^[a-zA-Z0-9,. ]{1,100}$", updateRingTimeName):
-        print((
-            "Error: \n<br>Illegal characters in name!: '" + updateRingTimeName + "' "
-            "\n<br>No special characters (including Swedish etc.) allowed "
-            "\n<br>Only characters, digits, spaces and ,. allowed "
-            "\n<br>Max 100 characters!"
-        ))
+        print(
+            (
+                "Error: \n<br>Illegal characters in name!: '"
+                + updateRingTimeName
+                + "' "
+                "\n<br>No special characters (including Swedish etc.) allowed "
+                "\n<br>Only characters, digits, spaces and ,. allowed "
+                "\n<br>Max 100 characters!"
+            )
+        )
     elif not re.match("^[0-9:]{1,5}$", updateRingTime) or not validateTime(
         updateRingTime, verbose
     ):
-        print((
-            "Error: \n<br>Illegal time, characters or length in: '"
-            + updateRingTime
-            + "'! "
-            "\n<br>Must be in the form HH:MM "
-            "\n<br>Only digits and : allowed "
-        ))
+        print(
+            (
+                "Error: \n<br>Illegal time, characters or length in: '"
+                + updateRingTime
+                + "'! "
+                "\n<br>Must be in the form HH:MM "
+                "\n<br>Only digits and : allowed "
+            )
+        )
     else:
         query = (
             "UPDATE ringTimes SET "
@@ -197,11 +213,13 @@ elif updateRingTimeId:  # update ring time
         try:  # update ring time
             result, rowCount = db_query(cursor, query, verbose)  # run query
         except (MySQLdb.IntegrityError) as e:  # time name already in database
-            print((
-                "Error: \n<br>There was already a time with that name. "
-                "\n<br>Time not updated "
-                "\n<br>%s>" % e
-            ))
+            print(
+                (
+                    "Error: \n<br>There was already a time with that name. "
+                    "\n<br>Time not updated "
+                    "\n<br>%s>" % e
+                )
+            )
         except MySQLdb.Error as e:
             print("\n<br>Error: Could not update time \n<br>%s" % e)
             print("\n<br>SQL: %s" % query)
@@ -297,8 +315,14 @@ def pageBody():
                     print("<th>On</th>")
                 else:
                     print("<th>Off</th>")
-            print('<th><a href="ringTimes.py?deleteRingTimeId=%s">Delete</a></th>' % ringTimeId)
-            print('<th><a href="ringTimes.py?editRingTimeId=%s">Edit</a></th>' % ringTimeId)
+            print(
+                '<th><a href="ringTimes.py?deleteRingTimeId=%s">Delete</a></th>'
+                % ringTimeId
+            )
+            print(
+                '<th><a href="ringTimes.py?editRingTimeId=%s">Edit</a></th>'
+                % ringTimeId
+            )
             print("</tr>")
 
         print("</table")
@@ -314,13 +338,16 @@ def pageBody():
 
         print("<br><br><br>")
         print("Ring time name:<br>")
-        print('<input type="text" name="updateRingTimeName" value="%s">' % editRingTimeName)
-        print ("State a name for your ring time. <br><br>" "\nMax 100 characters. <br>")
+        print(
+            '<input type="text" name="updateRingTimeName" value="%s">'
+            % editRingTimeName
+        )
+        print("State a name for your ring time. <br><br>" "\nMax 100 characters. <br>")
 
         print("<br><br>")
         print("Ring time:<br>")
         print('<input type="text" name="updateRingTime" value="%s">' % editRingTime)
-        print ('State time in the form "hh:mm". <br>')
+        print('State time in the form "hh:mm". <br>')
 
         print("<br><br>")
         print("Choose ring pattern:<br>")
@@ -338,16 +365,18 @@ def pageBody():
                 if ringPatternId == editRingPatternId:
                     isSelected = 'selected="selected"'
 
-                print((
-                    '<option value="%s" %s>%s: %s, %s</option>'
-                    % (
-                        ringPatternId,
-                        isSelected,
-                        ringPatternId,
-                        ringPatternName,
-                        ringPattern,
+                print(
+                    (
+                        '<option value="%s" %s>%s: %s, %s</option>'
+                        % (
+                            ringPatternId,
+                            isSelected,
+                            ringPatternId,
+                            ringPatternName,
+                            ringPattern,
+                        )
                     )
-                ))
+                )
         print("</select>")
 
         print("<br><br>")
@@ -357,14 +386,16 @@ def pageBody():
             if str(editWeekDays)[dayNumber] == "1":
                 isChecked = 'checked="checked"'
 
-            print((
-                '<input type="checkbox" name="%s" value="1" %s> %s<br>'
-                % (
-                    getDayName(dayNumber, verbose),
-                    isChecked,
-                    getDayName(dayNumber, verbose),
+            print(
+                (
+                    '<input type="checkbox" name="%s" value="1" %s> %s<br>'
+                    % (
+                        getDayName(dayNumber, verbose),
+                        isChecked,
+                        getDayName(dayNumber, verbose),
+                    )
                 )
-            ))
+            )
 
         print("<br><br>")
         print('<input type="submit" value="Submit">')
@@ -378,14 +409,14 @@ def pageBody():
 
         print("Ring time name:<br>")
         print('<input type="text" name="newRingTimeName" value="Time name">')
-        print ("State a name for your ring time. <br><br>" "\nMax 100 characters. <br>")
+        print("State a name for your ring time. <br><br>" "\nMax 100 characters. <br>")
 
         dateTimeNow = datetime.now()
         timeNow = dateTimeNow.strftime("%H:%M")
         print("<br><br>")
         print("Ring time:<br>")
         print('<input type="text" name="newRingTime" value="%s">' % timeNow)
-        print ('State time in the form "hh:mm". <br>')
+        print('State time in the form "hh:mm". <br>')
 
         print("<br><br>")
         print("Choose ring pattern:<br>")
@@ -398,10 +429,12 @@ def pageBody():
                 ringPatternId = row[0]
                 ringPatternName = row[1]
                 ringPattern = row[2]
-                print((
-                    '<option value="%s">%s: %s, %s</option>'
-                    % (ringPatternId, ringPatternId, ringPatternName, ringPattern)
-                ))
+                print(
+                    (
+                        '<option value="%s">%s: %s, %s</option>'
+                        % (ringPatternId, ringPatternId, ringPatternName, ringPattern)
+                    )
+                )
         print("</select>")
 
         print("<br><br>")
@@ -411,14 +444,16 @@ def pageBody():
             if dayNumber >= 0 and dayNumber <= 4:
                 isChecked = 'checked="checked"'
 
-            print((
-                '<input type="checkbox" name="%s" value="1" %s> %s<br>'
-                % (
-                    getDayName(dayNumber, verbose),
-                    isChecked,
-                    getDayName(dayNumber, verbose),
+            print(
+                (
+                    '<input type="checkbox" name="%s" value="1" %s> %s<br>'
+                    % (
+                        getDayName(dayNumber, verbose),
+                        isChecked,
+                        getDayName(dayNumber, verbose),
+                    )
                 )
-            ))
+            )
 
         print("<br><br>")
         print('<input type="submit" value="Submit">')
@@ -440,11 +475,13 @@ db_close_cursor(cnx, cursor, verbose)
 # close db
 db_disconnect(cnx, verbose)
 
-print("""
+print(
+    """
  
 
  
 </body>
 
 </html>
-""")
+"""
+)

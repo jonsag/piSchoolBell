@@ -280,10 +280,12 @@ def webPageFooter():
 
     print("<br>\n<hr>")
     print("<br>\n&copy; Jonix 2018")
-    print((
-        '<br>\n<a href="mailto:jonsagebrand@gmail.com?subject=piShoolBell@%s">jonsagebrand@gmail.com</a>'
-        % socket.gethostname()
-    ))
+    print(
+        (
+            '<br>\n<a href="mailto:jonsagebrand@gmail.com?subject=piShoolBell@%s">jonsagebrand@gmail.com</a>'
+            % socket.gethostname()
+        )
+    )
 
     for i in range(0, 5):
         print("<br>\n")
