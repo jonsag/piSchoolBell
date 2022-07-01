@@ -16,8 +16,8 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 
 ### 30/6 -22
 
-api.dryg.net is dead  
-Substituted by sholiday.faboul.se  
+The API for Swedish holidays, api.dryg.net, is dead.  
+Substituted by [sholiday.faboul.se](https://sholiday.faboul.se/dagar/).  
 
 ### 7/3 -20
 
@@ -68,7 +68,7 @@ Assemble all the parts according to the files and images in the 'Documents' fold
 
 ### Install and configure OS
 
-Download Raspbian Stretch Lite from 'https://www.raspberrypi.org/downloads/raspbian/'.  
+Download Raspbian Stretch Lite from [https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/](https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/).  
 Choose the Light zip-file.  
 
 Cd to where your download is.  
@@ -108,15 +108,15 @@ Login with user: 'pi' and password: 'raspberry'.
 
 >$ sudo raspi-config  
 
-1		Change password  
-2 N1	Change hostname  
-2 N2	Set SSID and passphrase  
-4 I1	Set locales  
-4 I2	Set time zone  
-4 I3	Choose keyboard layout  
-4 I4	Set wifi country  
-7 A1	Expand file system to use whole SD-card  
-7 A3	Set memory split to 16  
+1    Change password  
+2 N1    Change hostname  
+2 N2    Set SSID and passphrase  
+4 I1    Set locales  
+4 I2    Set time zone  
+4 I3    Choose keyboard layout  
+4 I4    Set wifi country  
+7 A1    Expand file system to use whole SD-card  
+7 A3    Set memory split to 16  
 
 Reboot to set new options.  
 
@@ -134,7 +134,7 @@ Connect again.
 ### Clone repository
 
 >$ cd /home/pi  
->$ git clone https://github.com/jonsag/piSchoolBell.git  
+>$ git clone <https://github.com/jonsag/piSchoolBell.git>  
 
 ### Run install script
 
@@ -178,7 +178,7 @@ Use the raspi-config you used earlier.
 
 >$ sudo raspi-config  
 
-5 P5	Enable I2C interface  
+5 P5    Enable I2C interface  
 
 >$ ./install-rtc.sh  
 
@@ -194,10 +194,10 @@ Set hardware clock
 
 Comment out the following lines in /lib/udev/hwclock-set  
 
-	if [ -e /run/systemd/system ] ; then  
-		exit 0  
-	fi 
-	
+    if [ -e /run/systemd/system ] ; then  
+        exit 0  
+    fi  
+
 Reboot  
 
 ## Configuration
@@ -205,7 +205,7 @@ Reboot
 Press button on unit to display its IP-address on the second line of the LCD.  
 Connect to the unit by pointing your browser to  
 
-	http://\<IP-address\>:8080'.  
+    http://\<IP-address\>:8080'.  
 
 Edit or add breaks, ring times and ring patterns.  
 
