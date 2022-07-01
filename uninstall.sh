@@ -6,7 +6,7 @@
 clear
 
 
-if [[ `whoami` != "root" ]]
+if [[ $(whoami) != "root" ]]
 then
     printf "\n\n Script must be run as root. \n\n"
     exit 1
@@ -28,7 +28,7 @@ printf "\n\n Uninstalling piSchoolBell www ...\n"
 rm -R /var/www/piSchoolBell
 
 
-printf "\n\n Removing cron job ...\n
+printf "\n\n Removing cron job ...\n"
 rm /etc/cron.d/piSchoolBell
 
 
@@ -49,7 +49,3 @@ rm /usr/local/bin/automount
 
 printf "\n\n Uninstallation Complete. Some changes might require a reboot. \n\n"
 exit 1
-
-
-
-
