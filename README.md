@@ -14,6 +14,10 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 
 ## Updates
 
+### 2/7 -22
+
+Created a branch based RaspberryPiOS.
+
 ### 30/6 -22
 
 The API for Swedish holidays, api.dryg.net, is dead.  
