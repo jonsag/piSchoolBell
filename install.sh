@@ -14,7 +14,7 @@ fi
 
 
 OS_VERSION=$(cat /etc/os-release | grep VERSION=)
-if [[ $OS_VERSION != *"stretch"* ]]
+if [[ $OS_VERSION != *"bullseye"* ]]
 then
     printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
     exit 1
@@ -47,7 +47,7 @@ if [[ "$MYSQL_INSTALLED" == "" ]]
 then
     printf "\n\n Installing MYSQL ...\n"
     # Install Apache
-    apt-get install mysql-server -y --fix-missing
+    apt-get install mariadb-server -y --fix-missing
     
     MYSQL_INSTALLED=$(which mysql)
     if [[ "$MYSQL_INSTALLED" == "" ]]
@@ -60,14 +60,14 @@ else
 fi
 
 
-PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python-mysql*)
+PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python3-mysql*)
 if [[ "$PYMYSQL_INSTALLED" == "" ]]
 then
     printf "\n\n Installing MYSQL Python Module ...\n"
     # Install Apache
-    apt-get install python-mysqldb -y
+    apt-get install python3-mysqldb -y
     
-    PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python-mysql*)
+    PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python3-mysql*)
     if [[ "$PYMYSQL_INSTALLED" == "" ]]
     then
         printf "\n\n EXITING : MYSQL Python Module installation FAILED\n"
@@ -79,7 +79,7 @@ fi
 
 
 printf "\n\n Installing the rest ...\n"
-apt-get install python-dev python-setuptools build-essential python-smbus python-pip at -y
+apt-get install python3-dev python3-setuptools build3-essential python3-smbus python3-pip at -y
 
 
 printf "\n\n easy_install ...\n"

@@ -16,7 +16,7 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 
 ### 2/7 -22
 
-Created a branch based RaspberryPiOS.
+Created a branch based on RaspberryPiOS.
 
 ### 30/6 -22
 
@@ -72,11 +72,10 @@ Assemble all the parts according to the files and images in the 'Documents' fold
 
 ### Install and configure OS
 
-Download Raspbian Stretch Lite from [https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/](https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2019-04-09/).  
-Choose the Light zip-file.  
+Download Raspberry Pi OS Lite from [https://www.raspberrypi.com/software/operating-systems/](https://www.raspberrypi.com/software/operating-systems/).  
 
 Cd to where your download is.  
->$ unzip 2017-11-29-raspbian-stretch-lite.zip  
+>$ xz -d 2022-04-04-raspios-bullseye-armhf-lite.img.xz  
 
 Insert SD-card and find out drive letter.  
 >$ dmesg  
@@ -88,7 +87,7 @@ Unmount if mounted.
 >$ umount /dev/mmcblk0p2  
 
 Write image to SD-card.  
->$ sudo dd bs=4M if=2017-11-29-raspbian-stretch-lite.img of=/dev/mmcblk0 conv=fsync status=progress  
+>$ sudo dd bs=4M if=2022-04-04-raspios-bullseye-armhf-lite.img of=/dev/mmcblk0 conv=fsync status=progress  
 
 Remove SD-card and insert it again to make new partitions visible.  
 
@@ -101,32 +100,50 @@ Write empty file to boot partition to enable ssh at boot.
 Unmount.  
 >$ sudo umount /mnt/tmp  
 
-Remove SD-card and insert it a Rpi connected to your local network and boot it up.  
+Remove SD-card and insert it in a RPi connected to your local network and boot it up.  
 
-### Rpi configuration
+### RPi configuration
 
-Connect to Rpi via ssh.  
-Login with user: 'pi' and password: 'raspberry'.  
+For this version of the operating system you should have a monitor and keyboard hooked up at the first boot.  
+
+After some restarts you will start to configure your machine:
+
+* Select keyboard layout  
+* Create user and set password. For the sake of this installation it's preferred you set 'pi' as username.  
+
+After this you will have a prompt.  
+Find out the ip of the RPi
+
+>$ ifconfig
+
+Connect to the RPi via ssh on another machine.  
+
+>$ ssh -ip from above-  -l pi  
+
+Login with the username and password you created earlier  
+user: 'pi'  
+password: 'raspberry'.  
+
+Of course you could continue using the Pi directly, but it's easier to use cut and paste from this manual.  
 
 ### Configure
 
 >$ sudo raspi-config  
 
-1    Change password  
-2 N1    Change hostname  
+1 S1    Configure wifi (if you want it)  
+2 S4    Change hostname  
 2 N2    Set SSID and passphrase  
-4 I1    Set locales  
-4 I2    Set time zone  
-4 I3    Choose keyboard layout  
-4 I4    Set wifi country  
-7 A1    Expand file system to use whole SD-card  
-7 A3    Set memory split to 16  
+4 P2    Set GPU memory to 16  
+5 L1    Set locales  
+4 L2    Set time zone  
+6 A1    Expand file system to use whole SD-card  
 
 Reboot to set new options.  
 
 ### Update raspbian
 
 Connect again.  
+
 >$ sudo apt-get update && sudo apt-get upgrade  
 
 ## Installation
@@ -309,6 +326,7 @@ Set HW-clock manually:
 >$ ssh pi@192.168.10.44 'sudo chmod 755 -R /var/www/piSchoolBell'  
 >$ ssh pi@192.168.10.44 'sudo chown -R pi:www-data /var/www/piSchoolBell'  
 >$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/purgeDatabase.py pi@192.168.10.44:/home/pi/bin/piSchoolBell/  
+>$ rsync -raci ~/Documents/CodeWorkspace/piSchoolBell/* pi@192.168.10.99:/home/pi/  
 
 ### Things to check after install
 
