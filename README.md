@@ -15,6 +15,7 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 ### 3/7 -22
 
 Now running on RaspberryPiOS Bullseye.  
+Everything updated to run on python3.  
 Updated install script.  
 Made it easier for those not having the Swedish holidays. (More work needed...)  
 New module for printing to LCD.  
