@@ -8,8 +8,6 @@ Administration of the school bell is done via a web UI.
 
 It is written entirely in python.  
 
-It makes use of the Adafruit_Python_CharLCD library. [https://github.com/adafruit/Adafruit_Python_CharLCD](https://github.com/adafruit/Adafruit_Python_CharLCD)  
-
 Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [https://github.com/larsks/gpio-watch](https://github.com/larsks/gpio-watch)  
 
 ## Updates
@@ -18,7 +16,7 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 
 Now running on RaspberryPiOS Bullseye.  
 Updated install script.  
-Made it easier for those not having the Swedish holidays. (More work in ensue...)  
+Made it easier for those not having the Swedish holidays. (More work needed...)  
 New module for printing to LCD.  
 Fixed apache not defaulting to index.py.  
 
@@ -70,9 +68,9 @@ Change column type
 
 * Soldering material  
 
-### The build
+### The build  
 
-Assemble all the parts according to the files and images in the 'Documents' folder.  
+Assemble all the parts according to the KiCad files.  
 
 ### Install and configure OS
 
@@ -134,7 +132,7 @@ Login with the username and password you created earlier
 2 S4    Change hostname  
 4 P2    Set GPU memory to 16  
 5 L1    Set locales  
-4 L2    Set time zone  
+5 L2    Set time zone  
 6 A1    Expand file system to use whole SD-card  
 
 Reboot to set new options.  
