@@ -4,7 +4,8 @@
 
 import os, sys, MySQLdb, time, urllib.request, urllib.error, urllib.parse, socket
 
-import Adafruit_CharLCD as LCD
+# import Adafruit_CharLCD as LCD
+import adafruit_character_lcd.character_lcd as characterlcd
 
 from configparser import ConfigParser
 from datetime import datetime, timedelta
@@ -568,7 +569,20 @@ def initialize_lcd(verbose):
     lcd_wake_time = int(config.get("lcd", "lcd_wake_time").strip(" "))
 
     # Initialize the LCD using the pins from config
-    lcd = LCD.Adafruit_CharLCD(
+    # lcd = LCD.Adafruit_CharLCD(
+    #    lcd_rs,
+    #    lcd_en,
+    #    lcd_d4,
+    #    lcd_d5,
+    #    lcd_d6,
+    #    lcd_d7,
+    #    lcd_columns,
+    #    lcd_rows,
+    #    lcd_backlight,
+    # )
+
+    # Initialise the LCD class
+    lcd = characterlcd.Character_LCD_Mono(
         lcd_rs,
         lcd_en,
         lcd_d4,

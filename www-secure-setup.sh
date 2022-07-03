@@ -18,7 +18,7 @@ fi
 
 
 OS_VERSION=$(cat /etc/os-release | grep VERSION=)
-if [[ $OS_VERSION != *"stretch"* ]]
+if [[ $OS_VERSION != *"bullseye"* ]]
 then
     printf "\n\n EXITING : Script must be run on PI OS Stretch. \n\n"
     exit 1
@@ -32,6 +32,8 @@ AuthName "piSchoolBell"
 AuthType Basic
 AuthUserFile /home/pi/bin/piSchoolBell/.htpasswd
 require valid-user
+
+DirectoryIndex index.py
 
 ACCESS
 

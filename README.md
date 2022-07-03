@@ -14,9 +14,13 @@ Also it installs gpio-watch to catch the buttons connected to the Pi's GPIO. [ht
 
 ## Updates
 
-### 2/7 -22
+### 3/7 -22
 
-Created a branch based on RaspberryPiOS.
+Now running on RaspberryPiOS Bullseye.  
+Updated install script.  
+Made it easier for those not having the Swedish holidays. (More work in ensue...)  
+New module for printing to LCD.  
+Fixed apache not defaulting to index.py.  
 
 ### 30/6 -22
 
@@ -72,7 +76,7 @@ Assemble all the parts according to the files and images in the 'Documents' fold
 
 ### Install and configure OS
 
-Download Raspberry Pi OS Lite from [https://www.raspberrypi.com/software/operating-systems/](https://www.raspberrypi.com/software/operating-systems/).  
+Download RaspberryPiOS Lite from [https://www.raspberrypi.com/software/operating-systems/](https://www.raspberrypi.com/software/operating-systems/).  
 
 Cd to where your download is.  
 >$ xz -d 2022-04-04-raspios-bullseye-armhf-lite.img.xz  
@@ -116,23 +120,18 @@ Find out the ip of the RPi
 
 >$ ifconfig
 
-Connect to the RPi via ssh on another machine.  
+Connect to the RPi via ssh on another machine (if you don't want to continue as before).  
 
 >$ ssh -ip from above-  -l pi  
 
 Login with the username and password you created earlier  
-user: 'pi'  
-password: 'raspberry'.  
-
-Of course you could continue using the Pi directly, but it's easier to use cut and paste from this manual.  
 
 ### Configure
 
 >$ sudo raspi-config  
 
-1 S1    Configure wifi (if you want it)  
+1 S1    Configure wifi  
 2 S4    Change hostname  
-2 N2    Set SSID and passphrase  
 4 P2    Set GPU memory to 16  
 5 L1    Set locales  
 4 L2    Set time zone  
@@ -140,9 +139,9 @@ Of course you could continue using the Pi directly, but it's easier to use cut a
 
 Reboot to set new options.  
 
-### Update raspbian
+### Update OS
 
-Connect again.  
+Connect again  
 
 >$ sudo apt-get update && sudo apt-get upgrade  
 
@@ -166,40 +165,55 @@ Connect again.
 
 >$ sudo mysql_secure_installation  
 
-Set root password, and press 'enter' on all remaining questions
-
-Use the same password as login for user pi.  
-Quit with 'exit;'.  
+Set root password, and press 'enter' on all other questions
 
 ### Create database
 
 >$ sudo /home/pi/piSchoolBell/mysql-setup.sh  
 
-### Make web pages secure
+### Add test data, if wanted (otherwise some things will act funny until you create your own entries)  
 
->$ sudo /home/pi/piSchoolBell/www-secure-setup.sh  
+>$ /home/pi/piSchoolBell/insertTestData.sh  
 
 ### Download (Swedish) dates
 
 >$ /home/pi/bin/piSchoolBell/getCalendar.py -v  
 
-See 'Issues' below if you get problem with this  
+### For those living outside of Sweden
 
-### Add test data, if wanted (otherwise some things will act funny until you create your own entries)  
+If you're not lucky enough to live in Sweden, you can run this to make all weekdays workdays.  
 
->$ sudo mysql -u root -p piSchoolBell < /home/pi/piSchoolBell/mysql-test-data.sql  
+>$ /home/pi/piSchoolBell/makeAllWeekdaysToWorkdays.sh
 
-### Wireless network setup
+This includes ALL Mondays to Fridays.  
 
-Use the raspi-config you used earlier.  
+You will have to manually add your own work free weekdays.  
 
-## If you are adding the RTC module
+To set 4'th of July 2023 to work free day (if it wasn't a Sunday already...)  
+Connect to mysql  
+
+>$ mysql -u pi -p$(grep password /home/pi/bin/piSchoolBell/mysql-config.ini | awk '{ print $3 }') piSchoolBell
+>
+>MariaDB [piSchoolBell]> UPDATE days SET isWorkDay = '0' WHERE date = '2023-06-04';
+
+#### Note
+
+In Sweden we use the correct way for dates and numbering days.  
+
+The first day of the week is Monday. It has number '0' in the database.  
+When printing dates we use 'YYYY-MM-DD'.  
+
+### Make web pages secure
+
+>$ sudo /home/pi/piSchoolBell/www-secure-setup.sh  
+
+## If you're adding an RTC module
 
 ### Enable i2c
 
 >$ sudo raspi-config  
 
-5 P5    Enable I2C interface  
+3 I5    Enable I2C interface  
 
 >$ ./install-rtc.sh  
 
@@ -326,7 +340,9 @@ Set HW-clock manually:
 >$ ssh pi@192.168.10.44 'sudo chmod 755 -R /var/www/piSchoolBell'  
 >$ ssh pi@192.168.10.44 'sudo chown -R pi:www-data /var/www/piSchoolBell'  
 >$ rsync -raci ~/Documents/EclipseWorkspace/piSchoolBell/purgeDatabase.py pi@192.168.10.44:/home/pi/bin/piSchoolBell/  
->$ rsync -raci ~/Documents/CodeWorkspace/piSchoolBell/* pi@192.168.10.99:/home/pi/  
+>
+>$ rsync -raci ~/Documents/CodeWorkspace/piSchoolBell pi@192.168.10.99:/home/pi/  
+>$ rsync -raci ~/Documents/CodeWorkspace/piSchoolBell/bin/* pi@192.168.10.99:/home/pi/bin/piSchoolBell  
 
 ### Things to check after install
 

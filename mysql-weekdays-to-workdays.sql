@@ -1,0 +1,1 @@
+UPDATE days SET isWorkDay='1' WHERE dayNumber < 5 AND isWorkDay = '0';

@@ -71,9 +71,14 @@ if verbose:
 # getting calendars for twelve months
 
 # check if connected to internet
+if verbose:
+    print("\n*** Checking connection to internet ...")
 connected = internetAccess(testAddress, verbose)
 
 if connected:
+    if verbose:
+        print("Connected")    
+    
     # connect to database
     cnx = db_connect(verbose)
 

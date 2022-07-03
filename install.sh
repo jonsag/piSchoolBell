@@ -26,7 +26,7 @@ if [[ "$APACHE_INSTALLED" == "" ]]
 then
     printf "\n\n Installing Apache ...\n"
     # Install Apache
-    apt-get install apache2 -y
+    apt install apache2 -y
     update-rc.d apache2 enable
     a2dissite 000-default.conf
     service apache2 restart
@@ -47,7 +47,7 @@ if [[ "$MYSQL_INSTALLED" == "" ]]
 then
     printf "\n\n Installing MYSQL ...\n"
     # Install Apache
-    apt-get install mariadb-server -y --fix-missing
+    apt install mariadb-server -y --fix-missing
     
     MYSQL_INSTALLED=$(which mysql)
     if [[ "$MYSQL_INSTALLED" == "" ]]
@@ -65,7 +65,7 @@ if [[ "$PYMYSQL_INSTALLED" == "" ]]
 then
     printf "\n\n Installing MYSQL Python Module ...\n"
     # Install Apache
-    apt-get install python3-mysqldb -y
+    apt install python3-mysqldb -y
     
     PYMYSQL_INSTALLED=$(find /var/lib/dpkg -name python3-mysql*)
     if [[ "$PYMYSQL_INSTALLED" == "" ]]
@@ -79,19 +79,23 @@ fi
 
 
 printf "\n\n Installing the rest ...\n"
-apt-get install python3-dev python3-setuptools build3-essential python3-smbus python3-pip at -y
+apt install python3-dev python3-setuptools build-essential python3-smbus python3-pip python3-netifaces python3-dateutil python3-rpi.gpio at -y
 
 
-printf "\n\n easy_install ...\n"
-easy_install -U distribute
+#printf "\n\n easy_install ...\n"
+#easy_install -U distribute
 
 
 printf "\n\n pip ...\n"
-pip install RPi.GPIO python-dateutil netifaces
+pip install adafruit-circuitpython-charlcd #distribute
+
+
+#printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
+#python /home/pi/piSchoolBell/Adafruit_Python_CharLCD/setup.py install
 
 
 printf "\n\n Installing other stuff ...\n"
-apt-get install emacs-nox screen locate -y
+apt install emacs-nox screen locate -y
 
 
 printf "\n\n Installing piSchoolBell app ...\n"
@@ -112,10 +116,6 @@ chown -R pi:www-data /var/www/piSchoolBell
 ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
 chmod 755 -R /var/www/piSchoolBell/*.py
-
-
-printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
-python /home/pi/piSchoolBell/Adafruit_Python_CharLCD/setup.py install
 
 
 printf "\n\n Installing gpio-watch ...\n"
@@ -186,7 +186,7 @@ service apache2 restart
 
 
 printf "\n\n Setting up USB auto mount ...\n"
-apt-get install pmount -y
+apt install pmount -y
 
 ln -s /home/pi/bin/piSchoolBell/usbstick.rules /etc/udev/rules.d/usbstick.rules
 udevadm control --reload-rules
