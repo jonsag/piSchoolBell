@@ -112,6 +112,7 @@ chown pi:pi -R /home/pi/bin
 printf "\n\n Installing piSchoolBell www ...\n"
 mkdir /var/www/piSchoolBell
 cp /home/pi/piSchoolBell/www/* /var/www/piSchoolBell/
+mv /var/www/piSchoolBell/.htaccess /var/www/piSchoolBell/.htaccess
 chown -R pi:www-data /var/www/piSchoolBell
 ln -s /home/pi/bin/piSchoolBell/config.ini /var/www/piSchoolBell/config.ini
 ln -s /home/pi/bin/piSchoolBell/modules.py /var/www/piSchoolBell/modules.py
