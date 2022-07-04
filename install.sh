@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ARG1=$1
+
 # Die on any errors
 #set -e
 
@@ -92,10 +94,6 @@ pip install adafruit-circuitpython-charlcd #distribute
 
 #printf "\n\n Installing Adafruit_Python_CharLCD ...\n"
 #python /home/pi/piSchoolBell/Adafruit_Python_CharLCD/setup.py install
-
-
-printf "\n\n Installing other stuff ...\n"
-apt install emacs-nox screen locate -y
 
 
 printf "\n\n Installing piSchoolBell app ...\n"
@@ -199,14 +197,18 @@ systemctl daemon-reload
 ln -s /home/pi/bin/piSchoolBell/automount /usr/local/bin/automount
 ln -s /home/pi/bin/piSchoolBell/autoumount /usr/local/bin/autoumount
 
-printf "\n\n Some after adjustments ...\n"
+if [[$ARG1=="extra"]]; then
+    printf "\n\n Installing other stuff ...\n"
+    apt install emacs-nox screen locate -y
+    
+    printf "\n\n Some after adjustments ...\n"
 cat >> /home/pi/.bashrc <<ALIAS
 alias list='ls -alFh'
 ALIAS
-
-cp /root/.bashrc /root/.bashrc.old
-cp /home/pi/.bashrc /root/.bashrc
-
+    
+    cp /root/.bashrc /root/.bashrc.old
+    cp /home/pi/.bashrc /root/.bashrc
+fi
 
 
 printf "\n\n Installation Complete. Some changes might require a reboot. \n\n"
